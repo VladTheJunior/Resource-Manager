@@ -44,31 +44,5 @@ namespace Archive_Unpacker.Classes.Bar
                 return (isCompressed ? "Compressed ":"") + Path.GetExtension(fileName).ToUpper();
             }
         }
-
-        //public MemoryStream streamCache { get; set; }
-
-        /*          public Stream Ensure(Stream inStream)
-                  {
-                      if (streamCache != null)
-                      {
-                          streamCache.Position = 0;
-                          return streamCache;
-                      }
-                      lock (inStream)
-                      {
-                          var data = new byte[fileLength2];
-                          inStream.Seek(fileOffset, SeekOrigin.Begin);
-                          inStream.Read(data, 0, data.Length);
-                          NotifyPropertyChanged("streamCache");
-                          return streamCache = new MemoryStream(data);
-                      }
-                  }
-                  public void SetData(byte[] newData)
-                  {
-                      streamCache = new MemoryStream(newData);
-                     // Size = Size2 = newData.Length;
-                  }*/
-
-
     }
 }

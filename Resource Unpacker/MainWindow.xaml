@@ -74,7 +74,7 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         
-        <Menu VerticalAlignment="Top" Grid.ColumnSpan="3" FontFamily="Trajan Pro 3" FontSize="16">
+        <Menu x:Name="mainMenu" VerticalAlignment="Top" Grid.ColumnSpan="3" FontFamily="Trajan Pro 3" FontSize="16">
             <MenuItem Header="File">
                 <MenuItem Header="Open..." Click="MenuItem_Click" >
                     <MenuItem.Icon>
@@ -167,7 +167,7 @@
                 <Separator/>
             </MenuItem>
             <MenuItem Header="Extract">
-                <MenuItem Header="All Files...">
+                <MenuItem Header="All Files..." Click="MenuItem_Click_6">
                     <MenuItem.Icon>
                         <Viewbox Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
                             <Rectangle Width="16" Height="16">
@@ -273,7 +273,7 @@
             
             <TextBlock Grid.Row="0" Text="{Binding ElementName=files, Path=SelectedItem.fileName, StringFormat='File Name: {0}'}" FontSize="10"/>
             <TextBlock Grid.Row="1" Text="{Binding ElementName=files, Path=SelectedItem.fileFormat, StringFormat='File Format: {0}'}" FontSize="10"/>
-            <TextBox Grid.Row="3" IsReadOnly="True" TextWrapping="Wrap" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+            <TextBox Text="{Binding FileContent, IsAsync=True}" Grid.Row="3" IsReadOnly="True" TextWrapping="NoWrap"  ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
 
             </Grid>
       
@@ -423,7 +423,9 @@
             <TextBlock Text="/"/>
             <TextBlock Text="{Binding ElementName=files, Path=Items.Count}"/>
             <Separator/>
-            <ProgressBar Width="50"/>
+            <StatusBarItem HorizontalAlignment="Right" >
+                <ProgressBar x:Name="progressBar" Width="250" Height="16" VerticalAlignment="Center" Value="{Binding CurrentProgress}" />
+            </StatusBarItem>
         </StatusBar>
     </Grid>
 </Window>

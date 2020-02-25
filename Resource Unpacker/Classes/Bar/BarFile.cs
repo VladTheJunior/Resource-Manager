@@ -1,10 +1,15 @@
-﻿using System;
+﻿using Resource_Unpacker.Classes.CompressedFiles;
+using Resource_Unpacker.Classes.XMB;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Xml;
 
 namespace Archive_Unpacker.Classes.Bar
 {
@@ -69,9 +74,12 @@ namespace Archive_Unpacker.Classes.Bar
         public uint numFilesInDirectory { get; set; }
 
 
-        FileStream input;
+        //     using FileStream file = new FileStream("file.bin", FileMode.Create, System.IO.FileAccess.Write);
+        //  decompressedFile.CopyTo(file);
+        //  decompressedFile.Seek(0, SeekOrigin.Begin);
+        // decompressedFile = newStream;
 
-        public async void saveFile(Entry file, string savePath)
+        public async Task saveFile(Entry file, string savePath)
         {
             // Could be doing some risky stuff here, so try...
             try
@@ -82,14 +90,14 @@ namespace Archive_Unpacker.Classes.Bar
                 // Instantiate the input stream, opening the BAR
                 // file specified in the barFilePath variable
 
-                if (input == null)
+                //  if (input == null)
 
-                    input = new FileStream(barFilePath, FileMode.Open);
+                using var input = File.OpenRead(barFilePath);
                 // Locate the file within the BAR file.
                 input.Seek(file.fileOffset, SeekOrigin.Begin);
                 // Work out the full path of the file to be saved.
                 //  string newPath = savePath;
-                // Work out the directory path where the file is to be saved...
+                // Work out the directory path where the file is to be saved...input.Read
                 // string dirPath = newPath.Substring(0, newPath.LastIndexOf('\\') + 1);
                 // ...Now check that the directories exist! If the 
 
@@ -147,83 +155,43 @@ namespace Archive_Unpacker.Classes.Bar
 
         }
 
-        public async void readFile(Entry file)
+        public async Task<string> readFile(Entry file)
         {
-            // Could be doing some risky stuff here, so try...
-            try
+
+            // Firstly, is the file parameter null?
+            if (file == null)
+                return "";
+
+            using var input = File.OpenRead(barFilePath);
+            // Locate the file within the BAR file.
+            input.Seek(file.fileOffset, SeekOrigin.Begin);
+
+            if (Path.GetExtension(file.fileName).ToUpper() == ".XMB")
             {
-                // Firstly, is the file parameter null?
-                if (file == null)
-                    throw new Exception("Supplied file was null - Could not save!");
-                // Instantiate the input stream, opening the BAR
-                // file specified in the barFilePath variable
+                var data = new byte[file.fileLength2];
+                await input.ReadAsync(data, 0, data.Length);
 
-                if (input == null)
+                CompressedFile compressedFile = new CompressedFile();
+                await compressedFile.LoadCompressedFile(new MemoryStream(data));
 
-                    input = new FileStream(barFilePath, FileMode.Open);
-                // Locate the file within the BAR file.
-                input.Seek(file.fileOffset, SeekOrigin.Begin);
-                if (!file.isCompressed)
-                {
-                    var data = new byte[file.fileLength2];
-                    input.Read(data, 0, data.Length);
-                   
-               //     return  new MemoryStream(data);
-                }
+                XMBFile xmb = new XMBFile();
+                await xmb.LoadXMBFile(compressedFile.decompressedFile);
+                using StringWriter sw = new StringWriter();
+                using XmlTextWriter textWriter = new XmlTextWriter(sw);
 
-                // Now using a FileStream / BinaryWriter combo, write the data as it is
-                // read from the BAR file to the new file (which will be overwritten if
-                // it already exists, perhaps a bool check method could be used to make
-                // sure the user doesn't overwrite something they've modded?)
-                using (FileStream output = new FileStream(file.fileName, FileMode.Create))
-                {
-                    using (BinaryWriter writer = new BinaryWriter(output))
-                    {
-                        // How many bytes are left? Well currently all of them!
-                        uint bytesRemaining = file.fileLength2;
-                        // Define a 128K buffer (this is what AoE3Ed uses and
-                        // it seems to work perfectly).
-                        uint bufferSize = 128 * 1024;
-                        byte[] buffer = new byte[bufferSize];
-                        // Now loop through the file as long as there are bytes
-                        // remaining.
-                        while (bytesRemaining > 0)
-                        {
-                            // If the buffer is still smaller than the file
-                            // then use it as is, then remove the buffer size
-                            // from bytes remaining. Otherwise resize the
-                            // buffer and read only what is needed before
-                            // setting the buffer to zero to end the loop.
-                            if (bytesRemaining >= bufferSize)
-                            {
-                                await input.ReadAsync(buffer, 0, (int)bufferSize);
-                                bytesRemaining -= bufferSize;
-                            }
-                            else
-                            {
-                                buffer = new byte[bytesRemaining];
-                                await input.ReadAsync(buffer, 0, (int)bytesRemaining);
-                                bytesRemaining = 0;
-                            }
-                            // Write the contents of the buffer to the file!
-                            writer.Write(buffer);
-                        }
-                        // Once we're finished we need to close the writer.
-                        writer.Close();
-                    }
-                }
+                textWriter.Formatting = Formatting.Indented;
+
+                xmb.file.Save(textWriter);
+                return sw.ToString();
 
             }
-            catch (Exception e)
-            {
-                // Have we caught an exception? Tell the user
-                // about it...
-                Console.WriteLine(e.Message);
-            }
-
+            return "";
         }
 
+
+
         public ObservableCollection<Entry> entries { get; set; }
+
         public BarFile(string filename)
         {
 

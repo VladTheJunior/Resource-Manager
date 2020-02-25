@@ -31,31 +31,6 @@ IMAGE DATA
 for each mipmap
 byte {X}         - DDS Image Data
 * 
-* 
-* 
-* 
-* 
-* // ARCHIVE HEADER
-* 
-* 
-* 
-* 
-* 
-*         public static void UpdateColumnWidths(GridView gridView)
-{
-// For each column...
-foreach (var column in gridView.Columns)
-{
-// If this is an "auto width" column...
-if (double.IsNaN(column.Width))
-{
-// Set its Width back to NaN to auto-size again
-column.Width = 0;
-column.Width = double.NaN;
-}
-}
-}
-* 
 */
 
 public class RecentFile
@@ -80,7 +55,12 @@ namespace Resource_Unpacker
 
         public ObservableCollection<RecentFile> recentFiles { get; set; } = new ObservableCollection<RecentFile>();
 
-
+        private string fileContent;
+        public string FileContent
+        {
+            get { return fileContent; }
+            set { fileContent = value; NotifyPropertyChanged(); }
+        }
 
         public BarFile file { get; set; }
 
@@ -96,10 +76,21 @@ namespace Resource_Unpacker
                 recentFiles.Add(new RecentFile() { FileName = Settings.Default.RecentFiles[i], Title = Path.GetFileName(Settings.Default.RecentFiles[i]), OnClickCommand = new RelayCommand<string>(openFile) });
         }
 
-        private void files_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void files_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             e.Handled = true;
-            file.saveFile(files.SelectedItem as Entry, "");
+            try
+            {
+
+                var entry = files.SelectedItem as Entry;
+
+                FileContent = await file.readFile(entry);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void openFile(string path = null)
@@ -176,30 +167,59 @@ namespace Resource_Unpacker
             public event EventHandler CanExecuteChanged;
         }
 
+
+        private long currentProgress;
+        public long CurrentProgress
+        {
+            get
+            {
+                return currentProgress;
+            }
+            set
+            {
+                currentProgress = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         private async void MenuItem_Click_2(object sender, RoutedEventArgs e)
         {
             if (files.SelectedItems != null)
             {
+                mainMenu.IsEnabled = false;
                 var entries = files.SelectedItems.Cast<Entry>().ToList();
-                await Task.Run(() =>
+                CurrentProgress = 0;
+                progressBar.Maximum = entries.Sum(x => x.fileLength2);
+                await Task.Run(async () =>
                 {
                     foreach (Entry f in entries)
                     {
-                        file.saveFile(f, "");
+                        await file.saveFile(f, "");
+                        CurrentProgress += f.fileLength2;
                     }
-                });
-                Console.WriteLine(entries.Count);
+                }
+                );
+                CurrentProgress = 0;
+                mainMenu.IsEnabled = true;
             }
         }
 
         private void MenuItem_Click_3(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Made by XaKOps", "About", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Age of Empires III - Resource Unpacker (CC, DE)\nVerson: 0.1.0\nXaKOps, 2020", "About", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void MenuItem_Click_4(object sender, RoutedEventArgs e)
         {
-            Process.Start("google.com");
+
+            string targetURL = "https://github.com/XaKOps/Resource-Unpacker";
+            var psi = new ProcessStartInfo
+            {
+                FileName = targetURL,
+                UseShellExecute = true
+            };
+            Process.Start(psi);
+
         }
 
 
@@ -304,7 +324,25 @@ namespace Resource_Unpacker
 
         }
 
-
+        private async void MenuItem_Click_6(object sender, RoutedEventArgs e)
+        {
+            if (file == null) return;
+            if (file.entries == null) return;
+            mainMenu.IsEnabled = false;
+            CurrentProgress = 0;
+            progressBar.Maximum = file.entries.Sum(x => x.fileLength2);
+            await Task.Run(async () =>
+            {
+                foreach (Entry f in file.entries)
+                {
+                    await file.saveFile(f, "");
+                    CurrentProgress += f.fileLength2;
+                }
+            }
+            );
+            CurrentProgress = 0;
+            mainMenu.IsEnabled = true;
+        }
     }
 }
 
