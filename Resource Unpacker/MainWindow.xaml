@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Resource_Unpacker"
         mc:Ignorable="d"
         
-        Title="Age of Empires III - Resource Unpacker (CC, DE)" Height="450" Width="916" FontFamily="Trajan Pro 3" FontSize="14" WindowStyle="SingleBorderWindow" WindowStartupLocation="CenterScreen">
+        Title="Age of Empires III - Resource Unpacker (CC, DE)" Height="450" Width="1077" FontFamily="Trajan Pro 3" FontSize="14" WindowStyle="SingleBorderWindow" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Image x:Key="hotFiles" x:Shared="False">
             <Image.Source>
@@ -270,14 +270,14 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition />
             </Grid.RowDefinitions>
-            
-            <TextBlock Grid.Row="0" Text="{Binding ElementName=files, Path=SelectedItem.fileName, StringFormat='File Name: {0}'}" FontSize="10"/>
-            <TextBlock Grid.Row="1" Text="{Binding ElementName=files, Path=SelectedItem.fileFormat, StringFormat='File Format: {0}'}" FontSize="10"/>
-            <TextBox Text="{Binding FileContent, IsAsync=True}" Grid.Row="3" IsReadOnly="True" TextWrapping="NoWrap"  ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
 
-            </Grid>
+            <TextBlock Grid.Row="0" ToolTip="{Binding ElementName=files, Path=SelectedItem.fileName}" Text="{Binding ElementName=files, Path=SelectedItem.fileNameWithoutPath, StringFormat='File Name: {0}'}" FontSize="12"/>
+            <TextBlock Grid.Row="1" Text="{Binding ElementName=files, Path=SelectedItem.fileFormat, StringFormat='File Format: {0}'}" FontSize="12"/>
+            <TextBox FontSize="14" Text="{Binding FileContent, IsAsync=True}" Grid.Row="3" IsReadOnly="True" TextWrapping="NoWrap"  ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+            <Image Grid.Row="3" Source="{Binding file.ImageFile, IsAsync=True}" Width="{Binding file.ImageFile.Width}" Height="{Binding file.ImageFile.Height}" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
+        </Grid>
       
-        <ListView Grid.Row="1" ItemsSource="{Binding file.SourceCollection}" AlternationCount="2" Name="files" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" SelectionChanged="files_SelectionChanged">
+        <ListView SelectedIndex="0" Grid.Row="1" ItemsSource="{Binding file.SourceCollection}" AlternationCount="2" Name="files" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" SelectionChanged="files_SelectionChanged">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -418,13 +418,28 @@
             <TextBox   Text="{Binding file.FilterText, UpdateSourceTrigger=PropertyChanged}" FontFamily="Trajan Pro 3" FontSize="16"/>
         </DockPanel>
         <StatusBar Grid.Row="3" Grid.ColumnSpan="3" FontFamily="Trajan Pro 3" FontSize="16">
-            <TextBlock Text="Selected file(s): "/>
-            <TextBlock Text="{Binding ElementName=files, Path=SelectedItems.Count}"/>
-            <TextBlock Text="/"/>
-            <TextBlock Text="{Binding ElementName=files, Path=Items.Count}"/>
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="Selected files: {0:N0} / {1:N0} ({2:N0} bytes)">
+                        <Binding Path="SelectedItems.Count" ElementName="files" />
+                        <Binding Path="Items.Count" ElementName="files" />
+                        <Binding Path="SelectedSize" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
             <Separator/>
             <StatusBarItem HorizontalAlignment="Right" >
-                <ProgressBar x:Name="progressBar" Width="250" Height="16" VerticalAlignment="Center" Value="{Binding CurrentProgress}" />
+                <Grid>
+                <ProgressBar x:Name="progressBar" Width="300" Height="16" VerticalAlignment="Center" Value="{Binding file.CurrentProgress, FallbackValue=0}" Maximum="{Binding file.MaximumProgress, FallbackValue=100}"/>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="{Binding ElementName=progressBar, Path=Value}" FontSize="14">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0:N0} / {1:N0} bytes">
+                                <Binding Path="Value" ElementName="progressBar" />
+                                <Binding Path="Maximum" ElementName="progressBar" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                </Grid>
             </StatusBarItem>
         </StatusBar>
     </Grid>

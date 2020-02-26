@@ -44,5 +44,13 @@ namespace Archive_Unpacker.Classes.Bar
                 return (isCompressed ? "Compressed ":"") + Path.GetExtension(fileName).ToUpper();
             }
         }
+
+        public string fileNameWithoutPath
+        {
+            get
+            {
+                return Path.GetFileName(fileName);
+            }
+        }
     }
 }

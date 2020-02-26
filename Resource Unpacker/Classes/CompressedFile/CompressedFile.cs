@@ -16,7 +16,7 @@ namespace Resource_Unpacker.Classes.CompressedFiles
         {
             using var reader = new BinaryReader(stream);
             header = reader.ReadUInt32();
-            // This appears to be a proper non compressed XMB file
+            // This appears to be a proper non compressed file
             if (header != 0x7433336C) // l33t
             {
                 decompressedFile = new MemoryStream();
@@ -24,7 +24,7 @@ namespace Resource_Unpacker.Classes.CompressedFiles
                 await stream.CopyToAsync(decompressedFile);
                 decompressedFile.Seek(0, SeekOrigin.Begin);
             }
-            // This is a compressed XMB file
+            // This is a compressed file
             else
             {
                 fileLength = reader.ReadUInt32();

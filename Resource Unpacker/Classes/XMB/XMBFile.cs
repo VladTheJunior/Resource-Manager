@@ -26,7 +26,7 @@ namespace Resource_Unpacker.Classes.XMB
             XmlDeclaration dec = file.CreateXmlDeclaration("1.0", null, null);
             file.AppendChild(dec);
 
-            using var reader = new BinaryReader(input, Encoding.Default, true);
+            var reader = new BinaryReader(input, Encoding.Default, true);
 
 
             reader.Read(decompressedHeader = new char[2], 0, 2);
@@ -79,7 +79,7 @@ namespace Resource_Unpacker.Classes.XMB
 
             await Task.Run(() =>
             {
-                XmlElement root = parseNode(input, elements, attributes);
+                XmlElement root = parseNode(ref reader, elements, attributes);
                 if (root != null)
                 {
                     file.AppendChild(root);
@@ -90,9 +90,9 @@ namespace Resource_Unpacker.Classes.XMB
         }
 
 
-        private XmlElement parseNode(Stream input, List<string> elements, List<string> attributes)
+        private XmlElement parseNode(ref BinaryReader reader, List<string> elements, List<string> attributes)
         {
-            using var reader = new BinaryReader(input, Encoding.Default, true);
+    //        using var reader = new BinaryReader(input, Encoding.Default, true);
 
             // Firstly check this is actually a valid node
 
@@ -131,7 +131,7 @@ namespace Resource_Unpacker.Classes.XMB
             for (int i = 0; i < numChildren; i++)
             {
                 // Get the child node using this same method.
-                XmlElement child = parseNode(input, elements, attributes);
+                XmlElement child = parseNode(ref reader, elements, attributes);
                 // Append the newly created
                 // child to this node.
                 node.AppendChild(child);

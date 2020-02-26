@@ -15,23 +15,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
-/*
-* 
-* IMAGE HEADER
-uint32 {4}       - Header (RTS3)
-byte {3}         - Unknown (DXT1=0,0,4 DXT3/5=1,4,8 or 0,4,8)
-byte {1}         - Number Of MipMaps
-uint32 {4}       - Image Width
-uint32 {4}       - Image Height
-for each mipmap
-uint32 {4}       - Image Data Offset
-uint32 {4}       - Image Data Length
-
-IMAGE DATA
-for each mipmap
-byte {X}         - DDS Image Data
-* 
-*/
 
 public class RecentFile
 {
@@ -65,6 +48,20 @@ namespace Resource_Unpacker
         public BarFile file { get; set; }
 
 
+        private long selectedSize;
+        public long SelectedSize
+        {
+            get
+            {
+                return selectedSize;
+            }
+            set
+            {
+                selectedSize = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -81,11 +78,10 @@ namespace Resource_Unpacker
             e.Handled = true;
             try
             {
-
                 var entry = files.SelectedItem as Entry;
-
+                var entries = files.SelectedItems.Cast<Entry>().ToList();
+                SelectedSize = entries.Sum(x=>x.fileLength2);
                 FileContent = await file.readFile(entry);
-
             }
             catch (Exception ex)
             {
@@ -108,13 +104,9 @@ namespace Resource_Unpacker
                 else
                     return;
             }
-
-
-
             try
             {
                 file = new BarFile(filePath);
-                //DataContext = file;
                 if (Settings.Default.RecentFiles.Contains(filePath))
                 {
                     Settings.Default.RecentFiles.Remove(filePath);
@@ -130,8 +122,6 @@ namespace Resource_Unpacker
             {
                 MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -168,38 +158,41 @@ namespace Resource_Unpacker
         }
 
 
-        private long currentProgress;
-        public long CurrentProgress
-        {
-            get
-            {
-                return currentProgress;
-            }
-            set
-            {
-                currentProgress = value;
-                NotifyPropertyChanged();
-            }
-        }
+
 
         private async void MenuItem_Click_2(object sender, RoutedEventArgs e)
         {
-            if (files.SelectedItems != null)
+            if (files.SelectedItems.Count != 0)
             {
                 mainMenu.IsEnabled = false;
                 var entries = files.SelectedItems.Cast<Entry>().ToList();
-                CurrentProgress = 0;
-                progressBar.Maximum = entries.Sum(x => x.fileLength2);
-                await Task.Run(async () =>
+                try
                 {
-                    foreach (Entry f in entries)
+                    await Task.Run(async () =>
                     {
-                        await file.saveFile(f, "");
-                        CurrentProgress += f.fileLength2;
+                        await file.saveFiles(entries, "");
+
                     }
+                           );
+                    /*       CurrentProgress = 0;
+                           progressBar.Maximum = entries.Sum(x => x.fileLength2);
+                           try
+                           {
+                               await Task.Run(async () =>
+                               {
+                                   foreach (Entry f in entries)
+                                   {
+                                       await file.saveFile(f, "");
+                                       CurrentProgress += f.fileLength2;
+                                   }
+                               }
+                               );*/
                 }
-                );
-                CurrentProgress = 0;
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+              //  CurrentProgress = 0;
                 mainMenu.IsEnabled = true;
             }
         }
@@ -312,7 +305,6 @@ namespace Resource_Unpacker
             }
             if (header.Column.ActualWidth < minWidth)
             {
-                // Debug.WriteLine(e.NewSize.Width);
                 e.Handled = true;
                 header.Column.Width = minWidth;
 
@@ -327,20 +319,27 @@ namespace Resource_Unpacker
         private async void MenuItem_Click_6(object sender, RoutedEventArgs e)
         {
             if (file == null) return;
-            if (file.entries == null) return;
+            if (file.entries.Count == 0) return;
             mainMenu.IsEnabled = false;
-            CurrentProgress = 0;
-            progressBar.Maximum = file.entries.Sum(x => x.fileLength2);
-            await Task.Run(async () =>
+         //   CurrentProgress = 0;
+       //     progressBar.Maximum = file.entries.Sum(x => x.fileLength2);
+            try
             {
-                foreach (Entry f in file.entries)
-                {
-                    await file.saveFile(f, "");
-                    CurrentProgress += f.fileLength2;
-                }
+              await Task.Run(async () =>
+              {
+       //             foreach (Entry f in file.entries)
+       //             {
+                       await file.saveFiles(file.entries.ToList(), "");
+    //                    CurrentProgress += f.fileLength2;
+    ////                }
+              }
+             );
             }
-            );
-            CurrentProgress = 0;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+      //      CurrentProgress = 0;
             mainMenu.IsEnabled = true;
         }
     }

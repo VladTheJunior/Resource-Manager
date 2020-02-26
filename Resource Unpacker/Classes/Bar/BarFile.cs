@@ -1,6 +1,8 @@
 ﻿using Resource_Unpacker.Classes.CompressedFiles;
+using Resource_Unpacker.Classes.DDT;
 using Resource_Unpacker.Classes.XMB;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -9,6 +11,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Xml;
 
 namespace Archive_Unpacker.Classes.Bar
@@ -74,39 +78,80 @@ namespace Archive_Unpacker.Classes.Bar
         public uint numFilesInDirectory { get; set; }
 
 
+
+
+        private long currentProgress;
+        public long CurrentProgress
+        {
+            get
+            {
+                return currentProgress;
+            }
+            set
+            {
+                currentProgress = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+
+        private long maximumProgress;
+        public long MaximumProgress
+        {
+            get
+            {
+                return maximumProgress;
+            }
+            set
+            {
+                maximumProgress = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+
+        private void ResetProgress(List<Entry> files)
+        {
+            CurrentProgress = 0;
+            MaximumProgress = files.Sum(x=>x.fileLength2);
+        }
+
+        private BitmapSource imageFile;
+        public BitmapSource ImageFile
+        {
+            get
+            {
+                return imageFile;
+            }
+            set
+            {
+                imageFile = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        
+
         //     using FileStream file = new FileStream("file.bin", FileMode.Create, System.IO.FileAccess.Write);
         //  decompressedFile.CopyTo(file);
         //  decompressedFile.Seek(0, SeekOrigin.Begin);
         // decompressedFile = newStream;
 
-        public async Task saveFile(Entry file, string savePath)
+        public async Task saveFiles(List<Entry> files, string savePath)
         {
-            // Could be doing some risky stuff here, so try...
-            try
+            ResetProgress(files);
+            if (files.Count == 0) return;
+
+            using var input = File.OpenRead(barFilePath);
+
+
+            foreach (var file in files)
             {
-                // Firstly, is the file parameter null?
-                if (file == null)
-                    throw new Exception("Supplied file was null - Could not save!");
-                // Instantiate the input stream, opening the BAR
-                // file specified in the barFilePath variable
-
-                //  if (input == null)
-
-                using var input = File.OpenRead(barFilePath);
                 // Locate the file within the BAR file.
                 input.Seek(file.fileOffset, SeekOrigin.Begin);
-                // Work out the full path of the file to be saved.
-                //  string newPath = savePath;
-                // Work out the directory path where the file is to be saved...input.Read
-                // string dirPath = newPath.Substring(0, newPath.LastIndexOf('\\') + 1);
-                // ...Now check that the directories exist! If the 
 
                 Directory.CreateDirectory(Path.GetDirectoryName(file.fileName));
 
-                // Now using a FileStream / BinaryWriter combo, write the data as it is
-                // read from the BAR file to the new file (which will be overwritten if
-                // it already exists, perhaps a bool check method could be used to make
-                // sure the user doesn't overwrite something they've modded?)
                 using (FileStream output = new FileStream(file.fileName, FileMode.Create))
                 {
                     using (BinaryWriter writer = new BinaryWriter(output))
@@ -130,28 +175,28 @@ namespace Archive_Unpacker.Classes.Bar
                             {
                                 await input.ReadAsync(buffer, 0, (int)bufferSize);
                                 bytesRemaining -= bufferSize;
+                                CurrentProgress += bufferSize;
                             }
                             else
                             {
                                 buffer = new byte[bytesRemaining];
                                 await input.ReadAsync(buffer, 0, (int)bytesRemaining);
                                 bytesRemaining = 0;
+                                CurrentProgress += bytesRemaining;
                             }
                             // Write the contents of the buffer to the file!
                             writer.Write(buffer);
+
+                            
                         }
                         // Once we're finished we need to close the writer.
                         writer.Close();
                     }
                 }
+            }
+            ResetProgress(files);
 
-            }
-            catch (Exception e)
-            {
-                // Have we caught an exception? Tell the user
-                // about it...
-                Console.WriteLine(e.Message);
-            }
+
 
         }
 
@@ -165,6 +210,26 @@ namespace Archive_Unpacker.Classes.Bar
             using var input = File.OpenRead(barFilePath);
             // Locate the file within the BAR file.
             input.Seek(file.fileOffset, SeekOrigin.Begin);
+
+            if (Path.GetExtension(file.fileName).ToUpper() == ".DDT")
+            {
+                var data = new byte[file.fileLength2];
+                await input.ReadAsync(data, 0, data.Length);
+
+                CompressedFile compressedFile = new CompressedFile();
+                await compressedFile.LoadCompressedFile(new MemoryStream(data));
+
+
+                DDTImage ddt = new DDTImage();
+                ddt.LoadDDT(compressedFile.decompressedFile);
+                if (ddt.TextureAlphaUsage == 0 && ddt.TextureType==1 && ddt.ImageCount == 1)
+                    ImageFile = BitmapSource.Create(ddt.Width, ddt.Height, 96, 96, PixelFormats.Bgr24, null, ddt.pixels, 4 * ddt.Width);
+                
+                else
+                    ImageFile = BitmapSource.Create(ddt.Width, ddt.Height, 96, 96, PixelFormats.Bgra32, null, ddt.pixels, 4 * ddt.Width);
+                return ddt.Width.ToString() + "x" + ddt.Height.ToString() + Environment.NewLine + "Texture Type: " + ddt.TextureType.ToString() + Environment.NewLine + "Mipmaps count: " + ddt.ImageCount.ToString(); ;
+
+            }
 
             if (Path.GetExtension(file.fileName).ToUpper() == ".XMB")
             {
@@ -269,6 +334,7 @@ namespace Archive_Unpacker.Classes.Bar
                     entry.isCompressed = Convert.ToBoolean(reader.ReadUInt32());
                 entries.Add(entry);
             }
+            ResetProgress(entries.ToList());
             entriesCollection = new CollectionViewSource();
 
             entriesCollection.Source = entries;
