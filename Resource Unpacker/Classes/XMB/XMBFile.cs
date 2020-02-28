@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Resource_Unpacker.Classes.XMB
+namespace Resource_Unpacker.Classes.Xmb
 {
     public class XMBFile
     {
@@ -92,7 +93,7 @@ namespace Resource_Unpacker.Classes.XMB
 
         private XmlElement parseNode(ref BinaryReader reader, List<string> elements, List<string> attributes)
         {
-    //        using var reader = new BinaryReader(input, Encoding.Default, true);
+            //        using var reader = new BinaryReader(input, Encoding.Default, true);
 
             // Firstly check this is actually a valid node
 

@@ -1,16 +1,21 @@
-﻿using Archive_Unpacker.Classes.Bar;
+﻿using Archive_Unpacker.Classes.BarViewModel;
+using ICSharpCode.AvalonEdit.Highlighting;
 using Microsoft.Win32;
+using Resource_Unpacker.Classes.Bar;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -45,7 +50,7 @@ namespace Resource_Unpacker
             set { fileContent = value; NotifyPropertyChanged(); }
         }
 
-        public BarFile file { get; set; }
+        public BarViewModel file { get; set; }
 
 
         private long selectedSize;
@@ -78,10 +83,46 @@ namespace Resource_Unpacker
             e.Handled = true;
             try
             {
-                var entry = files.SelectedItem as Entry;
-                var entries = files.SelectedItems.Cast<Entry>().ToList();
-                SelectedSize = entries.Sum(x=>x.fileLength2);
-                FileContent = await file.readFile(entry);
+                var entry = files.SelectedItem as BarEntry;
+                if (entry == null)
+                {
+                    ImageViewer.Visibility = Visibility.Collapsed;
+                    XMLViewer.Visibility = Visibility.Collapsed;
+                    return;
+                }
+                var entries = files.SelectedItems.Cast<BarEntry>().ToList();
+                SelectedSize = entries.Sum(x => x.FileSize2);
+                await file.readFile(entry);
+
+                if (file.Preview != null)
+                    XMLViewer.Text = file.Preview.Text;
+                string ext = Path.GetExtension(entry.FileName).ToUpper();
+                if (ext == ".DDT")
+                {
+                    ImagePreview.Source = file.PreviewDdt.Bitmap;
+                    XMLViewer.Visibility = Visibility.Collapsed;
+                    ImageViewer.Visibility = Visibility.Visible;
+                }
+                else
+                if (ext == ".BMP" || ext == ".PNG" || ext == ".CUR")
+                {
+                    ImagePreview.Source = file.PreviewImage;
+                    XMLViewer.Visibility = Visibility.Collapsed;
+                    ImageViewer.Visibility = Visibility.Visible;
+                }
+                else
+                if (ext == ".XMB" || ext == ".XML" || ext == ".SHP" || ext == ".LGT" || ext == ".XS" || ext == ".TXT" || ext == ".CFG")
+                {
+                    ImageViewer.Visibility = Visibility.Collapsed;
+                    XMLViewer.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    ImageViewer.Visibility = Visibility.Collapsed;
+                    XMLViewer.Visibility = Visibility.Collapsed;
+
+                }
+
             }
             catch (Exception ex)
             {
@@ -106,7 +147,7 @@ namespace Resource_Unpacker
             }
             try
             {
-                file = new BarFile(filePath);
+                file = new BarViewModel(filePath);
                 if (Settings.Default.RecentFiles.Contains(filePath))
                 {
                     Settings.Default.RecentFiles.Remove(filePath);
@@ -158,20 +199,33 @@ namespace Resource_Unpacker
         }
 
 
-
+        CancellationTokenSource CancelTokenSource;
+        CancellationToken Token;
 
         private async void MenuItem_Click_2(object sender, RoutedEventArgs e)
         {
             if (files.SelectedItems.Count != 0)
             {
                 mainMenu.IsEnabled = false;
-                var entries = files.SelectedItems.Cast<Entry>().ToList();
+
+                bPause.IsEnabled = true;
+                bStop.IsEnabled = true;
+                bRun.IsEnabled = false;
+
+
+                file.extractingState = 0;
+                CancelTokenSource = new CancellationTokenSource();
+                Token = CancelTokenSource.Token;
+
+                var entries = files.SelectedItems.Cast<BarEntry>().ToList();
                 try
                 {
+
+
                     await Task.Run(async () =>
                     {
-                        await file.saveFiles(entries, "");
-
+                        await file.saveFiles(entries, "", Token);
+                        //
                     }
                            );
                     /*       CurrentProgress = 0;
@@ -192,7 +246,9 @@ namespace Resource_Unpacker
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-              //  CurrentProgress = 0;
+                bPause.IsEnabled = false;
+                bStop.IsEnabled = false;
+                bRun.IsEnabled = false;
                 mainMenu.IsEnabled = true;
             }
         }
@@ -291,11 +347,11 @@ namespace Resource_Unpacker
             {
                 minWidth = 50;
             }
-            if (header.Tag.ToString() == "fileName")
+            if (header.Tag.ToString() == "FileName")
             {
                 minWidth = 250;
             }
-            if (header.Tag.ToString() == "fileLength2")
+            if (header.Tag.ToString() == "FileSize2")
             {
                 minWidth = 160;
             }
@@ -319,28 +375,193 @@ namespace Resource_Unpacker
         private async void MenuItem_Click_6(object sender, RoutedEventArgs e)
         {
             if (file == null) return;
-            if (file.entries.Count == 0) return;
+            // if (file..Count == 0) return;
             mainMenu.IsEnabled = false;
-         //   CurrentProgress = 0;
-       //     progressBar.Maximum = file.entries.Sum(x => x.fileLength2);
+
+            bPause.IsEnabled = true;
+            bStop.IsEnabled = true;
+            bRun.IsEnabled = false;
+
+
+            file.extractingState = 0;
+            CancelTokenSource = new CancellationTokenSource();
+            Token = CancelTokenSource.Token;
+            //   CurrentProgress = 0;
+            //     progressBar.Maximum = file.entries.Sum(x => x.fileLength2);
             try
             {
-              await Task.Run(async () =>
-              {
-       //             foreach (Entry f in file.entries)
-       //             {
-                       await file.saveFiles(file.entries.ToList(), "");
-    //                    CurrentProgress += f.fileLength2;
-    ////                }
-              }
+
+                await Task.Run(async () =>
+                 {
+                   //             foreach (Entry f in file.entries)
+                   //             {
+                   await file.saveFiles(file.barFile.BarFileEntrys.ToList(), "", Token);
+                   //                    CurrentProgress += f.fileLength2;
+                   ////                }
+               }
              );
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-      //      CurrentProgress = 0;
+            //      CurrentProgress = 0;
+            bPause.IsEnabled = false;
+            bStop.IsEnabled = false;
+            bRun.IsEnabled = false;
             mainMenu.IsEnabled = true;
+        }
+
+        private void bPause_Click(object sender, RoutedEventArgs e)
+        {
+            bPause.IsEnabled = false;
+            file.extractingState = 1;
+            CancelTokenSource.Cancel();
+            bRun.IsEnabled = true;
+            bStop.IsEnabled = true;
+        }
+
+        private void bRun_Click(object sender, RoutedEventArgs e)
+        {
+            bRun.IsEnabled = false;
+            CancelTokenSource = new CancellationTokenSource();
+            Token = CancelTokenSource.Token;
+            file.extractingState = 0;
+            bStop.IsEnabled = true;
+            bPause.IsEnabled = true;
+        }
+
+        private void bStop_Click(object sender, RoutedEventArgs e)
+        {
+            bStop.IsEnabled = false;
+            bPause.IsEnabled = false;
+            bRun.IsEnabled = false;
+            file.extractingState = 2;
+            CancelTokenSource.Cancel();
+        }
+        private double _zoomValue = 1.0;
+
+
+        public int ZoomValue
+        {
+            get
+            {
+                return (int)(_zoomValue * 100);
+            }
+        }
+
+        private void ImageViewer_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (e.Delta > 0)
+            {
+                if (ZoomValue < 400)
+                    _zoomValue += 0.1;
+                else
+                    return;
+            }
+            else
+            {
+                if (ZoomValue > 20)
+                    _zoomValue -= 0.1;
+                else
+                    return;
+            }
+            NotifyPropertyChanged("ZoomValue");
+            ScaleTransform scale = new ScaleTransform(_zoomValue, _zoomValue);
+            ImagePreview.LayoutTransform = scale;
+            e.Handled = true;
+        }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _zoomValue = 1;
+            ScaleTransform scale = new ScaleTransform(_zoomValue, _zoomValue);
+            ImagePreview.LayoutTransform = scale;
+            NotifyPropertyChanged("ZoomValue");
+        }
+    }
+
+
+    public class RunEnabledColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value != null)
+            {
+                if ((bool)value)
+                    return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF388934"));
+                else
+                    return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF707070"));
+            }
+
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class PauseEnabledColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value != null)
+            {
+                if ((bool)value)
+                    return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF00539c"));
+                else
+                    return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF707070"));
+            }
+
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class StopEnabledColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value != null)
+            {
+                if ((bool)value)
+                    return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFA1260D"));
+                else
+                    return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF707070"));
+            }
+
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class HighlightingDefinitionConverter : IValueConverter
+    {
+        private static readonly HighlightingDefinitionTypeConverter Converter = new HighlightingDefinitionTypeConverter();
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value != null)
+            {
+                return Converter.ConvertFrom(value);
+            }
+            else
+                return Converter.ConvertFrom("XML");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Converter.ConvertToString(value);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Resource_Unpacker.Classes.CompressedFiles
         private uint fileLength { get; set; }
         private byte[] zlibHeader { get; set; }
 
-        public Stream decompressedFile { get; set; }
+        public MemoryStream decompressedFile { get; set; }
 
         public async Task LoadCompressedFile(Stream stream)
         {
@@ -34,6 +34,7 @@ namespace Resource_Unpacker.Classes.CompressedFiles
                 {
 
                     await decompStream.CopyToAsync(decompressedFile);
+                    
                 }
                 decompressedFile.Seek(0, SeekOrigin.Begin);
             }

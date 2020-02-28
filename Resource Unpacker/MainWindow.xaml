@@ -4,24 +4,29 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Resource_Unpacker"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         mc:Ignorable="d"
         
-        Title="Age of Empires III - Resource Unpacker (CC, DE)" Height="450" Width="1077" FontFamily="Trajan Pro 3" FontSize="14" WindowStyle="SingleBorderWindow" WindowStartupLocation="CenterScreen">
+        Title="{Binding file.barFileName, StringFormat='{}Age of Empires III - Resource Unpacker (CC, DE) - {0}', FallbackValue='Age of Empires III - Resource Unpacker (CC, DE)'}" Height="450" Width="1077" FontFamily="Trajan Pro 3" FontSize="14" WindowStyle="SingleBorderWindow" WindowStartupLocation="CenterScreen">
     <Window.Resources>
+        <local:HighlightingDefinitionConverter  x:Key="HighlightingDefinitionConverter"/>
+        <local:RunEnabledColorConverter x:Key="RunEnabledColorConverter" />
+        <local:PauseEnabledColorConverter  x:Key="PauseEnabledColorConverter"/>
+        <local:StopEnabledColorConverter  x:Key="StopEnabledColorConverter"/>
         <Image x:Key="hotFiles" x:Shared="False">
             <Image.Source>
-<DrawingImage >
+                <DrawingImage >
                     <DrawingImage.Drawing>
-                      
-                   
-                                    <DrawingGroup>
-                                        <DrawingGroup.Children>
-                                            <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
-                                            <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M13.6611,6.7681C13.7431,7.0121,15.1221,12.5841,10.9661,14.6621L10.1031,14.7671 5.3771,14.7671C3.9621,14.7671 2.9871,13.0721 2.7321,12.4171 2.1981,11.0651 2.1961,9.7121 2.7241,8.2781 2.8561,7.9201 3.0701,7.4661 3.3091,6.9631 3.7951,5.9371 4.5301,4.3881 4.3951,3.6681L3.7811,0.4271 6.0911,2.7821C6.8471,3.5531 7.3191,4.5001 7.6151,5.4281 7.6281,5.0391 7.5651,4.6391 7.4271,4.2271 7.0841,3.1941 6.6691,2.4821 6.6621,2.4751L5.6621,0.7681 7.6621,0.873100000000001C10.9091,2.4971,11.4231,5.4331,11.5031,6.5061L12.6611,4.7681 13.6611,6.7681" />
-                                            <GeometryDrawing Brush="#FFE41400" Geometry="F1M12.6572,7.127C12.6572,8.841 10.9442,10.556 10.9442,10.556 9.2282,12.272 10.9442,13.984 10.9442,13.984 14.3722,12.272 12.6572,7.127 12.6572,7.127 M9.2282,10.557C9.2282,10.557 10.9442,8.842 10.9442,7.128 10.9442,7.128 10.9442,3.699 7.5152,1.985 7.5152,1.985 10.9442,5.415 7.5152,8.841 7.5152,7.097 7.0552,4.978 5.8012,3.698 6.0712,5.125 4.5452,7.6 4.0862,8.841 3.6502,10.023 3.6332,11.123 4.0862,12.272 4.3022,12.82 5.0572,13.984 5.8012,13.984L7.5152,13.984C6.1982,13.982 4.7732,11.589 5.8012,10.556 5.4122,10.947 6.3832,12.019 6.6572,12.272 7.1532,12.724 8.4972,13.984 9.2272,13.984L10.9432,13.984C10.9442,13.984,7.5162,12.272,9.2282,10.557" />
-                                        </DrawingGroup.Children>
-                                    </DrawingGroup>
-                    
+
+
+                        <DrawingGroup>
+                            <DrawingGroup.Children>
+                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M13.6611,6.7681C13.7431,7.0121,15.1221,12.5841,10.9661,14.6621L10.1031,14.7671 5.3771,14.7671C3.9621,14.7671 2.9871,13.0721 2.7321,12.4171 2.1981,11.0651 2.1961,9.7121 2.7241,8.2781 2.8561,7.9201 3.0701,7.4661 3.3091,6.9631 3.7951,5.9371 4.5301,4.3881 4.3951,3.6681L3.7811,0.4271 6.0911,2.7821C6.8471,3.5531 7.3191,4.5001 7.6151,5.4281 7.6281,5.0391 7.5651,4.6391 7.4271,4.2271 7.0841,3.1941 6.6691,2.4821 6.6621,2.4751L5.6621,0.7681 7.6621,0.873100000000001C10.9091,2.4971,11.4231,5.4331,11.5031,6.5061L12.6611,4.7681 13.6611,6.7681" />
+                                <GeometryDrawing Brush="#FFE41400" Geometry="F1M12.6572,7.127C12.6572,8.841 10.9442,10.556 10.9442,10.556 9.2282,12.272 10.9442,13.984 10.9442,13.984 14.3722,12.272 12.6572,7.127 12.6572,7.127 M9.2282,10.557C9.2282,10.557 10.9442,8.842 10.9442,7.128 10.9442,7.128 10.9442,3.699 7.5152,1.985 7.5152,1.985 10.9442,5.415 7.5152,8.841 7.5152,7.097 7.0552,4.978 5.8012,3.698 6.0712,5.125 4.5452,7.6 4.0862,8.841 3.6502,10.023 3.6332,11.123 4.0862,12.272 4.3022,12.82 5.0572,13.984 5.8012,13.984L7.5152,13.984C6.1982,13.982 4.7732,11.589 5.8012,10.556 5.4122,10.947 6.3832,12.019 6.6572,12.272 7.1532,12.724 8.4972,13.984 9.2272,13.984L10.9432,13.984C10.9442,13.984,7.5162,12.272,9.2282,10.557" />
+                            </DrawingGroup.Children>
+                        </DrawingGroup>
+
                     </DrawingImage.Drawing>
                 </DrawingImage>
             </Image.Source>
@@ -73,7 +78,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        
+
         <Menu x:Name="mainMenu" VerticalAlignment="Top" Grid.ColumnSpan="3" FontFamily="Trajan Pro 3" FontSize="16">
             <MenuItem Header="File">
                 <MenuItem Header="Open..." Click="MenuItem_Click" >
@@ -98,7 +103,7 @@
                         </Viewbox>
                     </MenuItem.Icon>
                 </MenuItem>
-                
+
                 <MenuItem x:Name="openMenu" Header="Recent Files" ItemsSource="{Binding recentFiles}" >
                     <MenuItem.Style>
                         <Style TargetType="{x:Type MenuItem}">
@@ -107,7 +112,7 @@
                                     <Setter Property="IsEnabled" Value="False"/>
                                 </DataTrigger>
                             </Style.Triggers>
-                            
+
                         </Style>
                     </MenuItem.Style>
                     <MenuItem.Icon>
@@ -131,7 +136,7 @@
                         </Viewbox>
                     </MenuItem.Icon>
                     <MenuItem.ItemContainerStyle>
-                        
+
                         <Style TargetType="MenuItem">
                             <Setter Property="Header" Value="{Binding Title}"/>
                             <Setter Property="Command" Value="{Binding OnClickCommand}"/>
@@ -166,7 +171,7 @@
                 </MenuItem>
                 <Separator/>
             </MenuItem>
-            <MenuItem Header="Extract">
+            <MenuItem Header="Extract &amp; Convert">
                 <MenuItem Header="All Files..." Click="MenuItem_Click_6">
                     <MenuItem.Icon>
                         <Viewbox Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
@@ -260,10 +265,10 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="tew" Click="MenuItem_Click_5"/>
+
         </Menu>
-     
-            <Grid Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" Margin="0,0,15,15">
+
+        <Grid Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" Margin="0,0,15,15">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -271,20 +276,52 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" ToolTip="{Binding ElementName=files, Path=SelectedItem.fileName}" Text="{Binding ElementName=files, Path=SelectedItem.fileNameWithoutPath, StringFormat='File Name: {0}'}" FontSize="12"/>
-            <TextBlock Grid.Row="1" Text="{Binding ElementName=files, Path=SelectedItem.fileFormat, StringFormat='File Format: {0}'}" FontSize="12"/>
-            <TextBox FontSize="14" Text="{Binding FileContent, IsAsync=True}" Grid.Row="3" IsReadOnly="True" TextWrapping="NoWrap"  ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
-            <Image Grid.Row="3" Source="{Binding file.ImageFile, IsAsync=True}" Width="{Binding file.ImageFile.Width}" Height="{Binding file.ImageFile.Height}" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
+            <TextBlock Grid.Row="0" ToolTip="{Binding ElementName=files, Path=SelectedItem.FileName}" Text="{Binding ElementName=files, Path=SelectedItem.fileNameWithoutPath, StringFormat='File Name: {0}'}" FontSize="14" TextTrimming="CharacterEllipsis"/>
+            <TextBlock Grid.Row="1" Text="{Binding ElementName=files, Path=SelectedItem.fileFormat, StringFormat='File Format: {0}'}" FontSize="14"/>
+            <TextBlock Grid.Row="2" Text="{Binding file.PreviewDdt.DdtInfo, StringFormat='Image Format: {0}'}" FontSize="14"/>
+            <Grid Visibility="Collapsed"  x:Name="ImageViewer" Grid.Row="3">
+            <ScrollViewer  HorizontalScrollBarVisibility="Visible" VirtualizingPanel.ScrollUnit="Pixel" Background="White" >
+
+
+                    <Image RenderOptions.BitmapScalingMode="HighQuality" x:Name="ImagePreview"  HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5"  MouseWheel="ImageViewer_MouseWheel">
+                    <Image.LayoutTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+
+                        </TransformGroup>
+                    </Image.LayoutTransform>
+                </Image>
+
+                    
+                
+            </ScrollViewer>
+            <TextBlock Padding="2,4,2,0" TextAlignment="Center" Margin="25" Text="{Binding ZoomValue, StringFormat='Current Zoom: {0}%'}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="#99FFFFFF" FlowDirection="RightToLeft" MouseDown="TextBlock_MouseDown"/>
         </Grid>
-      
-        <ListView SelectedIndex="0" Grid.Row="1" ItemsSource="{Binding file.SourceCollection}" AlternationCount="2" Name="files" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" SelectionChanged="files_SelectionChanged">
+        <avalonEdit:TextEditor
+                VirtualizingPanel.ScrollUnit="Pixel"
+  
+Grid.Row="3"
+    x:Name="XMLViewer"
+
+    FontFamily="Consolas"
+    SyntaxHighlighting="{Binding file.Preview.SyntaxHighlighting, Converter={StaticResource HighlightingDefinitionConverter}}"
+
+    FontSize="10pt" ShowLineNumbers="True" IsReadOnly="True" Visibility="Collapsed">
+
+            </avalonEdit:TextEditor>
+            
+        </Grid>
+
+        <ListView SelectedIndex="0" Grid.Row="1" ItemsSource="{Binding file.SourceCollection}" AlternationCount="2" Name="files" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" VirtualizingPanel.ScrollUnit="Pixel" SelectionChanged="files_SelectionChanged">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     <Setter Property="BorderThickness" Value="0"/>
                     <Setter Property="Margin" Value="0"/>
-     
-                   
+                    <Setter Property="FontFamily" Value="Consolas"/>
+                    <Setter Property="FontSize" Value="10pt"/>
+
+
                     <Style.Triggers>
                         <MultiDataTrigger >
                             <MultiDataTrigger.Conditions>
@@ -296,10 +333,10 @@
                             <MultiDataTrigger.Setters>
                                 <Setter Property="Background" Value="#0B000000" />
                             </MultiDataTrigger.Setters>
-                            
-                           
+
+
                         </MultiDataTrigger>
-                    
+
                     </Style.Triggers>
                 </Style>
             </ListView.ItemContainerStyle>
@@ -341,54 +378,59 @@
                         </GridViewColumn.CellTemplate>
                         <GridViewColumn.Header>
                             <GridViewColumnHeader  Tag="isCompressed" Click="files_Click" >
-                                
-                            <Viewbox  Margin="1,0" Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-                                <Rectangle Width="16" Height="16">
-                                    <Rectangle.Fill>
-                                        <DrawingBrush>
-                                            <DrawingBrush.Drawing>
-                                                <DrawingGroup>
-                                                    <DrawingGroup.Children>
-                                                        <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
-                                                        <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.5,1L9.61,1 10.61,3 13.496,3C14.323,3,14.996,3.673,14.996,4.5L14.996,12.5C14.996,13.327,14.323,14,13.496,14L1.5,14C0.673,14,0,13.327,0,12.5L0,2.5C0,1.673,0.673,1,1.5,1" />
-                                                        <GeometryDrawing Brush="#FFDCB67A" Geometry="F1M2,3L8.374,3 8.874,4 2,4z M13.496,4L10,4 9.992,4 8.992,2 1.5,2C1.225,2,1,2.224,1,2.5L1,12.5C1,12.776,1.225,13,1.5,13L13.496,13C13.773,13,13.996,12.776,13.996,12.5L13.996,4.5C13.996,4.224,13.773,4,13.496,4" />
-                                                        <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M4,12L3,12 3,13 4,13z M5,11L4,11 4,12 5,12z M5,9L4,9 4,10 5,10z M4,10L3,10 3,11 4,11z M4,8L3,8 3,9 4,9z M5,7L4,7 4,8 5,8z M5,4L3,4 3,6 5,6z M2,3L8.374,3 8.874,4 2,4z" />
-                                                        <GeometryDrawing Brush="#FF424242" Geometry="F1M5,4L5,6 3,6 3,4 2,4 2,13 3,13 3,12 4,12 4,11 3,11 3,10 4,10 4,9 3,9 3,8 4,8 4,7 5,7 5,8 4,8 4,9 5,9 5,10 4,10 4,11 5,11 5,12 4,12 4,13 6,13 6,4z M5,4L3,4 3,3 5,3z" />
-                                                    </DrawingGroup.Children>
-                                                </DrawingGroup>
-                                            </DrawingBrush.Drawing>
-                                        </DrawingBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                            </Viewbox>
+
+                                <Viewbox  Margin="1,0" Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+                                    <Rectangle Width="16" Height="16">
+                                        <Rectangle.Fill>
+                                            <DrawingBrush>
+                                                <DrawingBrush.Drawing>
+                                                    <DrawingGroup>
+                                                        <DrawingGroup.Children>
+                                                            <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                            <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.5,1L9.61,1 10.61,3 13.496,3C14.323,3,14.996,3.673,14.996,4.5L14.996,12.5C14.996,13.327,14.323,14,13.496,14L1.5,14C0.673,14,0,13.327,0,12.5L0,2.5C0,1.673,0.673,1,1.5,1" />
+                                                            <GeometryDrawing Brush="#FFDCB67A" Geometry="F1M2,3L8.374,3 8.874,4 2,4z M13.496,4L10,4 9.992,4 8.992,2 1.5,2C1.225,2,1,2.224,1,2.5L1,12.5C1,12.776,1.225,13,1.5,13L13.496,13C13.773,13,13.996,12.776,13.996,12.5L13.996,4.5C13.996,4.224,13.773,4,13.496,4" />
+                                                            <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M4,12L3,12 3,13 4,13z M5,11L4,11 4,12 5,12z M5,9L4,9 4,10 5,10z M4,10L3,10 3,11 4,11z M4,8L3,8 3,9 4,9z M5,7L4,7 4,8 5,8z M5,4L3,4 3,6 5,6z M2,3L8.374,3 8.874,4 2,4z" />
+                                                            <GeometryDrawing Brush="#FF424242" Geometry="F1M5,4L5,6 3,6 3,4 2,4 2,13 3,13 3,12 4,12 4,11 3,11 3,10 4,10 4,9 3,9 3,8 4,8 4,7 5,7 5,8 4,8 4,9 5,9 5,10 4,10 4,11 5,11 5,12 4,12 4,13 6,13 6,4z M5,4L3,4 3,3 5,3z" />
+                                                        </DrawingGroup.Children>
+                                                    </DrawingGroup>
+                                                </DrawingBrush.Drawing>
+                                            </DrawingBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </Viewbox>
                             </GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn Width="250">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader  Tag="fileName" Content="File Name" Click="files_Click"/>
+                            <GridViewColumnHeader  Tag="FileName" Content="File Name" Click="files_Click"/>
                         </GridViewColumn.Header>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=fileName}" ToolTip="{Binding Path=fileName}"/>
+                                <TextBlock Text="{Binding Path=FileName}" ToolTip="{Binding Path=FileName}" TextTrimming="CharacterEllipsis"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn Width="160">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader   Tag="fileLength2" Content="File Size (bytes)" Click="files_Click" />
+                            <GridViewColumnHeader   Tag="FileSize2" Content="File Size (bytes)" Click="files_Click" />
                         </GridViewColumn.Header>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock TextAlignment="Right" Text="{Binding Path=fileLength2, StringFormat=N0}"/>
+                                <TextBlock TextAlignment="Right" Text="{Binding Path=FileSize2, StringFormat=N0}" TextTrimming="CharacterEllipsis"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Width="190" DisplayMemberBinding="{Binding Path=lastModifiedDate, StringFormat='yyyy-MM-dd HH:mm:ss.ms', FallbackValue='Unknown'}" >
+                    <GridViewColumn Width="190">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader  Tag="lastModifiedDate" Content="Last Modified date" Click="files_Click"/>
                         </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock  Text="{Binding Path=lastModifiedDate, StringFormat='yyyy-MM-dd HH:mm:ss.ms', FallbackValue='Unknown'}" TextTrimming="CharacterEllipsis"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
                 </GridView>
@@ -418,7 +460,7 @@
             <TextBox   Text="{Binding file.FilterText, UpdateSourceTrigger=PropertyChanged}" FontFamily="Trajan Pro 3" FontSize="16"/>
         </DockPanel>
         <StatusBar Grid.Row="3" Grid.ColumnSpan="3" FontFamily="Trajan Pro 3" FontSize="16">
-            <TextBlock>
+            <TextBlock Padding="2,0">
                 <TextBlock.Text>
                     <MultiBinding StringFormat="Selected files: {0:N0} / {1:N0} ({2:N0} bytes)">
                         <Binding Path="SelectedItems.Count" ElementName="files" />
@@ -427,19 +469,86 @@
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>
-            <Separator/>
+
             <StatusBarItem HorizontalAlignment="Right" >
-                <Grid>
-                <ProgressBar x:Name="progressBar" Width="300" Height="16" VerticalAlignment="Center" Value="{Binding file.CurrentProgress, FallbackValue=0}" Maximum="{Binding file.MaximumProgress, FallbackValue=100}"/>
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="{Binding ElementName=progressBar, Path=Value}" FontSize="14">
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="{}{0:N0} / {1:N0} bytes">
-                                <Binding Path="Value" ElementName="progressBar" />
-                                <Binding Path="Maximum" ElementName="progressBar" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-                </Grid>
+                <StackPanel Orientation="Horizontal">
+                    <Button IsEnabled="False" Height="20" Width="20" Padding="0" Margin="6,3" x:Name="bRun" HorizontalAlignment="Center" VerticalAlignment="Center" Click="bRun_Click">
+                        <Button.Content>
+                            <Viewbox Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+                                <Rectangle Width="16" Height="16">
+                                    <Rectangle.Fill>
+                                        <DrawingBrush>
+                                            <DrawingBrush.Drawing>
+                                                <DrawingGroup>
+                                                    <DrawingGroup.Children>
+                                                        <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                        <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M2.9997,-0.000199999999999534L2.9997,15.9998 13.6677,7.9998z" />
+                                                        <GeometryDrawing Brush="{Binding ElementName=bRun, Path=IsEnabled, Converter={StaticResource RunEnabledColorConverter}}" Geometry="F1M4,2L4,14 12,8z" />
+                                                    </DrawingGroup.Children>
+                                                </DrawingGroup>
+                                            </DrawingBrush.Drawing>
+                                        </DrawingBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Viewbox>
+                        </Button.Content>
+                    </Button>
+                    <Button IsEnabled="False" Height="20" Width="20" Padding="0" Margin="0" x:Name="bPause" Click="bPause_Click">
+                        <Button.Content>
+                            <Viewbox Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Rectangle Width="16" Height="16">
+                                    <Rectangle.Fill>
+                                        <DrawingBrush>
+                                            <DrawingBrush.Drawing>
+                                                <DrawingGroup>
+                                                    <DrawingGroup.Children>
+                                                        <GeometryDrawing Brush="#00f6f6f6" Geometry="M16,0V16H0V0Z" />
+                                                        <GeometryDrawing Brush="#FFf6f6f6" Geometry="M13,2V13H3V2Z" />
+                                                        <GeometryDrawing Brush="{Binding ElementName=bPause, Path=IsEnabled, Converter={StaticResource PauseEnabledColorConverter}}" Geometry="M4,3H7v9H4ZM9,3v9h3V3Z" />
+                                                    </DrawingGroup.Children>
+                                                </DrawingGroup>
+                                            </DrawingBrush.Drawing>
+                                        </DrawingBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Viewbox>
+
+                        </Button.Content>
+                    </Button>
+                    <Button IsEnabled="False" Height="20" Width="20" Padding="0" Margin="6,3" x:Name="bStop" HorizontalAlignment="Center" VerticalAlignment="Center" Click="bStop_Click">
+                        <Button.Content>
+                            <Viewbox Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+                                <Rectangle Width="16" Height="16">
+                                    <Rectangle.Fill>
+                                        <DrawingBrush>
+                                            <DrawingBrush.Drawing>
+                                                <DrawingGroup>
+                                                    <DrawingGroup.Children>
+                                                        <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                        <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M13,13L3,13 3,3 13,3z" />
+                                                        <GeometryDrawing Brush="{Binding ElementName=bStop, Path=IsEnabled, Converter={StaticResource StopEnabledColorConverter}}" Geometry="F1M12,12L4,12 4,4 12,4z" />
+                                                    </DrawingGroup.Children>
+                                                </DrawingGroup>
+                                            </DrawingBrush.Drawing>
+                                        </DrawingBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Viewbox>
+                        </Button.Content>
+                    </Button>
+
+                    <Grid>
+                        <ProgressBar x:Name="progressBar" Width="300" Height="16" VerticalAlignment="Center" Value="{Binding file.CurrentProgress, FallbackValue=0}" Maximum="{Binding file.MaximumProgress, FallbackValue=100}"/>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="{Binding ElementName=progressBar, Path=Value}" FontSize="14">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0:N0} / {1:N0} bytes">
+                                    <Binding Path="Value" ElementName="progressBar" />
+                                    <Binding Path="Maximum" ElementName="progressBar" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Grid>
+                </StackPanel>
             </StatusBarItem>
         </StatusBar>
     </Grid>
