@@ -1,0 +1,58 @@
+﻿<Window x:Name="window" x:Class="Resource_Manager.About"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Resource_Manager"
+        mc:Ignorable="d"
+        SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterScreen"
+        
+        Title="About"  ResizeMode="NoResize" FontFamily="Trajan Pro 3" FontSize="14">
+    <Grid>
+        <Grid Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+
+            </Grid.RowDefinitions>
+
+
+            <Image Grid.Column="0" Grid.Row="0"  Width="64" Height="64" Margin="0,0,20,0" Source="pack://application:,,,/icon.ico"/>
+
+
+            <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                
+                <Run Text="Age of Empires III - Resource Manager"/>
+                
+                <LineBreak/>
+                <Run Text="Copyright (c) 2020 XaKOps"  FontSize="12"/>
+
+                <LineBreak/>
+                <Run Text="version: 0.1.0"  FontSize="12"/>
+            </TextBlock>
+            <TextBlock  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" >
+            <LineBreak/>
+                <Run Text="The project is based on the following works:" />
+<LineBreak/>
+                <Run FontWeight="Bold" Text= " − " />
+                <Hyperlink NavigateUri="https://github.com/ProjectCeleste/ProjectCeleste.GameFiles.Tools" RequestNavigate="Hyperlink_RequestNavigate">
+                <Run Text="ProjectCeleste/ProjectCeleste.GameFiles.Tools" />
+                </Hyperlink>
+                <LineBreak />
+                                <Run FontWeight="Bold" Text=" − " />
+                <Hyperlink NavigateUri="https://github.com/PaulZero/AoE3-File-Readers" RequestNavigate="Hyperlink_RequestNavigate">
+                <Run Text="PaulZero/AoE3-File-Readers" />
+                </Hyperlink>
+                <LineBreak />
+            </TextBlock>
+
+            <Button Margin="0,5" Content="OK" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Width="75" Padding="0,3,0,0" Click="Button_Click_1"/>
+        </Grid>
+    </Grid>
+</Window>
