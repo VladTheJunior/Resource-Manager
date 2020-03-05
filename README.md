@@ -1,6 +1,3 @@
-# Resource-Manager
-Utility for viewing, creating and extracting files from Age of Empires III .BAR archive
-
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
@@ -12,7 +9,7 @@ Utility for viewing, creating and extracting files from Age of Empires III .BAR 
 <br />
 <p align="center">
   <a href="https://github.com/XaKOps/Resource-Manager">
-    <img src="Images/Icon.png" alt="Logo" width="80" height="80">
+    <img src="Images/Icon.png" alt="Logo" width="128" height="128">
   </a>
 
   <h3 align="center">Resource Manager</h3>
