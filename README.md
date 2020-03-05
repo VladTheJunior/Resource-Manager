@@ -1,6 +1,6 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+[![GitHub license](https://img.shields.io/github/license/XaKOps/Resource-Manager)](https://github.com/XaKOps/Resource-Manager/blob/master/LICENSE)
 [![HitCount](http://hits.dwyl.com/XaKOps/Resource-Manager.svg)](http://hits.dwyl.com/XaKOps/Resource-Manager)
 
 
@@ -85,7 +85,5 @@ Project Link: [https://github.com/XaKOps/Resource-Manager](https://github.com/Xa
 [stars-url]: https://github.com/XaKOps/Resource-Manager/stargazers
 [issues-shield]: https://img.shields.io/github/issues/XaKOps/Resource-Manager.svg?style=flat-square
 [issues-url]: https://github.com/XaKOps/Resource-Manager/issues
-[license-shield]: https://img.shields.io/github/license/XaKOps/Resource-Manager.svg?style=flat-square
-[license-url]: https://github.com/XaKOps/Resource-Manager/blob/master/LICENSE
 [product-screenshot]: Images/1.png
 
