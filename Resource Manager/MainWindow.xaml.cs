@@ -1,5 +1,8 @@
 ﻿using Archive_Unpacker.Classes.BarViewModel;
+using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Sample;
+using ICSharpCode.AvalonEdit.Search;
 using Resource_Manager.Classes.Bar;
 using Resource_Manager.Classes.Commands;
 using Resource_Manager.Classes.Ddt;
@@ -97,13 +100,28 @@ namespace Resource_Manager
         public MainWindow()
         {
             InitializeComponent();
+            SearchPanel.Install(XMLViewer);
             DataContext = this;
+            /*}
+                        var de = File.ReadAllBytes(@"F:\Development\Resource Manager\Resource Manager\bin\Release\netcoreapp3.1\alainmagnangrunt1.wav");
+                        var original = File.ReadAllBytes(@"F:\Sound\AlainMagnanGrunt1.wav");
+
+                        byte[] a = new byte[de.Length];
+
+                        for (int i=0;i< de.Length;i++)
+                        {
+                            a[i] = (byte)(de[i] - original[i]);
+                        }
+                        File.WriteAllBytes("test3", a);*/
             files.AddHandler(Thumb.DragDeltaEvent, new DragDeltaEventHandler(Thumb_DragDelta), true);
 
             for (int i = 0; i < Math.Min(10, Settings.Default.RecentFiles.Count); i++)
 
                 recentFiles.Add(new RecentFile() { FileName = Settings.Default.RecentFiles[i], Title = Path.GetFileName(Settings.Default.RecentFiles[i]), OnClickCommand = new RelayCommand<string>(openFile) });
         }
+
+
+        FoldingManager foldingManager;
 
         private async void files_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -122,8 +140,26 @@ namespace Resource_Manager
                 await file.readFile(entry);
 
                 if (file.Preview != null)
+                {
                     XMLViewer.Text = file.Preview.Text;
-
+                    if (foldingManager != null)
+                    {
+                        FoldingManager.Uninstall(foldingManager);
+                        foldingManager = null;
+                    }
+                    foldingManager = FoldingManager.Install(XMLViewer.TextArea);
+                    if (entry.Extension == ".XMB" || entry.Extension == ".XML" || entry.Extension == ".SHP" || entry.Extension == ".LGT" || entry.Extension == ".TXT" || entry.Extension == ".CFG" || entry.Extension == ".XAML")
+                    {
+                        var foldingStrategy = new XmlFoldingStrategy();
+                        foldingStrategy.UpdateFoldings(foldingManager, XMLViewer.Document);
+                    }
+                    else
+                    if (entry.Extension == ".XS")
+                    {
+                        var foldingStrategy = new BraceFoldingStrategy();
+                        foldingStrategy.UpdateFoldings(foldingManager, XMLViewer.Document);
+                    }
+                }
 
                 if (entry.Extension == ".WAV")
                 {
@@ -218,12 +254,12 @@ namespace Resource_Manager
         {
             About about = new About();
             about.ShowDialog();
-       }
+        }
 
         private void MenuItem_Click_4(object sender, RoutedEventArgs e)
         {
 
-            string targetURL = "https://github.com/XaKOps/Resource-Unpacker";
+            string targetURL = "https://github.com/XaKOps/Resource-Manager";
             var psi = new ProcessStartInfo
             {
                 FileName = targetURL,
@@ -456,6 +492,7 @@ namespace Resource_Manager
 
         private async void MenuItem_Click_2(object sender, RoutedEventArgs e)
         {
+            mainMenu.IsEnabled = false;
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
 
@@ -464,21 +501,36 @@ namespace Resource_Manager
             {
                 foreach (var file in openFileDialog.FileNames)
                 {
-                    var ext = Path.GetExtension(file).ToUpper();
-                    if (ext == ".XMB")
+                    try
                     {
-                       var data = await File.ReadAllBytesAsync(file);
+                        var ext = Path.GetExtension(file).ToUpper();
+                        if (ext == ".XMB")
+                        {
+                            var data = await File.ReadAllBytesAsync(file);
 
-                        if (L33TZipUtils.IsL33TZipFile(data))
-                            data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
-                        using MemoryStream stream = new MemoryStream(data);
-                        XMBFile xmb = new XMBFile();
-                        await xmb.LoadXMBFile(stream);
-                        var newName = file.Replace(".xml.xmb", ".xml", StringComparison.OrdinalIgnoreCase).Replace(".xmb", ".xml", StringComparison.OrdinalIgnoreCase);
-                        xmb.file.Save(newName);
+                            if (L33TZipUtils.IsL33TZipFile(data))
+                                data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+
+                            using MemoryStream stream = new MemoryStream(data);
+                            XMBFile xmb = new XMBFile();
+                            await xmb.LoadXMBFile(stream);
+                            var newName = file.Replace(".xml.xmb", ".xml", StringComparison.OrdinalIgnoreCase).Replace(".xmb", ".xml", StringComparison.OrdinalIgnoreCase);
+                            xmb.file.Save(newName);
+                        }
+                        if (ext == ".XML")
+                        {
+                            await XmbFileUtils.CreateXMBFile(file);
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Conversion error - " + Path.GetFileName(file), MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
+
+            mainMenu.IsEnabled = true;
         }
     }
 

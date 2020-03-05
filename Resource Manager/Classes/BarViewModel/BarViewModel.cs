@@ -1,5 +1,4 @@
-﻿using NAudio.Wave;
-using Resource_Manager.Classes.Bar;
+﻿using Resource_Manager.Classes.Bar;
 using Resource_Manager.Classes.Ddt;
 using Resource_Manager.Classes.L33TZip;
 using Resource_Manager.Classes.Xmb;
@@ -148,7 +147,7 @@ namespace Archive_Unpacker.Classes.BarViewModel
             PreviewImage = null;
 
 
-            if (file.Extension == ".WAV" || file.Extension == ".MP3")
+            if (file.Extension == ".WAV"/* || file.Extension == ".MP3"*/)
             {
                 using FileStream input = File.OpenRead(barFilePath);
                 // Locate the file within the BAR file.

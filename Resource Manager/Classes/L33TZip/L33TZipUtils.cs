@@ -85,6 +85,30 @@ namespace Resource_Manager.Classes.L33TZip
             }
         }
 
+        public static async Task CompressBytesAsL33TZipAsync(byte[] inputBytes, string outputFileName,
+    CancellationToken ct = default,
+    IProgress<double> progress = null)
+        {
+            try
+            {
+                using (var fileStream = new MemoryStream(inputBytes))
+                using (var fileStreamFinal = File.Open(outputFileName, FileMode.Create, FileAccess.Write, FileShare.None))
+                using (var outputFileStreamWriter = new BinaryWriter(fileStreamFinal))
+                using (var compressedStream = new DeflateStream(fileStreamFinal, CompressionLevel.Optimal))
+                {
+                    WriteFileHeaders(outputFileStreamWriter, fileStream.Length);
+                    await fileStream.CopyToAsync(compressedStream);
+                }
+            }
+            catch (Exception)
+            {
+                if (File.Exists(outputFileName))
+                    File.Delete(outputFileName);
+
+                throw;
+            }
+        }
+
         private static void WriteFileHeaders(BinaryWriter writer, long fileLength)
         {
             writer.BaseStream.Position = 0L;

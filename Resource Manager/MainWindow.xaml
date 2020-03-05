@@ -261,7 +261,7 @@ Grid.Row="3"
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-
+                    
                     <GridViewColumn Width="190">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader  Tag="lastModifiedDate" Content="Last Modified date" Click="files_Click"/>

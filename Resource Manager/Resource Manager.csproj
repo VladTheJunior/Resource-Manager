@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.0.1" />
-    <PackageReference Include="NAudio" Version="1.10.0" />
   </ItemGroup>
 
   <ItemGroup>

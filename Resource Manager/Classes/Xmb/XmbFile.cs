@@ -143,72 +143,8 @@ namespace Resource_Manager.Classes.Xmb
         }
 
 
-/*
-        public async Task CreateXMBFile(XmlDocument file)
-        {
-            var Attributes = file.Attributes;
 
 
-            using var output = new MemoryStream();
-
-            var writer = new BinaryWriter(output, Encoding.Default, true);
-
-            writer.Write((byte)88);
-            writer.Write((byte)49);
-
-            dataLength = reader.ReadUInt32();
-
-            reader.Read(unknown1 = new char[2], 0, 2);
-            if (new string(unknown1) != "XR")
-            {
-                throw new Exception("'XR' not detected - Not a valid XML file!");
-            }
-
-            unknown2 = reader.ReadUInt32();
-            version = reader.ReadUInt32();
-
-
-            if (unknown2 != 4)
-            {
-                throw new Exception("'4' not detected - Not a valid XML file!");
-            }
-
-            if (version != 8)
-            {
-                throw new Exception("Not a valid Age of Empires 3 XML file!");
-            }
-
-            numElements = reader.ReadUInt32();
-
-            // Now that we know how many elements there are we can read through
-            // them and create them in our XMBFile object.
-            List<string> elements = new List<string>();
-            for (int i = 0; i < numElements; i++)
-            {
-                int elementLength = reader.ReadInt32();
-                elements.Add(Encoding.Unicode.GetString(reader.ReadBytes(elementLength * 2)));
-            }
-            // Now do the same for attributes
-            numAttributes = reader.ReadUInt32();
-            List<string> attributes = new List<string>();
-            for (int i = 0; i < numAttributes; i++)
-            {
-                int attributeLength = reader.ReadInt32();
-                attributes.Add(Encoding.Unicode.GetString(reader.ReadBytes(attributeLength * 2)));
-            }
-            // Now parse the root element...
-
-            await Task.Run(() =>
-            {
-                XmlElement root = parseNode(ref reader, elements, attributes);
-                if (root != null)
-                {
-                    file.AppendChild(root);
-                }
-            });
-
-
-        }
 
 
         /*
