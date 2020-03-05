@@ -86,6 +86,6 @@ Project Link: [https://github.com/XaKOps/Resource-Manager](https://github.com/Xa
 [issues-shield]: https://img.shields.io/github/issues/XaKOps/Resource-Manager.svg?style=flat-square
 [issues-url]: https://github.com/XaKOps/Resource-Manager/issues
 [license-shield]: https://img.shields.io/github/license/XaKOps/Resource-Manager.svg?style=flat-square
-[license-url]: https://github.com/XaKOps/Resource-Manager/blob/master/LICENSE.txt
+[license-url]: https://github.com/XaKOps/Resource-Manager/blob/master/LICENSE.md
 [product-screenshot]: Images/1.png
 
