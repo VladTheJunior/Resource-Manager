@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.0.1" />
+    <PackageReference Include="FontAwesome5" Version="2.0.4" />
   </ItemGroup>
 
   <ItemGroup>

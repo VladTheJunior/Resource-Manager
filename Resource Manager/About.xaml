@@ -50,6 +50,13 @@
                 <Run Text="PaulZero/AoE3-File-Readers" />
                 </Hyperlink>
                 <LineBreak />
+                
+                                   <Run FontWeight="Bold" Text=" − " />
+                <Hyperlink NavigateUri="http://games.build-a.com/aoe3/files/" RequestNavigate="Hyperlink_RequestNavigate">
+                <Run Text="AoE3Ed by Ykkrosh" />
+                </Hyperlink>
+                <LineBreak />             
+                
             </TextBlock>
 
             <Button Margin="0,5" Content="OK" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Width="75" Padding="0,3,0,0" Click="Button_Click_1"/>

@@ -344,7 +344,7 @@ namespace Resource_Manager
                         return;
                 }
                 mainMenu.IsEnabled = false;
-
+                tExtract.Header = "Extracting";
                 bPause.IsEnabled = true;
                 bStop.IsEnabled = true;
                 bRun.IsEnabled = false;
@@ -371,6 +371,7 @@ namespace Resource_Manager
                 bPause.IsEnabled = false;
                 bStop.IsEnabled = false;
                 bRun.IsEnabled = false;
+                tExtract.Header = "Extract";
                 mainMenu.IsEnabled = true;
             }
         }
@@ -493,6 +494,8 @@ namespace Resource_Manager
         private async void MenuItem_Click_2(object sender, RoutedEventArgs e)
         {
             mainMenu.IsEnabled = false;
+            Spinner.Visibility = Visibility.Visible;
+            tbConvert.Text = "Converting";
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
 
@@ -529,7 +532,8 @@ namespace Resource_Manager
                     }
                 }
             }
-
+            tbConvert.Text = "Convert";
+            Spinner.Visibility = Visibility.Collapsed;
             mainMenu.IsEnabled = true;
         }
     }
