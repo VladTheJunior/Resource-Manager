@@ -1,15 +1,27 @@
-﻿using System;
+﻿using Resource_Manager.Classes.L33TZip;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml;
 
 namespace Resource_Manager.Classes.Xmb
 {
     public class XMBFile
     {
+        public class CustomEncodingStringWriter : StringWriter
+        {
+            public CustomEncodingStringWriter(Encoding encoding)
+            {
+                Encoding = encoding;
+            }
+
+            public override Encoding Encoding { get; }
+        }
+
         public XmlDocument file { get; set; }
         private char[] decompressedHeader { get; set; }
         private uint dataLength { get; set; }
@@ -21,57 +33,59 @@ namespace Resource_Manager.Classes.Xmb
 
         private uint numAttributes { get; set; }
 
-        public async Task LoadXMBFile(Stream input)
+
+        #region Convert To XML
+
+        public static async Task<XMBFile> LoadXMBFile(Stream input)
         {
+            XMBFile xmb = new XMBFile();
 
-
-            file = new XmlDocument();
+            xmb.file = new XmlDocument();
 
             var reader = new BinaryReader(input, Encoding.Default, true);
 
-
-            reader.Read(decompressedHeader = new char[2], 0, 2);
-            if (new string(decompressedHeader) != "X1")
+            reader.Read(xmb.decompressedHeader = new char[2], 0, 2);
+            if (new string(xmb.decompressedHeader) != "X1")
             {
                 throw new Exception("'X1' not detected - Not a valid XML file!");
             }
 
-            dataLength = reader.ReadUInt32();
+            xmb.dataLength = reader.ReadUInt32();
 
-            reader.Read(unknown1 = new char[2], 0, 2);
-            if (new string(unknown1) != "XR")
+            reader.Read(xmb.unknown1 = new char[2], 0, 2);
+            if (new string(xmb.unknown1) != "XR")
             {
                 throw new Exception("'XR' not detected - Not a valid XML file!");
             }
 
-            unknown2 = reader.ReadUInt32();
-            version = reader.ReadUInt32();
+            xmb.unknown2 = reader.ReadUInt32();
+            xmb.version = reader.ReadUInt32();
 
 
-            if (unknown2 != 4)
+            if (xmb.unknown2 != 4)
             {
                 throw new Exception("'4' not detected - Not a valid XML file!");
             }
 
-            if (version != 8)
+            if (xmb.version != 8)
             {
                 throw new Exception("Not a valid Age of Empires 3 XML file!");
             }
 
-            numElements = reader.ReadUInt32();
+            xmb.numElements = reader.ReadUInt32();
 
             // Now that we know how many elements there are we can read through
             // them and create them in our XMBFile object.
             List<string> elements = new List<string>();
-            for (int i = 0; i < numElements; i++)
+            for (int i = 0; i < xmb.numElements; i++)
             {
                 int elementLength = reader.ReadInt32();
                 elements.Add(Encoding.Unicode.GetString(reader.ReadBytes(elementLength * 2)));
             }
             // Now do the same for attributes
-            numAttributes = reader.ReadUInt32();
+            xmb.numAttributes = reader.ReadUInt32();
             List<string> attributes = new List<string>();
-            for (int i = 0; i < numAttributes; i++)
+            for (int i = 0; i < xmb.numAttributes; i++)
             {
                 int attributeLength = reader.ReadInt32();
                 attributes.Add(Encoding.Unicode.GetString(reader.ReadBytes(attributeLength * 2)));
@@ -80,21 +94,19 @@ namespace Resource_Manager.Classes.Xmb
 
             await Task.Run(() =>
             {
-                XmlElement root = parseNode(ref reader, elements, attributes);
+                XmlElement root = xmb.parseNode(ref reader, elements, attributes);
                 if (root != null)
                 {
-                    file.AppendChild(root);
+                    xmb.file.AppendChild(root);
                 }
             });
 
-
+            return xmb;
         }
 
 
         private XmlElement parseNode(ref BinaryReader reader, List<string> elements, List<string> attributes)
         {
-            //        using var reader = new BinaryReader(input, Encoding.Default, true);
-
             // Firstly check this is actually a valid node
 
             char[] nodeHeader;
@@ -143,130 +155,215 @@ namespace Resource_Manager.Classes.Xmb
         }
 
 
-
-
-
-
-        /*
-
-                public class XmlString
-                {
-                    public string Content { get; set; }
-                    public int Length { get; set; }           
-                }
-                typedef std::map<utf16string, uint32_t> StringTable;
-
-                static void ExtractStrings(XmlElement node, ref List<string> elements, ref List<string> attributes)
-                {
-                    if (elements.find(node->name) == elements.end())
-                        elements.insert(std::make_pair(node->name, (uint32_t)elements.size()));
-
-                    for (int i = 0; i < node.Attributes.Count; ++i)
-                        if (attributes.find(node->attrs[i].name) == attributes.end())
-                            attributes.insert(std::make_pair(node->attrs[i].name, (uint32_t)attributes.size()));
-
-                    for (size_t i = 0; i < node->childs.size(); ++i)
-                        ExtractStrings(node->childs[i], elements, attributes);
-                }
-
-
-                static void WriteNode(Stream stream, XMBFile* file, XMLElement* node, const StringTable& elements, const StringTable& attributes)
+        public static async Task<string> XmbToXmlAsync(byte[] data)
         {
-            stream.Write("XN", 2);
-
-            off_t Length_off = stream.Tell();
-                stream.Write("????", 4);
-
-            WriteUString(stream, node->text);
-
-                uint32_t Name = elements.find(node->name)->second;
-                stream.Write(&Name, 4);
-
-            if (file->format == XMBFile::AOE3)
+            using (var fileStream = new MemoryStream(data, false))
             {
-                int32_t lineNum = node->linenum;
-                stream.Write(&lineNum, 4);
+
+                XMBFile xmb = await XMBFile.LoadXMBFile(fileStream);
+                using StringWriter sw = new CustomEncodingStringWriter(Encoding.UTF8);
+                using XmlTextWriter textWriter = new XmlTextWriter(sw);
+
+                textWriter.Formatting = Formatting.Indented;
+
+                xmb.file.Save(textWriter);
+                return sw.ToString();
+            }
+        }
+
+        #endregion
+
+
+        #region Convert To XMB
+        public class XmlString
+        {
+            public string Content { get; set; }
+            public int Size { get; set; }
+        }
+
+        static void ExtractStrings(XmlNode node, ref List<XmlString> elements, ref List<XmlString> attributes)
+        {
+            if (!elements.Any(x => x.Content == node.Name))
+                elements.Add(new XmlString() { Content = node.Name, Size = elements.Count });
+
+            foreach (XmlAttribute attr in node.Attributes)
+                if (!attributes.Any(x => x.Content == attr.Name))
+                    attributes.Add(new XmlString() { Content = attr.Name, Size = attributes.Count });
+
+            int count = node.ChildNodes.Count;
+            foreach (XmlNode child in node.ChildNodes)
+            {
+                if (child.NodeType == XmlNodeType.Element)
+                    ExtractStrings(child, ref elements, ref attributes);
             }
 
-            uint32_t NumAttributes = (uint32_t)node->attrs.size();
-            stream.Write(&NumAttributes, 4);
-            for (uint32_t i = 0; i<NumAttributes; ++i)
-            {
-                uint32_t n = attributes.find(node->attrs[i].name)->second;
-            stream.Write(&n, 4);
-                WriteUString(stream, node->attrs[i].value);
         }
 
-        uint32_t NumChildren = (uint32_t)node->childs.size();
-        stream.Write(&NumChildren, 4);
-            for (uint32_t i = 0; i<NumChildren; ++i)
-                WriteNode(stream, file, node->childs[i], elements, attributes);
-
-        off_t NodeEnd = stream.Tell();
-        stream.Seek(Length_off, Stream::FROM_START);
-            int Length = NodeEnd - (Length_off + 4);
-        stream.Write(&Length, 4);
-            stream.Seek(NodeEnd, Stream::FROM_START);
-        }
-
-        void SaveAsXMB(Stream stream)
+        static void WriteNode(ref BinaryWriter writer, XmlNode node, List<XmlString> elements, List<XmlString> attributes)
         {
-            stream.Write("X1", 2);
+            try
+            {
+                writer.Write((byte)88);
+                writer.Write((byte)78);
 
-            off_t Length_off = stream.Tell();
-            stream.Write("????", 4);
 
-            stream.Write("XR", 2);
+                long Length_off = writer.BaseStream.Position;
+                // length in bytes
+                writer.Write(0);
+                if (node.HasChildNodes)
+                {
+                    if (node.FirstChild.NodeType == XmlNodeType.Text)
+                    {
 
-            int version[2] = { 4, -1 };
+                        // innerTextLength
+                        writer.Write(node.FirstChild.Value.Length);
+                        // innerText
+                        if (node.FirstChild.Value.Length != 0)
+                            writer.Write(Encoding.Unicode.GetBytes(node.FirstChild.Value));
+                    }
+                    else
+                    {
+                        // innerTextLength
+                        writer.Write(0);
+                    }
+                }
+                else
+                {
 
-                version[1] = 8;
+                    // innerTextLength
+                    writer.Write(0);
 
-                version[1] = 8;
+                }
+                // nameID
+                int NameID = elements.FirstOrDefault(x => x.Content == node.Name).Size;
+                writer.Write(NameID);
 
-            stream.Write(version, 8);
+                /*      int lineNum = 0;
+                      for (int i = 0; i < elements.Count; i++)
+                          if (elements[i].Content == node.Name)
+                          {
+                              lineNum = i;
+                              break;
+                          }*/
+                // Line number ... need recount
+                writer.Write(0);
+
+
+                int NumAttributes = node.Attributes.Count;
+                // length attributes
+                writer.Write(NumAttributes);
+                for (int i = 0; i < NumAttributes; ++i)
+                {
+
+                    int n = attributes.FirstOrDefault(x => x.Content == node.Attributes[i].Name).Size;
+                    // attrID
+                    writer.Write(n);
+                    // attributeLength
+                    writer.Write(node.Attributes[i].InnerText.Length);
+                    // attribute.InnerText
+                    writer.Write(Encoding.Unicode.GetBytes(node.Attributes[i].InnerText));
+                }
+
+                int NumChildren = 0;
+                for (int i = 0; i < node.ChildNodes.Count; i++)
+                {
+
+                    if (node.ChildNodes[i].NodeType == XmlNodeType.Element)
+                    {
+                        NumChildren++;
+
+                    }
+                }
+                // NumChildren nodes (recursively)
+                writer.Write(NumChildren);
+                for (int i = 0; i < node.ChildNodes.Count; ++i)
+                    if (node.ChildNodes[i].NodeType == XmlNodeType.Element)
+                    {
+
+                        WriteNode(ref writer, node.ChildNodes[i], elements, attributes);
+
+                    }
+                long NodeEnd = writer.BaseStream.Position;
+                writer.BaseStream.Seek(Length_off, SeekOrigin.Begin);
+
+                writer.Write((int)(NodeEnd - (Length_off + 4)));
+                writer.BaseStream.Seek(NodeEnd, SeekOrigin.Begin);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message + Environment.NewLine + node.OuterXml, "Write error - Node " + node.Name, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public static async Task CreateXMBFile(string filename)
+        {
+            using var output = new MemoryStream();
+
+            var writer = new BinaryWriter(output, Encoding.Default, true);
+
+            writer.Write((byte)88);
+            writer.Write((byte)49);
+
+            writer.Write(0);
+
+            writer.Write((byte)88);
+            writer.Write((byte)82);
+            writer.Write(4);
+            writer.Write(8);
+
+
+            XmlDocument file = new XmlDocument();
+            file.Load(filename);
+            XmlNode rootElement = file.FirstChild;
+
 
             // Get the list of element/attribute names, sorted by first appearance
-            StringTable ElementNames;
-            StringTable AttributeNames;
-            ExtractStrings(root, ElementNames, AttributeNames);
+            List<XmlString> ElementNames = new List<XmlString>();
+            List<XmlString> AttributeNames = new List<XmlString>();
+            await Task.Run(() =>
+            {
+                ExtractStrings(file.DocumentElement, ref ElementNames, ref AttributeNames);
 
-
-            // Convert into handy vector format for outputting
-            std::vector<utf16string> ElementNamesByID;
-            ElementNamesByID.resize(ElementNames.size());
-            for (StringTable::iterator it = ElementNames.begin(); it != ElementNames.end(); ++it)
-                ElementNamesByID[it->second] = it->first;
+            });
 
             // Output element names
-            uint32_t NumElements = (uint32_t)ElementNamesByID.size();
-            stream.Write(&NumElements, 4);
-            for (uint32_t i = 0; i < NumElements; ++i)
-                WriteUString(stream, ElementNamesByID[i]);
+            int NumElements = ElementNames.Count;
+            writer.Write(NumElements);
+            for (int i = 0; i < NumElements; ++i)
+            {
+                writer.Write(ElementNames[i].Content.Length);
+                writer.Write(Encoding.Unicode.GetBytes(ElementNames[i].Content));
+            }
 
-
-            // Convert into handy vector format for outputting
-            std::vector<utf16string> AttributeNamesByID;
-            AttributeNamesByID.resize(AttributeNames.size());
-            for (StringTable::iterator it = AttributeNames.begin(); it != AttributeNames.end(); ++it)
-                AttributeNamesByID[it->second] = it->first;
-
-            // Output attribute names
-            uint32_t NumAttributes = (uint32_t)AttributeNamesByID.size();
-            stream.Write(&NumAttributes, 4);
-            for (uint32_t i = 0; i < NumAttributes; ++i)
-                WriteUString(stream, AttributeNamesByID[i]);
+            int NumAttributes = AttributeNames.Count;
+            writer.Write(NumAttributes);
+            for (int i = 0; i < NumAttributes; ++i)
+            {
+                writer.Write(AttributeNames[i].Content.Length);
+                writer.Write(Encoding.Unicode.GetBytes(AttributeNames[i].Content));
+            }
 
             // Output root node, plus all descendants
-            WriteNode(stream, this, root, ElementNames, AttributeNames);
+            await Task.Run(() =>
+            {
+                WriteNode(ref writer, rootElement, ElementNames, AttributeNames);
+            });
+
 
             // Fill in data-length field near the beginning
-            off_t DataEnd = stream.Tell();
-            stream.Seek(Length_off, Stream::FROM_START);
-            int Length = DataEnd - (Length_off + 4);
-            stream.Write(&Length, 4);
-            stream.Seek(DataEnd, Stream::FROM_START);
+            long DataEnd = writer.BaseStream.Position;
+            writer.BaseStream.Seek(2, SeekOrigin.Begin);
+            int Length = (int)(DataEnd - (2 + 4));
+            writer.Write(Length);
+            writer.BaseStream.Seek(DataEnd, SeekOrigin.Begin);
+            var name = Path.ChangeExtension(filename, "");
+            if (!Path.HasExtension(name))
+                filename = Path.ChangeExtension(filename, ".xml.xmb");
+            else
+                filename = Path.ChangeExtension(filename, ".xmb");
+            await L33TZipUtils.CompressBytesAsL33TZipAsync(output.ToArray(), filename);
         }
-        */
+
+        #endregion
     }
 }

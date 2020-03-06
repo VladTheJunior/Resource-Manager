@@ -6,12 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 
@@ -51,19 +49,6 @@ namespace Archive_Unpacker.Classes.BarViewModel
             }
         }
 
-        void Filter(object sender, FilterEventArgs e)
-        {
-            if (string.IsNullOrEmpty(FilterText))
-            {
-                e.Accepted = true;
-                return;
-            }
-
-            var entry = e.Item as BarEntry;
-            e.Accepted = entry.FileNameWithRoot.ToLower().Contains(FilterText.ToLower());
-        }
-
-
         private double currentProgress;
         public double CurrentProgress
         {
@@ -86,6 +71,74 @@ namespace Archive_Unpacker.Classes.BarViewModel
             CurrentProgress = 0;
 
         }
+
+        public MemoryStream audio { get; set; }
+
+        public string barFilePath { get; set; }
+        public BarFile barFile { get; set; }
+
+        private BitmapImage previewImage;
+        public BitmapImage PreviewImage
+        {
+            get { return previewImage; }
+            set
+            {
+                previewImage = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private DdtFile previewDdt;
+        public DdtFile PreviewDdt
+        {
+            get { return previewDdt; }
+            set
+            {
+                previewDdt = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public class Document
+        {
+            public string Text { get; set; }
+            public string SyntaxHighlighting { get; set; }
+        }
+
+        private Document preview;
+        public Document Preview
+        {
+            get { return preview; }
+            set
+            {
+                preview = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+
+        public string barFileName
+        {
+            get
+            {
+                return Path.GetFileName(barFilePath) + (barFile.barFileHeader.Version == 4 ? " (Definitive Edition)" : " (Complete Collection)");
+            }
+        }
+
+        void Filter(object sender, FilterEventArgs e)
+        {
+            if (string.IsNullOrEmpty(FilterText))
+            {
+                e.Accepted = true;
+                return;
+            }
+
+            var entry = e.Item as BarEntry;
+            e.Accepted = entry.FileNameWithRoot.ToLower().Contains(FilterText.ToLower());
+        }
+
+
+
 
         public async Task saveFiles(List<BarEntry> files, string savePath, bool Decompress, CancellationToken token)
         {
@@ -119,7 +172,7 @@ namespace Archive_Unpacker.Classes.BarViewModel
                 await input.ReadAsync(data, 0, data.Length);
 
                 // 
-                if (file.Extension != ".XMB" && file.isCompressed && Decompress)
+                if (file.Extension != ".XMB" && L33TZipUtils.IsL33TZipFile(data) && Decompress)
                 {
                     data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
                 }
@@ -216,7 +269,7 @@ namespace Archive_Unpacker.Classes.BarViewModel
                 if (L33TZipUtils.IsL33TZipFile(data))
                     data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
                 Preview = new Document();
-                Preview.Text = await XmbFileUtils.XmbToXmlAsync(data);
+                Preview.Text = await XMBFile.XmbToXmlAsync(data);
                 Preview.SyntaxHighlighting = "XML";
                 NotifyPropertyChanged("Preview");
                 return;
@@ -241,59 +294,6 @@ namespace Archive_Unpacker.Classes.BarViewModel
             }
 
             return;
-        }
-
-        public MemoryStream audio { get; set; }
-
-        public string barFilePath { get; set; }
-        public BarFile barFile { get; set; }
-
-        private BitmapImage previewImage;
-        public BitmapImage PreviewImage
-        {
-            get { return previewImage; }
-            set
-            {
-                previewImage = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private DdtFile previewDdt;
-        public DdtFile PreviewDdt
-        {
-            get { return previewDdt; }
-            set
-            {
-                previewDdt = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        public class Document
-        {
-            public string Text { get; set; }
-            public string SyntaxHighlighting { get; set; }
-        }
-
-        private Document preview;
-        public Document Preview
-        {
-            get { return preview; }
-            set
-            {
-                preview = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-
-        public string barFileName
-        {
-            get
-            {
-                return Path.GetFileName(barFilePath) + (barFile.barFileHeader.Unk0 == 4 ? " (Definitive Edition)" : " (Complete Collection)");
-            }
         }
 
         public static BarViewModel Load(string filename)

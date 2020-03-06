@@ -349,7 +349,7 @@ namespace Resource_Manager
                 bStop.IsEnabled = true;
                 bRun.IsEnabled = false;
                 bool decompress = false;
-                if (file.barFile.barFileHeader.Unk0 == 4)
+                if (file.barFile.barFileHeader.Version == 4)
                     decompress = MessageBox.Show("Do you want to decompress compressed files? (If you do not decompress them, you will not be able to open and edit these files.)", "Decompress files", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes;
 
                 file.extractingState = 0;
@@ -515,14 +515,13 @@ namespace Resource_Manager
                                 data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
 
                             using MemoryStream stream = new MemoryStream(data);
-                            XMBFile xmb = new XMBFile();
-                            await xmb.LoadXMBFile(stream);
+                            XMBFile xmb = await XMBFile.LoadXMBFile(stream);
                             var newName = file.Replace(".xml.xmb", ".xml", StringComparison.OrdinalIgnoreCase).Replace(".xmb", ".xml", StringComparison.OrdinalIgnoreCase);
                             xmb.file.Save(newName);
                         }
                         if (ext == ".XML")
                         {
-                            await XmbFileUtils.CreateXMBFile(file);
+                            await XMBFile.CreateXMBFile(file);
 
                         }
                     }

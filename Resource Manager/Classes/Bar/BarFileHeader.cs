@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Resource_Manager.Classes.Bar
 {
@@ -12,7 +11,7 @@ namespace Resource_Manager.Classes.Bar
         public BarFileHeader(IReadOnlyCollection<FileInfo> fileInfos, uint version)
         {
             Espn = "ESPN";
-            Unk0 = version;
+            Version = version;
             Unk1 = 0x44332211;
             Unk2 = new byte[66 * 4];
             Checksum = 0;
@@ -23,8 +22,8 @@ namespace Resource_Manager.Classes.Bar
                 FilesTableOffset = 304 + fileInfos.Sum(key => key.Length);
             }
             else
-            { 
-            FilesTableOffset = 292 + (int)fileInfos.Sum(key => key.Length);
+            {
+                FilesTableOffset = 292 + (int)fileInfos.Sum(key => key.Length);
             }
             FileNameHash = 0;
         }
@@ -37,7 +36,7 @@ namespace Resource_Manager.Classes.Bar
 
             Espn = espn;
 
-            Unk0 = binaryReader.ReadUInt32();
+            Version = binaryReader.ReadUInt32();
 
             Unk1 = binaryReader.ReadUInt32();
 
@@ -47,7 +46,7 @@ namespace Resource_Manager.Classes.Bar
 
             NumberOfFiles = binaryReader.ReadUInt32();
 
-            if (Unk0 == 4)
+            if (Version == 4)
             {
                 Unk3 = binaryReader.ReadUInt32();
                 FilesTableOffset = binaryReader.ReadInt64();
@@ -60,7 +59,7 @@ namespace Resource_Manager.Classes.Bar
 
         public string Espn { get; }
 
-        public uint Unk0 { get; }
+        public uint Version { get; }
 
         public uint Unk1 { get; }
 
@@ -77,7 +76,7 @@ namespace Resource_Manager.Classes.Bar
 
         public uint FileNameHash { get; }
 
-        
+
         public byte[] ToByteArray()
         {
             using (var ms = new MemoryStream())
@@ -85,12 +84,12 @@ namespace Resource_Manager.Classes.Bar
                 using (var bw = new BinaryWriter(ms))
                 {
                     bw.Write(Espn.ToCharArray());
-                    bw.Write(Unk0);
+                    bw.Write(Version);
                     bw.Write(Unk1);
                     bw.Write(Unk2);
                     bw.Write(Checksum);
                     bw.Write(NumberOfFiles);
-                    if (Unk0 == 4)
+                    if (Version == 4)
                     {
                         bw.Write(Unk3);
                         bw.Write(FilesTableOffset);
