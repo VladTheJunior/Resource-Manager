@@ -16,7 +16,7 @@ namespace Resource_Manager.Classes.Bar
             Unk2 = new byte[66 * 4];
             Checksum = 0;
             NumberOfFiles = (uint)fileInfos.Count;
-            if (version == 4)
+            if (Version > 3)
             {
                 Unk3 = 0;
                 FilesTableOffset = 304 + fileInfos.Sum(key => key.Length);
@@ -38,6 +38,8 @@ namespace Resource_Manager.Classes.Bar
 
             Version = binaryReader.ReadUInt32();
 
+            if (Version !=2 && Version != 4 && Version != 5)
+                throw new Exception("Version " + Version.ToString() + " of the BAR file is not supported. Please contact the developer");
             Unk1 = binaryReader.ReadUInt32();
 
             Unk2 = binaryReader.ReadBytes(66 * 4);
@@ -46,7 +48,7 @@ namespace Resource_Manager.Classes.Bar
 
             NumberOfFiles = binaryReader.ReadUInt32();
 
-            if (Version == 4)
+            if (Version > 3)
             {
                 Unk3 = binaryReader.ReadUInt32();
                 FilesTableOffset = binaryReader.ReadInt64();
@@ -89,7 +91,7 @@ namespace Resource_Manager.Classes.Bar
                     bw.Write(Unk2);
                     bw.Write(Checksum);
                     bw.Write(NumberOfFiles);
-                    if (Version == 4)
+                    if (Version > 3)
                     {
                         bw.Write(Unk3);
                         bw.Write(FilesTableOffset);

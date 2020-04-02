@@ -349,7 +349,7 @@ namespace Resource_Manager
                 bStop.IsEnabled = true;
                 bRun.IsEnabled = false;
                 bool decompress = false;
-                if (file.barFile.barFileHeader.Version == 4)
+                if (file.barFile.barFileHeader.Version > 3)
                     decompress = MessageBox.Show("Do you want to decompress compressed files? (If you do not decompress them, you will not be able to open and edit these files.)", "Decompress files", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes;
 
                 file.extractingState = 0;

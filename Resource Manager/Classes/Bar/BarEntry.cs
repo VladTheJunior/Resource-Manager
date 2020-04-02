@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Resource_Manager.Classes.Bar
 {
@@ -20,23 +21,30 @@ namespace Resource_Manager.Classes.Bar
         {
             BarEntry barEntry = new BarEntry();
 
-            if (version == 4)
+            if (version > 3)
+            {
                 barEntry.Offset = binaryReader.ReadInt64();
+            }
             else
                 barEntry.Offset = binaryReader.ReadInt32();
 
             barEntry.FileSize = binaryReader.ReadInt32();
             barEntry.FileSize2 = binaryReader.ReadInt32();
 
+            if (version == 5)
+            {
+                barEntry.FileSize3 = binaryReader.ReadInt32();
+            }
+
             barEntry.LastWriteTime = new BarEntryLastWriteTime(binaryReader);
             var length = binaryReader.ReadUInt32();
 
             barEntry.FileName = Encoding.Unicode.GetString(binaryReader.ReadBytes((int)length * 2));
             barEntry.FileNameWithRoot = Path.Combine(rootPath, barEntry.FileName);
-            if (version == 4)
+            if (version > 3)
                 barEntry.isCompressed = Convert.ToBoolean(binaryReader.ReadUInt32());
 
-
+           // MessageBox.Show(barEntry.FileName);
             return barEntry;
         }
 
@@ -53,7 +61,7 @@ namespace Resource_Manager.Classes.Bar
             barEntry.FileNameWithRoot = Path.Combine(barEntry.FileNameWithRoot, barEntry.FileName);
             barEntry.Offset = offset;
 
-            if (version == 4)
+            if (version > 3)
             {
                 barEntry.FileSize2 = (int)fileInfo.Length;
                 barEntry.isCompressed = L33TZipUtils.IsL33TZipFile(fileInfo.FullName);
@@ -61,6 +69,7 @@ namespace Resource_Manager.Classes.Bar
                     barEntry.FileSize = (await L33TZipUtils.ExtractL33TZippedBytesAsync(fileInfo.FullName)).Length;
                 else
                     barEntry.FileSize = barEntry.FileSize2;
+                barEntry.FileSize3 = barEntry.FileSize2;
             }
             else
             {
@@ -91,9 +100,13 @@ namespace Resource_Manager.Classes.Bar
 
         public long Offset { get; set; }
 
+        
+
         public int FileSize { get; set; }
 
         public int FileSize2 { get; set; }
+
+        public int FileSize3 { get; set; }
 
         public BarEntryLastWriteTime LastWriteTime { get; set; }
 
@@ -127,16 +140,24 @@ namespace Resource_Manager.Classes.Bar
             {
                 using (var bw = new BinaryWriter(ms))
                 {
-                    if (version == 4)
+                    if (version > 3)
+                    {
                         bw.Write(Offset);
+                    }
                     else
                         bw.Write(Convert.ToInt32(Offset));
                     bw.Write(FileSize);
                     bw.Write(FileSize2);
+
+                    if (version == 5)
+                    {
+                        bw.Write(FileSize3);
+                    }
+
                     bw.Write(LastWriteTime.ToByteArray());
                     bw.Write(FileName.Length);
                     bw.Write(Encoding.Unicode.GetBytes(FileName));
-                    if (version == 4)
+                    if (version > 3)
                         bw.Write(Convert.ToInt32(isCompressed));
                     return ms.ToArray();
                 }

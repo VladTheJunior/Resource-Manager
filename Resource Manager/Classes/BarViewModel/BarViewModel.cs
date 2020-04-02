@@ -121,7 +121,13 @@ namespace Archive_Unpacker.Classes.BarViewModel
         {
             get
             {
-                return Path.GetFileName(barFilePath) + (barFile.barFileHeader.Version == 4 ? " (Definitive Edition)" : " (Complete Collection)");
+                if (barFile.barFileHeader.Version == 2)
+                    return Path.GetFileName(barFilePath) + " (Complete Collection)";
+                else
+                if (barFile.barFileHeader.Version == 4)
+                    return Path.GetFileName(barFilePath) + " (Definitive Edition - 1st wave of beta testing)";
+                else
+                    return Path.GetFileName(barFilePath) + " (Definitive Edition)";
             }
         }
 
@@ -147,7 +153,7 @@ namespace Archive_Unpacker.Classes.BarViewModel
 
             using var input = File.OpenRead(barFilePath);
 
-            var filesSize = files.Sum(x => x.FileSize2);
+            long filesSize =  files.Sum(x => (long)x.FileSize2);
 
             foreach (var file in files)
             {

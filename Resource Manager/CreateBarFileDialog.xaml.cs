@@ -20,7 +20,7 @@ namespace Resource_Manager
         {
             get
             {
-                return (tbGameVersion.SelectedIndex == 0) ? (uint)2 : (uint)4;
+                return (tbGameVersion.SelectedIndex == 0) ? (uint)2 : (uint)5;
             }
         }
 

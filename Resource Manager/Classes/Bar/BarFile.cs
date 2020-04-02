@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Resource_Manager.Classes.Bar
 {
@@ -18,12 +19,11 @@ namespace Resource_Manager.Classes.Bar
             using var file = File.OpenRead(filename);
             var reader = new BinaryReader(file);
             barFile.barFileHeader = new BarFileHeader(reader);
-
             file.Seek(barFile.barFileHeader.FilesTableOffset, SeekOrigin.Begin);
             var rootNameLength = reader.ReadUInt32();
             barFile.RootPath = Encoding.Unicode.GetString(reader.ReadBytes((int)rootNameLength * 2));
             barFile.NumberOfRootFiles = reader.ReadUInt32();
-
+            
             var barFileEntrys = new List<BarEntry>();
             for (uint i = 0; i < barFile.NumberOfRootFiles; i++)
             {
@@ -57,7 +57,7 @@ namespace Resource_Manager.Classes.Bar
                     var header = new BarFileHeader(fileInfos, version);
                     writer.Write(header.ToByteArray());
 
-                    if (version == 4)
+                    if (version > 3)
                         writer.Write(0);
                     //    writer.Write(0x7FF7);
 

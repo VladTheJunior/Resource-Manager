@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Resource_Manager"
+        UseLayoutRounding="True"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         mc:Ignorable="d"
@@ -262,7 +263,8 @@ Grid.Row="3"
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    
+
+
                     <GridViewColumn Width="190">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader  Tag="lastModifiedDate" Content="Last Modified date" Click="files_Click"/>
@@ -503,7 +505,7 @@ Grid.Row="3"
                 <Separator/>
             </MenuItem>
             <MenuItem Header="View">
-                <MenuItem Header="Group by Extension" IsCheckable="True" Checked="MenuItem_Checked" Unchecked="MenuItem_Unchecked"/>
+                <MenuItem Header="Group by Extension" IsChecked="True" IsCheckable="True" Checked="MenuItem_Checked" Unchecked="MenuItem_Unchecked"/>
                 <MenuItem Header="Preview" IsChecked="True" IsCheckable="True" Checked="MenuItem_Checked_1" Unchecked="MenuItem_Unchecked_1"/>
             </MenuItem>
             <MenuItem x:Name="tExtract"  Header="Extract">

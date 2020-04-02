@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Resource_Manager"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight"
+        UseLayoutRounding="True"
         WindowStartupLocation="CenterScreen"
         
         Title="About"  ResizeMode="NoResize" FontFamily="Trajan Pro 3" FontSize="14">
