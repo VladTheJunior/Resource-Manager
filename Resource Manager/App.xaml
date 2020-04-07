@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:Resource_Manager"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <FontFamily x:Key="Trajan Pro">pack://application:,,,/Fonts/#Trajan Pro</FontFamily>
     </Application.Resources>
 </Application>

@@ -4,12 +4,14 @@ using Resource_Manager.Classes.L33TZip;
 using Resource_Manager.Classes.Xmb;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 
@@ -69,7 +71,6 @@ namespace Archive_Unpacker.Classes.BarViewModel
         private void ResetProgress()
         {
             CurrentProgress = 0;
-
         }
 
         public MemoryStream audio { get; set; }
@@ -116,6 +117,16 @@ namespace Archive_Unpacker.Classes.BarViewModel
             }
         }
 
+        private bool isCRC32Checked;
+        public bool IsCRC32Checked
+        {
+            get { return isCRC32Checked; }
+            set
+            {
+                isCRC32Checked = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         public string barFileName
         {
@@ -153,7 +164,7 @@ namespace Archive_Unpacker.Classes.BarViewModel
 
             using var input = File.OpenRead(barFilePath);
 
-            long filesSize =  files.Sum(x => (long)x.FileSize2);
+            long filesSize = files.Sum(x => (long)x.FileSize2);
 
             foreach (var file in files)
             {
@@ -275,8 +286,9 @@ namespace Archive_Unpacker.Classes.BarViewModel
                 if (L33TZipUtils.IsL33TZipFile(data))
                     data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
                 Preview = new Document();
-                Preview.Text = await XMBFile.XmbToXmlAsync(data);
                 Preview.SyntaxHighlighting = "XML";
+                Preview.Text = await XMBFile.XmbToXmlAsync(data);
+                
                 NotifyPropertyChanged("Preview");
                 return;
             }
@@ -302,19 +314,23 @@ namespace Archive_Unpacker.Classes.BarViewModel
             return;
         }
 
-        public static BarViewModel Load(string filename)
+        public async static Task<BarViewModel> Load(string filename, bool doCRC32)
         {
             BarViewModel barViewModel = new BarViewModel();
             barViewModel.extractingState = 0;
             barViewModel.barFilePath = filename;
-
-            barViewModel.barFile = BarFile.Load(filename);
+            barViewModel.IsCRC32Checked = doCRC32;
+            barViewModel.barFile = await BarFile.Load(filename, doCRC32);
 
             barViewModel.ResetProgress();
 
             barViewModel.entriesCollection = new CollectionViewSource();
             barViewModel.entriesCollection.Source = barViewModel.barFile.BarFileEntrys;
             barViewModel.entriesCollection.Filter += barViewModel.Filter;
+
+            barViewModel.CompareEntriesCollection = new CollectionViewSource();
+            barViewModel.CompareEntries = new ReadOnlyCollection<BarEntry>(new List<BarEntry>());
+            barViewModel.CompareEntriesCollection.Source = barViewModel.CompareEntries;
             return barViewModel;
         }
 
@@ -326,7 +342,7 @@ namespace Archive_Unpacker.Classes.BarViewModel
             var filename = rootFolder;
             if (rootFolder.EndsWith(Path.DirectorySeparatorChar.ToString()))
                 filename = rootFolder.Substring(0, rootFolder.Length - 1);
-
+            barViewModel.IsCRC32Checked = true;
             barViewModel.barFilePath = filename + ".bar";
             barViewModel.barFile = await BarFile.Create(rootFolder, version);
             barViewModel.entriesCollection = new CollectionViewSource();
@@ -334,7 +350,72 @@ namespace Archive_Unpacker.Classes.BarViewModel
 
             barViewModel.entriesCollection.Source = barViewModel.barFile.BarFileEntrys;
             barViewModel.entriesCollection.Filter += barViewModel.Filter;
+
+
+            barViewModel.CompareEntriesCollection = new CollectionViewSource();
+            barViewModel.CompareEntries = new ReadOnlyCollection<BarEntry>(new List<BarEntry>());
+            barViewModel.CompareEntriesCollection.Source = barViewModel.CompareEntries;
             return barViewModel;
+        }
+
+        public IReadOnlyCollection<BarEntry> CompareEntries{ get; set; }
+
+        private CollectionViewSource CompareEntriesCollection;
+
+        public ICollectionView CompareSourceCollection
+        {
+            get
+            {
+                return this.CompareEntriesCollection.View;
+            }
+        }
+
+        public void ResetComparer()
+        {
+            CompareEntries = new ReadOnlyCollection<BarEntry>(new List<BarEntry>());
+            CompareEntriesCollection.Source = CompareEntries;
+
+
+
+            NotifyPropertyChanged("CompareEntries");
+
+            NotifyPropertyChanged("CompareSourceCollection");
+        }
+
+        public void Compare (BarViewModel bar, bool reverse)
+        {
+            var barEntrys = new List<BarEntry>();
+            var Removed = bar.barFile.BarFileEntrys.Where(item => !barFile.BarFileEntrys.Any(item2 => item2.FileNameWithRoot == item.FileNameWithRoot)).ToList();
+            var Added = barFile.BarFileEntrys.Where(item => !bar.barFile.BarFileEntrys.Any(item2 => item2.FileNameWithRoot == item.FileNameWithRoot)).ToList();
+            Removed.ForEach(c => c.type = "Removed");
+            Added.ForEach(c => c.type = "Added");
+            if (!reverse)
+            {
+                barEntrys.AddRange(Removed);
+                barEntrys.AddRange(Added);
+            }
+            else
+            {               
+                barEntrys.AddRange(Added);
+                barEntrys.AddRange(Removed);               
+            }
+            var Changed = barFile.BarFileEntrys.Where(item => bar.barFile.BarFileEntrys.Any(item2 => item2.FileNameWithRoot == item.FileNameWithRoot && item2.CRC32 != item.CRC32)).ToList();
+            Changed.ForEach(c => c.type = "Changed");
+            var Same = barFile.BarFileEntrys.Where(item => bar.barFile.BarFileEntrys.Any(item2 => item2.FileNameWithRoot == item.FileNameWithRoot && item2.CRC32 == item.CRC32)).ToList();
+
+
+
+            barEntrys.AddRange(Changed);
+            barEntrys.AddRange(Same);
+
+            CompareEntries = new ReadOnlyCollection<BarEntry>(barEntrys);
+            CompareEntriesCollection.Source = CompareEntries;
+
+
+
+            NotifyPropertyChanged("CompareEntries");
+
+            NotifyPropertyChanged("CompareSourceCollection");
         }
 
 

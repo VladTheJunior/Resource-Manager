@@ -5,7 +5,6 @@ using ICSharpCode.AvalonEdit.Sample;
 using ICSharpCode.AvalonEdit.Search;
 using Resource_Manager.Classes.Bar;
 using Resource_Manager.Classes.Commands;
-using Resource_Manager.Classes.Ddt;
 using Resource_Manager.Classes.L33TZip;
 using Resource_Manager.Classes.Sort;
 using Resource_Manager.Classes.Xmb;
@@ -53,13 +52,22 @@ namespace Resource_Manager
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public bool DoCRC32 = false;
+
         public ObservableCollection<RecentFile> recentFiles { get; set; } = new ObservableCollection<RecentFile>();
 
         private string fileContent;
         public string FileContent
         {
-            get { return fileContent; }
-            set { fileContent = value; NotifyPropertyChanged(); }
+            get
+            {
+                return fileContent;
+            }
+            set
+            {
+                fileContent = value;
+                NotifyPropertyChanged();
+            }
         }
 
         public BarViewModel file { get; set; }
@@ -102,17 +110,13 @@ namespace Resource_Manager
             InitializeComponent();
             SearchPanel.Install(XMLViewer);
             DataContext = this;
-            /*}
-                        var de = File.ReadAllBytes(@"F:\Development\Resource Manager\Resource Manager\bin\Release\netcoreapp3.1\alainmagnangrunt1.wav");
-                        var original = File.ReadAllBytes(@"F:\Sound\AlainMagnanGrunt1.wav");
 
-                        byte[] a = new byte[de.Length];
-
-                        for (int i=0;i< de.Length;i++)
-                        {
-                            a[i] = (byte)(de[i] - original[i]);
-                        }
-                        File.WriteAllBytes("test3", a);*/
+            tempColumn = (files.View as GridView).Columns[3];
+            if (DoCRC32 == false)
+            {
+                (files.View as GridView).Columns.RemoveAt(3);
+            }
+            cdGrid.Width = new GridLength(675, GridUnitType.Pixel);
             files.AddHandler(Thumb.DragDeltaEvent, new DragDeltaEventHandler(Thumb_DragDelta), true);
 
             for (int i = 0; i < Math.Min(10, Settings.Default.RecentFiles.Count); i++)
@@ -125,6 +129,7 @@ namespace Resource_Manager
 
         private async void files_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            //files.IsEnabled = false;
             e.Handled = true;
             try
             {
@@ -133,6 +138,7 @@ namespace Resource_Manager
                 {
                     ImageViewer.Visibility = Visibility.Collapsed;
                     XMLViewer.Visibility = Visibility.Collapsed;
+                    //files.IsEnabled = true;
                     return;
                 }
                 var entries = files.SelectedItems.Cast<BarEntry>().ToList();
@@ -203,10 +209,14 @@ namespace Resource_Manager
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            //files.IsEnabled = true;
         }
 
-        private void openFile(string path = null)
+        private async void openFile(string path = null)
         {
+            mainMenu.IsEnabled = false;
+            SpinnerFile.Visibility = Visibility.Visible;
+            tbFile.Text = "Opening";
             var filePath = path;
             if (string.IsNullOrEmpty(path))
             {
@@ -218,11 +228,19 @@ namespace Resource_Manager
                     filePath = openFileDialog.FileName;
                 }
                 else
+                {
+                    SpinnerFile.Visibility = Visibility.Collapsed;
+                    tbFile.Text = "File";
+                    mainMenu.IsEnabled = true;
                     return;
+                }
             }
             try
             {
-                file = BarViewModel.Load(filePath);
+                file = null;
+                NotifyPropertyChanged("recentFiles");
+                NotifyPropertyChanged("file");
+                file = await BarViewModel.Load(filePath, DoCRC32);
                 if (Settings.Default.RecentFiles.Contains(filePath))
                 {
                     Settings.Default.RecentFiles.Remove(filePath);
@@ -238,6 +256,9 @@ namespace Resource_Manager
             {
                 MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            SpinnerFile.Visibility = Visibility.Collapsed;
+            tbFile.Text = "File";
+            mainMenu.IsEnabled = true;
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -309,6 +330,10 @@ namespace Resource_Manager
             {
                 minWidth = 160;
             }
+            if (header.Tag.ToString() == "CRC32")
+            {
+                minWidth = 100;
+            }
             if (header.Tag.ToString() == "lastModifiedDate")
             {
                 minWidth = 190;
@@ -344,7 +369,8 @@ namespace Resource_Manager
                         return;
                 }
                 mainMenu.IsEnabled = false;
-                tExtract.Header = "Extracting";
+                tbExtract.Text = "Extracting";
+                SpinnerExtract.Visibility = Visibility.Visible;
                 bPause.IsEnabled = true;
                 bStop.IsEnabled = true;
                 bRun.IsEnabled = false;
@@ -371,7 +397,8 @@ namespace Resource_Manager
                 bPause.IsEnabled = false;
                 bStop.IsEnabled = false;
                 bRun.IsEnabled = false;
-                tExtract.Header = "Extract";
+                tbExtract.Text = "Extract";
+                SpinnerExtract.Visibility = Visibility.Collapsed;
                 mainMenu.IsEnabled = true;
             }
         }
@@ -436,17 +463,22 @@ namespace Resource_Manager
 
         private async void TextBlock_MouseDown_1(object sender, MouseButtonEventArgs e)
         {
-            await DdtFileUtils.Ddt2PngAsync(@"D:\Development\Resource Manager\Resource Manager\bin\Release\netcoreapp3.1\Art\ui\alerts\alert_treatyend_bump.ddt");
+            //await DdtFileUtils.Ddt2PngAsync(@"D:\Development\Resource Manager\Resource Manager\bin\Release\netcoreapp3.1\Art\ui\alerts\alert_treatyend_bump.ddt");
         }
 
         private async void MenuItem_Click_7(object sender, RoutedEventArgs e)
         {
-
+            mainMenu.IsEnabled = false;
+            SpinnerFile.Visibility = Visibility.Visible;
+            tbFile.Text = "Creating";
             CreateBarFileDialog createBarFileDialog = new CreateBarFileDialog();
             if (createBarFileDialog.ShowDialog() == true)
             {
                 try
                 {
+                    file = null;
+                    NotifyPropertyChanged("recentFiles");
+                    NotifyPropertyChanged("file");
                     file = await BarViewModel.Create(createBarFileDialog.RootPath, createBarFileDialog.Version);
                     if (Settings.Default.RecentFiles.Contains(file.barFilePath))
                     {
@@ -464,7 +496,9 @@ namespace Resource_Manager
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-
+            SpinnerFile.Visibility = Visibility.Collapsed;
+            tbFile.Text = "File";
+            mainMenu.IsEnabled = true;
         }
 
         private void MenuItem_Checked(object sender, RoutedEventArgs e)
@@ -494,7 +528,7 @@ namespace Resource_Manager
         private async void MenuItem_Click_2(object sender, RoutedEventArgs e)
         {
             mainMenu.IsEnabled = false;
-            Spinner.Visibility = Visibility.Visible;
+            SpinnerConvert.Visibility = Visibility.Visible;
             tbConvert.Text = "Converting";
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
@@ -532,8 +566,39 @@ namespace Resource_Manager
                 }
             }
             tbConvert.Text = "Convert";
-            Spinner.Visibility = Visibility.Collapsed;
+            SpinnerConvert.Visibility = Visibility.Collapsed;
             mainMenu.IsEnabled = true;
+        }
+
+        GridViewColumn tempColumn;
+        private void MenuItem_Checked_2(object sender, RoutedEventArgs e)
+        {
+            (files.View as GridView).Columns.Insert(3, tempColumn);
+            tempColumn.Width = 100;
+            cdGrid.Width = new GridLength(775, GridUnitType.Pixel);
+            if (file != null)
+            {
+                if (!file.IsCRC32Checked)
+                {
+                    file.barFile.ComputeCRC32(file.barFilePath);
+                    file.IsCRC32Checked = true;
+                }
+            }
+            DoCRC32 = true;
+        }
+
+        private void MenuItem_Unchecked_2(object sender, RoutedEventArgs e)
+        {
+            tempColumn = (files.View as GridView).Columns[3];
+            (files.View as GridView).Columns.RemoveAt(3);
+            cdGrid.Width = new GridLength(675, GridUnitType.Pixel);
+            DoCRC32 = false;
+        }
+
+        private void MenuItem_Click_5(object sender, RoutedEventArgs e)
+        {
+            CompareWindow window = new CompareWindow();
+            window.Show();
         }
     }
 

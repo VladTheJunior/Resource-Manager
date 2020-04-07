@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Media;
 
 namespace Resource_Manager.Classes.Bar
 {
@@ -44,7 +44,7 @@ namespace Resource_Manager.Classes.Bar
             if (version > 3)
                 barEntry.isCompressed = Convert.ToBoolean(binaryReader.ReadUInt32());
 
-           // MessageBox.Show(barEntry.FileName);
+            // MessageBox.Show(barEntry.FileName);
             return barEntry;
         }
 
@@ -84,6 +84,36 @@ namespace Resource_Manager.Classes.Bar
             return barEntry;
         }
 
+        public uint crc32 { get; set; }
+
+        public uint CRC32
+        {
+            get
+            {
+                return crc32;
+            }
+            set
+            {
+                crc32 = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+
+        private string _type = "Unchanged";
+        public string type
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                _type = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public string Extension
         {
             get
@@ -100,7 +130,7 @@ namespace Resource_Manager.Classes.Bar
 
         public long Offset { get; set; }
 
-        
+
 
         public int FileSize { get; set; }
 

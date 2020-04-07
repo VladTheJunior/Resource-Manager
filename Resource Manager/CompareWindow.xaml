@@ -1,0 +1,764 @@
+﻿<Window
+    x:Class="Resource_Manager.CompareWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:diffplex="clr-namespace:DiffPlex.Wpf.Controls;assembly=DiffPlex.Wpf"
+    xmlns:fa5="http://schemas.fontawesome.com/icons/"
+    xmlns:local="clr-namespace:Resource_Manager"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Age of Empires III - Resource Manager - BAR Comparer"
+    Width="1316"
+    Height="720"
+    FontFamily="{StaticResource Trajan Pro}"
+    FontSize="14"
+    Loaded="Window_Loaded"
+    UseLayoutRounding="True"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="SingleBorderWindow"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <local:RunEnabledColorConverter x:Key="RunEnabledColorConverter" />
+        <Style x:Key="GridSplitterHorizontalGripStyle" TargetType="{x:Type GridSplitter}">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Cursor" Value="SizeNS" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GridSplitter}">
+                        <Border
+                            Height="{TemplateBinding Height}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                            <Border
+                                Width="50"
+                                Height="4"
+                                HorizontalAlignment="Center"
+                                Background="White"
+                                BorderBrush="#A0A0A0"
+                                BorderThickness="0,1" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style
+            x:Key="HorizontalGridSplitter"
+            BasedOn="{StaticResource GridSplitterHorizontalGripStyle}"
+            TargetType="{x:Type GridSplitter}">
+            <Setter Property="Height" Value="6" />
+            <Setter Property="Margin" Value="0,15" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Button
+            x:Name="bRun"
+            Grid.Column="1"
+            Width="41"
+            Click="Button_Click">
+            <Button.Content>
+                <Viewbox
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    Width="24"
+                    Height="24"
+                    Margin="2,0,0,0">
+                    <Rectangle Width="24" Height="24">
+                        <Rectangle.Fill>
+                            <DrawingBrush>
+                                <DrawingBrush.Drawing>
+                                    <DrawingGroup>
+                                        <DrawingGroup.Children>
+                                            <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                            <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M2.9997,-0.000199999999999534L2.9997,15.9998 13.6677,7.9998z" />
+                                            <GeometryDrawing Brush="{Binding ElementName=bRun, Path=IsEnabled, Converter={StaticResource RunEnabledColorConverter}}" Geometry="F1M4,2L4,14 12,8z" />
+                                        </DrawingGroup.Children>
+                                    </DrawingGroup>
+                                </DrawingBrush.Drawing>
+                            </DrawingBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </Viewbox>
+            </Button.Content>
+        </Button>
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="5"
+            Orientation="Horizontal">
+            <TextBlock VerticalAlignment="Center" Text="Open old BAR file:" />
+            <Button
+                x:Name="bSelectBar1"
+                Width="125"
+                Margin="5"
+                Click="bSelectBar1_Click">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="tbFile1" Text="Open" />
+                        <fa5:SvgAwesome
+                            x:Name="SpinnerFile1"
+                            Width="16"
+                            Margin="3,0,0,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Icon="Solid_Spinner"
+                            Spin="True"
+                            SpinDuration="2"
+                            Visibility="Collapsed" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <TextBlock
+                x:Name="tbBar1Name"
+                Width="340"
+                VerticalAlignment="Center"
+                TextTrimming="CharacterEllipsis"
+                ToolTip="{Binding Path=Text, ElementName=tbBar1Name}" />
+        </StackPanel>
+        <ListView
+            Name="BarView1"
+            Grid.Row="1"
+            AlternationCount="2"
+            FontSize="11"
+            ItemsSource="{Binding Bar1.CompareSourceCollection}"
+            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+            SelectionChanged="BarView1_SelectionChanged"
+            SelectionMode="Single"
+            VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+            VirtualizingPanel.ScrollUnit="Pixel">
+
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Expander IsExpanded="True">
+                                            <Expander.Header>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock
+                                                        VerticalAlignment="Bottom"
+                                                        FontWeight="Bold"
+                                                        Foreground="Gray"
+                                                        Text="{Binding Name}" />
+                                                    <TextBlock
+                                                        Margin="8,0,0,0"
+                                                        VerticalAlignment="Bottom"
+                                                        Foreground="Green"
+                                                        Text="{Binding ItemCount}" />
+                                                    <TextBlock
+                                                        VerticalAlignment="Bottom"
+                                                        Foreground="Silver"
+                                                        Text=" item(s)" />
+                                                </StackPanel>
+                                            </Expander.Header>
+                                            <ItemsPresenter />
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </ListView.GroupStyle>
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="FontFamily" Value="Consolas" />
+                    <Setter Property="FontSize" Value="9pt" />
+
+
+                    <Style.Triggers>
+
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=(ItemsControl.AlternationIndex)}" Value="0" />
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="False" />
+
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Background" Value="#0B000000" />
+                            </MultiDataTrigger.Setters>
+
+
+                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding type}" Value="Removed">
+                            <Setter Property="Foreground" Value="Green" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding type}" Value="Added">
+                            <Setter Property="Foreground" Value="Red" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding type}" Value="Changed">
+                            <Setter Property="Foreground" Value="#0000FF" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Width="40">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Rectangle
+                                    x:Name="myImage"
+                                    Width="16"
+                                    Height="16" />
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding isCompressed}" Value="True">
+                                        <Setter TargetName="myImage" Property="Fill">
+                                            <Setter.Value>
+
+                                                <DrawingBrush>
+                                                    <DrawingBrush.Drawing>
+                                                        <DrawingGroup>
+                                                            <DrawingGroup.Children>
+                                                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                                <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.5,1L9.61,1 10.61,3 13.496,3C14.323,3,14.996,3.673,14.996,4.5L14.996,12.5C14.996,13.327,14.323,14,13.496,14L1.5,14C0.673,14,0,13.327,0,12.5L0,2.5C0,1.673,0.673,1,1.5,1" />
+                                                                <GeometryDrawing Brush="#FFDCB67A" Geometry="F1M2,3L8.374,3 8.874,4 2,4z M13.496,4L10,4 9.992,4 8.992,2 1.5,2C1.225,2,1,2.224,1,2.5L1,12.5C1,12.776,1.225,13,1.5,13L13.496,13C13.773,13,13.996,12.776,13.996,12.5L13.996,4.5C13.996,4.224,13.773,4,13.496,4" />
+                                                                <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M4,12L3,12 3,13 4,13z M5,11L4,11 4,12 5,12z M5,9L4,9 4,10 5,10z M4,10L3,10 3,11 4,11z M4,8L3,8 3,9 4,9z M5,7L4,7 4,8 5,8z M5,4L3,4 3,6 5,6z M2,3L8.374,3 8.874,4 2,4z" />
+                                                                <GeometryDrawing Brush="#FF424242" Geometry="F1M5,4L5,6 3,6 3,4 2,4 2,13 3,13 3,12 4,12 4,11 3,11 3,10 4,10 4,9 3,9 3,8 4,8 4,7 5,7 5,8 4,8 4,9 5,9 5,10 4,10 4,11 5,11 5,12 4,12 4,13 6,13 6,4z M5,4L3,4 3,3 5,3z" />
+                                                            </DrawingGroup.Children>
+                                                        </DrawingGroup>
+                                                    </DrawingBrush.Drawing>
+                                                </DrawingBrush>
+
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding isCompressed}" Value="False">
+                                        <Setter TargetName="myImage" Property="Fill" Value="Transparent" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Click="files_Click" Tag="isCompressed">
+
+                                <Viewbox
+                                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                    Width="16"
+                                    Height="16"
+                                    Margin="1,0">
+                                    <Rectangle Width="16" Height="16">
+                                        <Rectangle.Fill>
+                                            <DrawingBrush>
+                                                <DrawingBrush.Drawing>
+                                                    <DrawingGroup>
+                                                        <DrawingGroup.Children>
+                                                            <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                            <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.5,1L9.61,1 10.61,3 13.496,3C14.323,3,14.996,3.673,14.996,4.5L14.996,12.5C14.996,13.327,14.323,14,13.496,14L1.5,14C0.673,14,0,13.327,0,12.5L0,2.5C0,1.673,0.673,1,1.5,1" />
+                                                            <GeometryDrawing Brush="#FFDCB67A" Geometry="F1M2,3L8.374,3 8.874,4 2,4z M13.496,4L10,4 9.992,4 8.992,2 1.5,2C1.225,2,1,2.224,1,2.5L1,12.5C1,12.776,1.225,13,1.5,13L13.496,13C13.773,13,13.996,12.776,13.996,12.5L13.996,4.5C13.996,4.224,13.773,4,13.496,4" />
+                                                            <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M4,12L3,12 3,13 4,13z M5,11L4,11 4,12 5,12z M5,9L4,9 4,10 5,10z M4,10L3,10 3,11 4,11z M4,8L3,8 3,9 4,9z M5,7L4,7 4,8 5,8z M5,4L3,4 3,6 5,6z M2,3L8.374,3 8.874,4 2,4z" />
+                                                            <GeometryDrawing Brush="#FF424242" Geometry="F1M5,4L5,6 3,6 3,4 2,4 2,13 3,13 3,12 4,12 4,11 3,11 3,10 4,10 4,9 3,9 3,8 4,8 4,7 5,7 5,8 4,8 4,9 5,9 5,10 4,10 4,11 5,11 5,12 4,12 4,13 6,13 6,4z M5,4L3,4 3,3 5,3z" />
+                                                        </DrawingGroup.Children>
+                                                    </DrawingGroup>
+                                                </DrawingBrush.Drawing>
+                                            </DrawingBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </Viewbox>
+                            </GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="195">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader
+                                Click="files_Click"
+                                Content="File Name"
+                                Tag="FileNameWithRoot" />
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Text="{Binding Path=FileNameWithRoot}"
+                                    TextTrimming="CharacterEllipsis"
+                                    ToolTip="{Binding Path=FileNameWithRoot}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="130">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader
+                                Click="files_Click"
+                                Content="File Size (bytes)"
+                                Tag="FileSize2" />
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Text="{Binding Path=FileSize2, StringFormat=N0}"
+                                    TextAlignment="Right"
+                                    TextTrimming="CharacterEllipsis" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+
+                    <GridViewColumn Width="80">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader
+                                Click="files_Click"
+                                Content="CRC32"
+                                Tag="CRC32" />
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Text="{Binding Path=CRC32, StringFormat=X8}"
+                                    TextAlignment="Right"
+                                    TextTrimming="CharacterEllipsis" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="160">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader
+                                Click="files_Click"
+                                Content="Last Modified date"
+                                Tag="lastModifiedDate" />
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=lastModifiedDate, StringFormat='yyyy-MM-dd HH:mm:ss.ms', FallbackValue='Unknown'}" TextTrimming="CharacterEllipsis" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="2"
+            Margin="5"
+            Orientation="Horizontal">
+            <TextBlock VerticalAlignment="Center" Text="Open new BAR file:" />
+            <Button
+                x:Name="bSelectBar2"
+                Width="125"
+                Margin="5"
+                Click="bSelectBar2_Click">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="tbFile2" Text="Open" />
+                        <fa5:SvgAwesome
+                            x:Name="SpinnerFile2"
+                            Width="16"
+                            Margin="3,0,0,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Icon="Solid_Spinner"
+                            Spin="True"
+                            SpinDuration="2"
+                            Visibility="Collapsed" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+
+            <TextBlock
+                x:Name="tbBar2Name"
+                Width="340"
+                VerticalAlignment="Center"
+                TextTrimming="CharacterEllipsis"
+                ToolTip="{Binding Path=Text, ElementName=tbBar2Name}" />
+        </StackPanel>
+        <ListView
+            Name="BarView2"
+            Grid.Row="1"
+            Grid.Column="2"
+            AlternationCount="2"
+            FontSize="11"
+            ItemsSource="{Binding Bar2.CompareSourceCollection}"
+            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+            SelectedIndex="{Binding ElementName=BarView1, Path=SelectedIndex}"
+            SelectionChanged="BarView1_SelectionChanged"
+            SelectionMode="Single"
+            VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+            VirtualizingPanel.ScrollUnit="Pixel">
+
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Expander IsExpanded="True">
+                                            <Expander.Header>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock
+                                                        VerticalAlignment="Bottom"
+                                                        FontWeight="Bold"
+                                                        Foreground="Gray"
+                                                        Text="{Binding Name}" />
+                                                    <TextBlock
+                                                        Margin="8,0,0,0"
+                                                        VerticalAlignment="Bottom"
+                                                        Foreground="Green"
+                                                        Text="{Binding ItemCount}" />
+                                                    <TextBlock
+                                                        VerticalAlignment="Bottom"
+                                                        Foreground="Silver"
+                                                        Text=" item(s)" />
+                                                </StackPanel>
+                                            </Expander.Header>
+                                            <ItemsPresenter />
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </ListView.GroupStyle>
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="FontFamily" Value="Consolas" />
+                    <Setter Property="FontSize" Value="9pt" />
+
+
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=(ItemsControl.AlternationIndex)}" Value="0" />
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="False" />
+
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Background" Value="#0B000000" />
+                            </MultiDataTrigger.Setters>
+
+
+                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding type}" Value="Removed">
+                            <Setter Property="Foreground" Value="Red" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding type}" Value="Added">
+                            <Setter Property="Foreground" Value="Green" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding type}" Value="Changed">
+                            <Setter Property="Foreground" Value="#0000FF" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Width="40">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Rectangle
+                                    x:Name="myImage"
+                                    Width="16"
+                                    Height="16" />
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding isCompressed}" Value="True">
+                                        <Setter TargetName="myImage" Property="Fill">
+                                            <Setter.Value>
+
+                                                <DrawingBrush>
+                                                    <DrawingBrush.Drawing>
+                                                        <DrawingGroup>
+                                                            <DrawingGroup.Children>
+                                                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                                <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.5,1L9.61,1 10.61,3 13.496,3C14.323,3,14.996,3.673,14.996,4.5L14.996,12.5C14.996,13.327,14.323,14,13.496,14L1.5,14C0.673,14,0,13.327,0,12.5L0,2.5C0,1.673,0.673,1,1.5,1" />
+                                                                <GeometryDrawing Brush="#FFDCB67A" Geometry="F1M2,3L8.374,3 8.874,4 2,4z M13.496,4L10,4 9.992,4 8.992,2 1.5,2C1.225,2,1,2.224,1,2.5L1,12.5C1,12.776,1.225,13,1.5,13L13.496,13C13.773,13,13.996,12.776,13.996,12.5L13.996,4.5C13.996,4.224,13.773,4,13.496,4" />
+                                                                <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M4,12L3,12 3,13 4,13z M5,11L4,11 4,12 5,12z M5,9L4,9 4,10 5,10z M4,10L3,10 3,11 4,11z M4,8L3,8 3,9 4,9z M5,7L4,7 4,8 5,8z M5,4L3,4 3,6 5,6z M2,3L8.374,3 8.874,4 2,4z" />
+                                                                <GeometryDrawing Brush="#FF424242" Geometry="F1M5,4L5,6 3,6 3,4 2,4 2,13 3,13 3,12 4,12 4,11 3,11 3,10 4,10 4,9 3,9 3,8 4,8 4,7 5,7 5,8 4,8 4,9 5,9 5,10 4,10 4,11 5,11 5,12 4,12 4,13 6,13 6,4z M5,4L3,4 3,3 5,3z" />
+                                                            </DrawingGroup.Children>
+                                                        </DrawingGroup>
+                                                    </DrawingBrush.Drawing>
+                                                </DrawingBrush>
+
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding isCompressed}" Value="False">
+                                        <Setter TargetName="myImage" Property="Fill" Value="Transparent" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Click="files_Click" Tag="isCompressed">
+
+                                <Viewbox
+                                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                    Width="16"
+                                    Height="16"
+                                    Margin="1,0">
+                                    <Rectangle Width="16" Height="16">
+                                        <Rectangle.Fill>
+                                            <DrawingBrush>
+                                                <DrawingBrush.Drawing>
+                                                    <DrawingGroup>
+                                                        <DrawingGroup.Children>
+                                                            <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                            <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.5,1L9.61,1 10.61,3 13.496,3C14.323,3,14.996,3.673,14.996,4.5L14.996,12.5C14.996,13.327,14.323,14,13.496,14L1.5,14C0.673,14,0,13.327,0,12.5L0,2.5C0,1.673,0.673,1,1.5,1" />
+                                                            <GeometryDrawing Brush="#FFDCB67A" Geometry="F1M2,3L8.374,3 8.874,4 2,4z M13.496,4L10,4 9.992,4 8.992,2 1.5,2C1.225,2,1,2.224,1,2.5L1,12.5C1,12.776,1.225,13,1.5,13L13.496,13C13.773,13,13.996,12.776,13.996,12.5L13.996,4.5C13.996,4.224,13.773,4,13.496,4" />
+                                                            <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M4,12L3,12 3,13 4,13z M5,11L4,11 4,12 5,12z M5,9L4,9 4,10 5,10z M4,10L3,10 3,11 4,11z M4,8L3,8 3,9 4,9z M5,7L4,7 4,8 5,8z M5,4L3,4 3,6 5,6z M2,3L8.374,3 8.874,4 2,4z" />
+                                                            <GeometryDrawing Brush="#FF424242" Geometry="F1M5,4L5,6 3,6 3,4 2,4 2,13 3,13 3,12 4,12 4,11 3,11 3,10 4,10 4,9 3,9 3,8 4,8 4,7 5,7 5,8 4,8 4,9 5,9 5,10 4,10 4,11 5,11 5,12 4,12 4,13 6,13 6,4z M5,4L3,4 3,3 5,3z" />
+                                                        </DrawingGroup.Children>
+                                                    </DrawingGroup>
+                                                </DrawingBrush.Drawing>
+                                            </DrawingBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </Viewbox>
+                            </GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="195">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader
+                                Click="files_Click"
+                                Content="File Name"
+                                Tag="FileNameWithRoot" />
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Text="{Binding Path=FileNameWithRoot}"
+                                    TextTrimming="CharacterEllipsis"
+                                    ToolTip="{Binding Path=FileNameWithRoot}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="130">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader
+                                Click="files_Click"
+                                Content="File Size (bytes)"
+                                Tag="FileSize2" />
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Text="{Binding Path=FileSize2, StringFormat=N0}"
+                                    TextAlignment="Right"
+                                    TextTrimming="CharacterEllipsis" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+
+                    <GridViewColumn Width="80">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader
+                                Click="files_Click"
+                                Content="CRC32"
+                                Tag="CRC32" />
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Text="{Binding Path=CRC32, StringFormat=X8}"
+                                    TextAlignment="Right"
+                                    TextTrimming="CharacterEllipsis" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="160">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader
+                                Click="files_Click"
+                                Content="Last Modified date"
+                                Tag="lastModifiedDate" />
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=lastModifiedDate, StringFormat='yyyy-MM-dd HH:mm:ss.ms', FallbackValue='Unknown'}" TextTrimming="CharacterEllipsis" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <GridSplitter
+            x:Name="gsSplitter"
+            Grid.Row="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="4"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Style="{StaticResource HorizontalGridSplitter}" />
+
+        <Grid
+            x:Name="gPreview"
+            Grid.Row="3"
+            Grid.Column="0"
+            Grid.ColumnSpan="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="41" />
+                <ColumnDefinition Width="*" />
+
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Grid.Row="0"
+                FontSize="14"
+                Text="{Binding ElementName=BarView1, Path=SelectedItem.fileNameWithoutPath, StringFormat='File Name: {0}'}"
+                TextTrimming="CharacterEllipsis"
+                ToolTip="{Binding ElementName=BarView1, Path=SelectedItem.FileNameWithRoot}" />
+            <TextBlock
+                Grid.Row="1"
+                FontSize="14"
+                Text="{Binding ElementName=BarView1, Path=SelectedItem.fileFormat, StringFormat='File Format: {0}'}" />
+            <TextBlock
+                Grid.Row="2"
+                FontSize="14"
+                Text="{Binding Bar1.PreviewDdt.DdtInfo, StringFormat='Image Format: {0}'}" />
+
+            <Grid
+                x:Name="ImageViewer1"
+                Grid.Row="3"
+                Grid.Column="0"
+                Visibility="Collapsed">
+                <ScrollViewer
+                    Background="White"
+                    HorizontalScrollBarVisibility="Visible"
+                    VirtualizingPanel.ScrollUnit="Pixel">
+
+
+                    <Image
+                        x:Name="ImagePreview1"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        MouseWheel="ImageViewer1_MouseWheel"
+                        RenderOptions.BitmapScalingMode="HighQuality"
+                        RenderTransformOrigin="0.5,0.5">
+                        <Image.LayoutTransform>
+                            <TransformGroup>
+                                <ScaleTransform />
+
+                            </TransformGroup>
+                        </Image.LayoutTransform>
+                    </Image>
+
+
+
+                </ScrollViewer>
+                <TextBlock
+                    Margin="25"
+                    Padding="2,4,2,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Background="#99FFFFFF"
+                    FlowDirection="RightToLeft"
+                    MouseDown="TextBlock1_MouseDown"
+                    Text="{Binding ZoomValue1, StringFormat='Current Zoom: {0}%'}"
+                    TextAlignment="Center" />
+            </Grid>
+            <Grid
+                x:Name="ImageViewer2"
+                Grid.Row="3"
+                Grid.Column="2"
+                Visibility="Collapsed">
+                <ScrollViewer
+                    Background="White"
+                    HorizontalScrollBarVisibility="Visible"
+                    VirtualizingPanel.ScrollUnit="Pixel">
+
+
+                    <Image
+                        x:Name="ImagePreview2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        MouseWheel="ImageViewer2_MouseWheel"
+                        RenderOptions.BitmapScalingMode="HighQuality"
+                        RenderTransformOrigin="0.5,0.5">
+                        <Image.LayoutTransform>
+                            <TransformGroup>
+                                <ScaleTransform />
+
+                            </TransformGroup>
+                        </Image.LayoutTransform>
+                    </Image>
+
+
+
+                </ScrollViewer>
+                <TextBlock
+                    Margin="25"
+                    Padding="2,4,2,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Background="#99FFFFFF"
+                    FlowDirection="RightToLeft"
+                    MouseDown="TextBlock2_MouseDown"
+                    Text="{Binding ZoomValue2, StringFormat='Current Zoom: {0}%'}"
+                    TextAlignment="Center" />
+            </Grid>
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="2"
+                FontSize="14"
+                Text="{Binding ElementName=BarView2, Path=SelectedItem.fileNameWithoutPath, StringFormat='File Name: {0}'}"
+                TextTrimming="CharacterEllipsis"
+                ToolTip="{Binding ElementName=BarView2, Path=SelectedItem.FileNameWithRoot}" />
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="2"
+                FontSize="14"
+                Text="{Binding ElementName=BarView2, Path=SelectedItem.fileFormat, StringFormat='File Format: {0}'}" />
+            <TextBlock
+                Grid.Row="2"
+                Grid.Column="2"
+                FontSize="14"
+                Text="{Binding Bar2.PreviewDdt.DdtInfo, StringFormat='Image Format: {0}'}" />
+            <diffplex:DiffViewer
+                x:Name="XMLViewer"
+                Grid.Row="3"
+                Grid.ColumnSpan="4"
+                FontFamily="Consolas"
+                FontSize="10pt"
+                VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                VirtualizingPanel.ScrollUnit="Pixel"
+                Visibility="Collapsed" />
+
+
+        </Grid>
+    </Grid>
+</Window>
