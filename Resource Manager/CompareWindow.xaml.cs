@@ -1,10 +1,21 @@
 ﻿using Archive_Unpacker.Classes.BarViewModel;
+using DiffPlex.DiffBuilder;
+using DiffPlex.DiffBuilder.Model;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using ICSharpCode.AvalonEdit.Search;
 using Microsoft.Win32;
 using Resource_Manager.Classes.Bar;
 using Resource_Manager.Classes.Sort;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -12,6 +23,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Xml;
 
 namespace Resource_Manager
 {
@@ -58,13 +70,29 @@ namespace Resource_Manager
 
         public CompareWindow()
         {
+
+            IHighlightingDefinition customHighlighting;
+            using (Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("Resource_Manager.Classes.Diff.xshd"))
+            {
+                using (XmlReader reader = new XmlTextReader(s))
+                {
+                    customHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+                    //     XMLViewer2.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+                }
+            }
+
+            HighlightingManager.Instance.RegisterHighlighting("Diff", new string[] { }, customHighlighting);
+
             InitializeComponent();
-            //SearchPanel.Install(XMLViewer);
+            SearchPanel.Install(XMLViewer1);
+            SearchPanel.Install(XMLViewer2);
             DataContext = this;
             BarView1.AddHandler(Thumb.DragDeltaEvent, new DragDeltaEventHandler(Thumb_DragDelta), true);
             BarView2.AddHandler(Thumb.DragDeltaEvent, new DragDeltaEventHandler(Thumb_DragDelta), true);
             BarView1.Items.GroupDescriptions.Add(new PropertyGroupDescription("type"));
             BarView2.Items.GroupDescriptions.Add(new PropertyGroupDescription("type"));
+
+
         }
 
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
@@ -198,16 +226,17 @@ namespace Resource_Manager
 
                 ImageViewer1.Visibility = Visibility.Collapsed;
                 ImageViewer2.Visibility = Visibility.Collapsed;
-                XMLViewer.Visibility = Visibility.Collapsed;
-                XMLViewer.NewText = "";
-                XMLViewer.OldText = "";
+                XMLViewer1.Visibility = Visibility.Collapsed;
+                XMLViewer1.Text = "";
+
+                XMLViewer2.Visibility = Visibility.Collapsed;
+                XMLViewer2.Text = "";
                 BarEntry entry = BarView1.SelectedItem as BarEntry;
                 BarEntry entry2 = BarView2.SelectedItem as BarEntry;
                 if (entry != null)
                 {
                     if (entry.type != "Added")
                     {
-
                         await Bar1.readFile(entry);
                     }
                 }
@@ -216,10 +245,58 @@ namespace Resource_Manager
                 {
                     if (entry2.type != "Removed")
                     {
-
                         await Bar2.readFile(entry2);
                     }
                 }
+
+                if (entry != null)
+                {
+                    if (entry.type != "Added")
+                    {
+                        if (entry2 != null)
+                        {
+                            if (entry2.type != "Removed")
+                            {
+                                if (Bar1.Preview != null && Bar2.Preview != null)
+                                {
+                                    try
+                                    {
+                                        var diff = SideBySideDiffBuilder.Diff(Bar1.Preview.Text, Bar2.Preview.Text);
+
+
+                                        var Old = diff.OldText.Lines.Select(x =>
+                                        {
+                                            if (x.Type == ChangeType.Inserted || x.SubPieces.Any(x => x.Type == ChangeType.Inserted))
+                                                return "!+ " + x.Text;
+                                            if (x.Type == ChangeType.Deleted || x.SubPieces.Any(x => x.Type == ChangeType.Deleted))
+                                                return "!- " + x.Text;
+                                            return "   " + x.Text;
+                                        }
+                                        );
+
+                                        var New = diff.NewText.Lines.Select(x =>
+                                        {
+                                            if (x.Type == ChangeType.Inserted || x.SubPieces.Any(x => x.Type == ChangeType.Inserted))
+                                                return "!+ " + x.Text;
+                                            if (x.Type == ChangeType.Deleted || x.SubPieces.Any(x => x.Type == ChangeType.Deleted))
+                                                return "!- " + x.Text;
+                                            return "   " + x.Text;
+                                        }
+    );
+
+                                        XMLViewer1.Text = string.Join("\n", Old);
+                                        XMLViewer2.Text = string.Join("\n", New);
+                                    }
+                                    catch { }
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+
+
 
                 if (entry != null)
                 {
@@ -230,34 +307,34 @@ namespace Resource_Manager
 
                         if (Bar1.Preview != null)
                         {
-
-                            XMLViewer.OldText = Bar1.Preview.Text;
+                            if (XMLViewer1.Text == "")
+                                XMLViewer1.Text = Bar1.Preview.Text;
 
                         }
 
                         if (entry.Extension == ".DDT")
                         {
                             ImagePreview1.Source = Bar1.PreviewDdt.Bitmap;
-                            XMLViewer.Visibility = Visibility.Collapsed;
+                            XMLViewer1.Visibility = Visibility.Collapsed;
                             ImageViewer1.Visibility = Visibility.Visible;
                         }
                         else
                         if (entry.Extension == ".BMP" || entry.Extension == ".PNG" || entry.Extension == ".CUR" || entry.Extension == ".JPG")
                         {
                             ImagePreview1.Source = Bar1.PreviewImage;
-                            XMLViewer.Visibility = Visibility.Collapsed;
+                            XMLViewer1.Visibility = Visibility.Collapsed;
                             ImageViewer1.Visibility = Visibility.Visible;
                         }
                         else
                         if (entry.Extension == ".XMB" || entry.Extension == ".XML" || entry.Extension == ".SHP" || entry.Extension == ".LGT" || entry.Extension == ".XS" || entry.Extension == ".TXT" || entry.Extension == ".CFG" || entry.Extension == ".XAML")
                         {
                             ImageViewer1.Visibility = Visibility.Collapsed;
-                            XMLViewer.Visibility = Visibility.Visible;
+                            XMLViewer1.Visibility = Visibility.Visible;
                         }
                         else
                         {
                             ImageViewer1.Visibility = Visibility.Collapsed;
-                            XMLViewer.Visibility = Visibility.Collapsed;
+                            XMLViewer1.Visibility = Visibility.Collapsed;
 
                         }
 
@@ -273,32 +350,33 @@ namespace Resource_Manager
                         if (Bar2.Preview != null)
                         {
 
-                            XMLViewer.NewText = Bar2.Preview.Text;
+                            if (XMLViewer2.Text == "")
+                                XMLViewer2.Text = Bar2.Preview.Text;
 
                         }
                         if (entry.Extension == ".DDT")
                         {
                             ImagePreview2.Source = Bar2.PreviewDdt.Bitmap;
-                            XMLViewer.Visibility = Visibility.Collapsed;
+                            XMLViewer2.Visibility = Visibility.Collapsed;
                             ImageViewer2.Visibility = Visibility.Visible;
                         }
                         else
                         if (entry.Extension == ".BMP" || entry.Extension == ".PNG" || entry.Extension == ".CUR" || entry.Extension == ".JPG")
                         {
                             ImagePreview2.Source = Bar2.PreviewImage;
-                            XMLViewer.Visibility = Visibility.Collapsed;
+                            XMLViewer2.Visibility = Visibility.Collapsed;
                             ImageViewer2.Visibility = Visibility.Visible;
                         }
                         else
                         if (entry.Extension == ".XMB" || entry.Extension == ".XML" || entry.Extension == ".SHP" || entry.Extension == ".LGT" || entry.Extension == ".XS" || entry.Extension == ".TXT" || entry.Extension == ".CFG" || entry.Extension == ".XAML")
                         {
                             ImageViewer2.Visibility = Visibility.Collapsed;
-                            XMLViewer.Visibility = Visibility.Visible;
+                            XMLViewer2.Visibility = Visibility.Visible;
                         }
                         else
                         {
                             ImageViewer2.Visibility = Visibility.Collapsed;
-                            XMLViewer.Visibility = Visibility.Collapsed;
+                            XMLViewer2.Visibility = Visibility.Collapsed;
 
                         }
 
@@ -355,36 +433,40 @@ namespace Resource_Manager
                 if (Math.Abs(scrollViewer1.VerticalOffset - offset) > 1)
                     scrollViewer1.ScrollToVerticalOffset(offset);
             };
+
+
+
         }
 
 
         private async void bSelectBar1_Click(object sender, RoutedEventArgs e)
         {
-            bSelectBar1.IsEnabled = false;
+            mainMenu.IsEnabled = false;
             SpinnerFile1.Visibility = Visibility.Visible;
-            tbFile1.Text = "Opening";
+            tbFile.Text = "Opening";
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Age of Empires 3 .BAR files (*.bar)|*.bar";
             string filePath;
             if (openFileDialog.ShowDialog() == true)
             {
                 filePath = openFileDialog.FileName;
-                tbBar1Name.Text = filePath;
+                tbBar1Name.ToolTip = filePath;
             }
             else
             {
                 SpinnerFile1.Visibility = Visibility.Collapsed;
-                tbFile1.Text = "Open";
-                bSelectBar1.IsEnabled = true;
+                tbFile.Text = "Open";
+                mainMenu.IsEnabled = true;
                 return;
             }
             try
             {
                 Bar1 = null;
+                OldOpen.IsChecked = false;
                 NotifyPropertyChanged("Bar1");
                 Bar1 = await BarViewModel.Load(filePath, true);
                 NotifyPropertyChanged("Bar1");
-
+                OldOpen.IsChecked = true;
                 if (Bar2 != null)
                 {
                     Bar2.ResetComparer();
@@ -396,28 +478,28 @@ namespace Resource_Manager
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             SpinnerFile1.Visibility = Visibility.Collapsed;
-            tbFile1.Text = "Open";
-            bSelectBar1.IsEnabled = true;
+            tbFile.Text = "Open";
+            mainMenu.IsEnabled = true;
         }
 
         private async void bSelectBar2_Click(object sender, RoutedEventArgs e)
         {
-            bSelectBar2.IsEnabled = false;
-            SpinnerFile2.Visibility = Visibility.Visible;
-            tbFile2.Text = "Opening";
+            mainMenu.IsEnabled = false;
+            SpinnerFile1.Visibility = Visibility.Visible;
+            tbFile.Text = "Opening";
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Age of Empires 3 .BAR files (*.bar)|*.bar";
             string filePath;
             if (openFileDialog.ShowDialog() == true)
             {
                 filePath = openFileDialog.FileName;
-                tbBar2Name.Text = filePath;
+                tbBar2Name.ToolTip = filePath;
             }
             else
             {
-                SpinnerFile2.Visibility = Visibility.Collapsed;
-                tbFile2.Text = "Open";
-                bSelectBar2.IsEnabled = true;
+                SpinnerFile1.Visibility = Visibility.Collapsed;
+                tbFile.Text = "Open";
+                mainMenu.IsEnabled = true;
                 return;
             }
 
@@ -425,9 +507,11 @@ namespace Resource_Manager
             try
             {
                 Bar2 = null;
+                NewOpen.IsChecked = false;
                 NotifyPropertyChanged("Bar2");
                 Bar2 = await BarViewModel.Load(filePath, true);
                 NotifyPropertyChanged("Bar2");
+                NewOpen.IsChecked = true;
 
                 if (Bar1 != null)
                 {
@@ -439,9 +523,9 @@ namespace Resource_Manager
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            SpinnerFile2.Visibility = Visibility.Collapsed;
-            tbFile2.Text = "Open";
-            bSelectBar2.IsEnabled = true;
+            SpinnerFile1.Visibility = Visibility.Collapsed;
+            tbFile.Text = "Open";
+            mainMenu.IsEnabled = true;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -451,18 +535,39 @@ namespace Resource_Manager
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            (sender as Button).IsEnabled = false;
+            mainMenu.IsEnabled = false;
+            SpinnerFile2.Visibility = Visibility.Visible;
+            tbCompare.Text = "Comparing";
             if (Bar1 != null && Bar2 != null)
             {
-                Bar1.Compare(Bar2, false);
-                Bar2.Compare(Bar1, true);
+
+                    Bar1.Compare(Bar2, false);
+                    Bar2.Compare(Bar1, true);
             }
             else
                 MessageBox.Show("You should open 2 files for comparison !");
-            (sender as Button).IsEnabled = true;
+            SpinnerFile2.Visibility = Visibility.Collapsed;
+            tbCompare.Text = "Compare";
+            mainMenu.IsEnabled = true;
         }
 
+        private void XMLViewer1_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
 
+            var offset = XMLViewer1.VerticalOffset;
+            if (Math.Abs(XMLViewer2.VerticalOffset - offset) > 1)
+                XMLViewer2.ScrollToVerticalOffset(offset);
+
+
+
+        }
+
+        private void XMLViewer2_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            var offset = XMLViewer2.VerticalOffset;
+            if (Math.Abs(XMLViewer1.VerticalOffset - offset) > 1)
+                XMLViewer1.ScrollToVerticalOffset(offset);
+        }
     }
 
 }

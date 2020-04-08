@@ -1,0 +1,14 @@
+﻿<SyntaxDefinition name="Diff"
+        xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="Deleted"  background="#40D82020" fontWeight="bold"/>
+  <Color name="Inserted"  background="#4060D820"  fontWeight="bold"/>
+
+  <!-- This is the main ruleset. -->
+  <RuleSet>
+
+
+    <Span color="Deleted" begin="!-"/>
+    <Span color="Inserted" begin="!\+ "/>
+
+  </RuleSet>
+</SyntaxDefinition>

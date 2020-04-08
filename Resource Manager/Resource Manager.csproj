@@ -12,6 +12,14 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Classes\Diff.xshd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Classes\Diff.xshd" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <Resource Include="Fonts\TrajanPro-Regular.ttf" />

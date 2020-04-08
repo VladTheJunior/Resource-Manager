@@ -6,7 +6,7 @@
     xmlns:diffplex="clr-namespace:DiffPlex.Wpf.Controls;assembly=DiffPlex.Wpf"
     xmlns:fa5="http://schemas.fontawesome.com/icons/"
     xmlns:local="clr-namespace:Resource_Manager"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
     Title="Age of Empires III - Resource Manager - BAR Comparer"
     Width="1316"
     Height="720"
@@ -19,6 +19,43 @@
     mc:Ignorable="d">
     <Window.Resources>
         <local:RunEnabledColorConverter x:Key="RunEnabledColorConverter" />
+        <Style x:Key="GridSplitterVerticalGripStyle" TargetType="{x:Type GridSplitter}">
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Cursor" Value="SizeWE" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GridSplitter}">
+                        <Border
+                            Width="{TemplateBinding Width}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                            <Border
+                                Width="4"
+                                Height="50"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="White"
+                                BorderBrush="#A0A0A0"
+                                BorderThickness="1,0" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style
+            x:Key="VerticalGridSplitter"
+            BasedOn="{StaticResource GridSplitterVerticalGripStyle}"
+            TargetType="{x:Type GridSplitter}">
+            <Setter Property="Width" Value="6" />
+            <Setter Property="Margin" Value="5,0" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
         <Style x:Key="GridSplitterHorizontalGripStyle" TargetType="{x:Type GridSplitter}">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
@@ -51,11 +88,11 @@
             BasedOn="{StaticResource GridSplitterHorizontalGripStyle}"
             TargetType="{x:Type GridSplitter}">
             <Setter Property="Height" Value="6" />
-            <Setter Property="Margin" Value="0,15" />
+            <Setter Property="Margin" Value="0,5" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
         </Style>
     </Window.Resources>
-    <Grid>
+    <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
@@ -64,53 +101,21 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition />
             <RowDefinition Height="auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Button
-            x:Name="bRun"
-            Grid.Column="1"
-            Width="41"
-            Click="Button_Click">
-            <Button.Content>
-                <Viewbox
-                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    Width="24"
-                    Height="24"
-                    Margin="2,0,0,0">
-                    <Rectangle Width="24" Height="24">
-                        <Rectangle.Fill>
-                            <DrawingBrush>
-                                <DrawingBrush.Drawing>
-                                    <DrawingGroup>
-                                        <DrawingGroup.Children>
-                                            <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
-                                            <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M2.9997,-0.000199999999999534L2.9997,15.9998 13.6677,7.9998z" />
-                                            <GeometryDrawing Brush="{Binding ElementName=bRun, Path=IsEnabled, Converter={StaticResource RunEnabledColorConverter}}" Geometry="F1M4,2L4,14 12,8z" />
-                                        </DrawingGroup.Children>
-                                    </DrawingGroup>
-                                </DrawingBrush.Drawing>
-                            </DrawingBrush>
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </Viewbox>
-            </Button.Content>
-        </Button>
-        <StackPanel
-            Grid.Row="0"
-            Grid.Column="0"
-            Margin="5"
-            Orientation="Horizontal">
-            <TextBlock VerticalAlignment="Center" Text="Open old BAR file:" />
-            <Button
-                x:Name="bSelectBar1"
-                Width="125"
-                Margin="5"
-                Click="bSelectBar1_Click">
-                <Button.Content>
+        <Menu
+            x:Name="mainMenu"
+            Grid.ColumnSpan="4"
+            VerticalAlignment="Top"
+            FontFamily="{StaticResource Trajan Pro}"
+            FontSize="16">
+            <MenuItem >
+                <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock x:Name="tbFile1" Text="Open" />
+                        <TextBlock x:Name="tbFile" Text="Open" />
                         <fa5:SvgAwesome
                             x:Name="SpinnerFile1"
                             Width="16"
@@ -122,23 +127,79 @@
                             SpinDuration="2"
                             Visibility="Collapsed" />
                     </StackPanel>
-                </Button.Content>
-            </Button>
-            <TextBlock
-                x:Name="tbBar1Name"
-                Width="340"
-                VerticalAlignment="Center"
-                TextTrimming="CharacterEllipsis"
-                ToolTip="{Binding Path=Text, ElementName=tbBar1Name}" />
-        </StackPanel>
-        <ListView
+                   
+                </MenuItem.Header>
+                <MenuItem x:Name="OldOpen" Header="Old BAR..." Click="bSelectBar1_Click">
+                    
+                </MenuItem>
+                <MenuItem  x:Name="NewOpen" Header="New BAR..." Click="bSelectBar2_Click">
+
+                </MenuItem>
+            </MenuItem>
+         
+            <MenuItem             x:Name="bRun"
+            Click="Button_Click">
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="tbCompare" Text="Compare" />
+                        <fa5:SvgAwesome
+                            x:Name="SpinnerFile2"
+                            Width="16"
+                            Margin="3,0,0,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Icon="Solid_Spinner"
+                            Spin="True"
+                            SpinDuration="2"
+                            Visibility="Collapsed" />
+                    </StackPanel>
+                </MenuItem.Header>
+                
+            </MenuItem>
+        </Menu>
+
+     
+
+            <TextBlock x:Name="tbBar1Name"
+                 Grid.Row="1"
+            Grid.Column="0"
+              Margin="0,10,0,0"
+                       Text="Old BAR File"
+               
+                FontSize="22"
+                VerticalAlignment="Center" HorizontalAlignment="Center"
+               
+                 />
+  
+
+            <TextBlock x:Name="tbBar2Name"
+                  Grid.Row="1"
+            Grid.Column="2"
+           Margin="0,10,0,0"
+              Text="New BAR File"
+                FontSize="22"
+                VerticalAlignment="Center" HorizontalAlignment="Center"
+            
+                />
+  
+        
+            <Grid  Grid.Row="2" Grid.ColumnSpan="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+
+                </Grid.ColumnDefinitions>
+                <ListView
+            BorderThickness="0"
             Name="BarView1"
             Grid.Row="1"
+            
             AlternationCount="2"
             FontSize="11"
             ItemsSource="{Binding Bar1.CompareSourceCollection}"
             ScrollViewer.HorizontalScrollBarVisibility="Visible"
-            ScrollViewer.VerticalScrollBarVisibility="Visible"
+            ScrollViewer.VerticalScrollBarVisibility="Hidden"
             SelectionChanged="BarView1_SelectionChanged"
             SelectionMode="Single"
             VirtualizingPanel.IsVirtualizingWhenGrouping="True"
@@ -352,43 +413,12 @@
                 </GridView>
             </ListView.View>
         </ListView>
-
-        <StackPanel
-            Grid.Row="0"
-            Grid.Column="2"
-            Margin="5"
-            Orientation="Horizontal">
-            <TextBlock VerticalAlignment="Center" Text="Open new BAR file:" />
-            <Button
-                x:Name="bSelectBar2"
-                Width="125"
-                Margin="5"
-                Click="bSelectBar2_Click">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock x:Name="tbFile2" Text="Open" />
-                        <fa5:SvgAwesome
-                            x:Name="SpinnerFile2"
-                            Width="16"
-                            Margin="3,0,0,0"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Icon="Solid_Spinner"
-                            Spin="True"
-                            SpinDuration="2"
-                            Visibility="Collapsed" />
-                    </StackPanel>
-                </Button.Content>
-            </Button>
-
-            <TextBlock
-                x:Name="tbBar2Name"
-                Width="340"
-                VerticalAlignment="Center"
-                TextTrimming="CharacterEllipsis"
-                ToolTip="{Binding Path=Text, ElementName=tbBar2Name}" />
-        </StackPanel>
+        <GridSplitter HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Style="{StaticResource VerticalGridSplitter}"  Grid.Column="1" Grid.Row="1" />
+        
         <ListView
+            BorderThickness="0"
             Name="BarView2"
             Grid.Row="1"
             Grid.Column="2"
@@ -610,9 +640,12 @@
                 </GridView>
             </ListView.View>
         </ListView>
+            </Grid>
+     
+        
         <GridSplitter
             x:Name="gsSplitter"
-            Grid.Row="2"
+            Grid.Row="3"
             Grid.Column="0"
             Grid.ColumnSpan="4"
             HorizontalAlignment="Stretch"
@@ -621,7 +654,7 @@
 
         <Grid
             x:Name="gPreview"
-            Grid.Row="3"
+            Grid.Row="4"
             Grid.Column="0"
             Grid.ColumnSpan="4">
             <Grid.RowDefinitions>
@@ -632,7 +665,7 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="41" />
+                <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
 
             </Grid.ColumnDefinitions>
@@ -748,17 +781,37 @@
                 Grid.Column="2"
                 FontSize="14"
                 Text="{Binding Bar2.PreviewDdt.DdtInfo, StringFormat='Image Format: {0}'}" />
-            <diffplex:DiffViewer
-                x:Name="XMLViewer"
+
+            <avalonEdit:TextEditor
+                x:Name="XMLViewer1"
+                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                ScrollViewer.ScrollChanged="XMLViewer1_ScrollChanged"
                 Grid.Row="3"
-                Grid.ColumnSpan="4"
                 FontFamily="Consolas"
                 FontSize="10pt"
-                VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                IsReadOnly="True"
+                SyntaxHighlighting="Diff"
+                ShowLineNumbers="True"         
                 VirtualizingPanel.ScrollUnit="Pixel"
                 Visibility="Collapsed" />
 
+            <GridSplitter x:Name="Splitter"  HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Style="{StaticResource VerticalGridSplitter}"  Grid.Column="1" Grid.Row="0" Grid.RowSpan="5" />
+            <avalonEdit:TextEditor
+                x:Name="XMLViewer2"
+                ScrollViewer.ScrollChanged="XMLViewer2_ScrollChanged"
+                Grid.Row="3"
+                Grid.Column="2"
+                SyntaxHighlighting="Diff"
+                FontFamily="Consolas"
+                FontSize="10pt"
+                IsReadOnly="True"
+                ShowLineNumbers="True"         
+                VirtualizingPanel.ScrollUnit="Pixel"
+                Visibility="Collapsed" />
 
         </Grid>
+      
     </Grid>
 </Window>

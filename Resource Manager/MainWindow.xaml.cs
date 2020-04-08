@@ -1,4 +1,6 @@
 ﻿using Archive_Unpacker.Classes.BarViewModel;
+using DiffPlex.DiffBuilder;
+using DiffPlex.DiffBuilder.Model;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Sample;
@@ -599,6 +601,10 @@ namespace Resource_Manager
         {
             CompareWindow window = new CompareWindow();
             window.Show();
+        }
+
+        private void TextBlock_MouseDown_2(object sender, MouseButtonEventArgs e)
+        {
         }
     }
 
