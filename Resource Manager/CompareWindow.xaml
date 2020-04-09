@@ -2,11 +2,12 @@
     x:Class="Resource_Manager.CompareWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:diffplex="clr-namespace:DiffPlex.Wpf.Controls;assembly=DiffPlex.Wpf"
     xmlns:fa5="http://schemas.fontawesome.com/icons/"
     xmlns:local="clr-namespace:Resource_Manager"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Age of Empires III - Resource Manager - BAR Comparer"
     Width="1316"
     Height="720"
@@ -92,7 +93,7 @@
             <Setter Property="HorizontalAlignment" Value="Stretch" />
         </Style>
     </Window.Resources>
-    <Grid >
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
@@ -112,7 +113,7 @@
             VerticalAlignment="Top"
             FontFamily="{StaticResource Trajan Pro}"
             FontSize="16">
-            <MenuItem >
+            <MenuItem>
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock x:Name="tbFile" Text="Open" />
@@ -127,18 +128,19 @@
                             SpinDuration="2"
                             Visibility="Collapsed" />
                     </StackPanel>
-                   
-                </MenuItem.Header>
-                <MenuItem x:Name="OldOpen" Header="Old BAR..." Click="bSelectBar1_Click">
-                    
-                </MenuItem>
-                <MenuItem  x:Name="NewOpen" Header="New BAR..." Click="bSelectBar2_Click">
 
-                </MenuItem>
+                </MenuItem.Header>
+                <MenuItem
+                    x:Name="OldOpen"
+                    Click="bSelectBar1_Click"
+                    Header="Old BAR..." />
+                <MenuItem
+                    x:Name="NewOpen"
+                    Click="bSelectBar2_Click"
+                    Header="New BAR..." />
             </MenuItem>
-         
-            <MenuItem             x:Name="bRun"
-            Click="Button_Click">
+
+            <MenuItem x:Name="bRun" Click="Button_Click">
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock x:Name="tbCompare" Text="Compare" />
@@ -154,143 +156,178 @@
                             Visibility="Collapsed" />
                     </StackPanel>
                 </MenuItem.Header>
-                
+
             </MenuItem>
         </Menu>
 
-     
 
-            <TextBlock x:Name="tbBar1Name"
-                 Grid.Row="1"
+
+        <TextBlock
+            x:Name="tbBar1Name"
+            Grid.Row="1"
             Grid.Column="0"
-              Margin="0,10,0,0"
-                       Text="Old BAR File"
-               
-                FontSize="22"
-                VerticalAlignment="Center" HorizontalAlignment="Center"
-               
-                 />
-  
+            Margin="0,10,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="22"
+            Text="Old BAR File" />
 
-            <TextBlock x:Name="tbBar2Name"
-                  Grid.Row="1"
-            Grid.Column="2"
-           Margin="0,10,0,0"
-              Text="New BAR File"
-                FontSize="22"
-                VerticalAlignment="Center" HorizontalAlignment="Center"
-            
-                />
-  
-        
-            <Grid  Grid.Row="2" Grid.ColumnSpan="4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
 
-                </Grid.ColumnDefinitions>
-                <ListView
-            BorderThickness="0"
-            Name="BarView1"
+        <TextBlock
+            x:Name="tbBar2Name"
             Grid.Row="1"
-            
-            AlternationCount="2"
-            FontSize="11"
-            ItemsSource="{Binding Bar1.CompareSourceCollection}"
-            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-            ScrollViewer.VerticalScrollBarVisibility="Hidden"
-            SelectionChanged="BarView1_SelectionChanged"
-            SelectionMode="Single"
-            VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-            VirtualizingPanel.ScrollUnit="Pixel">
-
-            <ListView.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.ContainerStyle>
-                        <Style TargetType="{x:Type GroupItem}">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate>
-                                        <Expander IsExpanded="True">
-                                            <Expander.Header>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock
-                                                        VerticalAlignment="Bottom"
-                                                        FontWeight="Bold"
-                                                        Foreground="Gray"
-                                                        Text="{Binding Name}" />
-                                                    <TextBlock
-                                                        Margin="8,0,0,0"
-                                                        VerticalAlignment="Bottom"
-                                                        Foreground="Green"
-                                                        Text="{Binding ItemCount}" />
-                                                    <TextBlock
-                                                        VerticalAlignment="Bottom"
-                                                        Foreground="Silver"
-                                                        Text=" item(s)" />
-                                                </StackPanel>
-                                            </Expander.Header>
-                                            <ItemsPresenter />
-                                        </Expander>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </GroupStyle.ContainerStyle>
-                </GroupStyle>
-            </ListView.GroupStyle>
-
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    <Setter Property="BorderThickness" Value="0" />
-                    <Setter Property="Margin" Value="0" />
-                    <Setter Property="FontFamily" Value="Consolas" />
-                    <Setter Property="FontSize" Value="9pt" />
+            Grid.Column="2"
+            Margin="0,10,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="22"
+            Text="New BAR File" />
 
 
-                    <Style.Triggers>
+        <Grid Grid.Row="2" Grid.ColumnSpan="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
 
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=(ItemsControl.AlternationIndex)}" Value="0" />
-                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />
-                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="False" />
+            </Grid.ColumnDefinitions>
 
-                            </MultiDataTrigger.Conditions>
-                            <MultiDataTrigger.Setters>
-                                <Setter Property="Background" Value="#0B000000" />
-                            </MultiDataTrigger.Setters>
+            <ListView
+                Name="BarComparerView"
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="4"
+                AlternationCount="2"
+                BorderThickness="0"
+                FontSize="11"
+                ItemsSource="{Binding barComparer.CompareSourceCollection}"
+                ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                ScrollViewer.VerticalScrollBarVisibility="Visible"
+                SelectionChanged="BarView1_SelectionChanged"
+                SelectionMode="Single"
+                VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                VirtualizingPanel.ScrollUnit="Pixel">
+
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <Expander IsExpanded="True">
+                                                <Expander.Header>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock
+                                                            VerticalAlignment="Bottom"
+                                                            FontWeight="Bold"
+                                                            Foreground="Gray"
+                                                            Text="{Binding Name}" />
+                                                        <TextBlock
+                                                            Margin="8,0,0,0"
+                                                            VerticalAlignment="Bottom"
+                                                            Foreground="Green"
+                                                            Text="{Binding ItemCount}" />
+                                                        <TextBlock
+                                                            VerticalAlignment="Bottom"
+                                                            Foreground="Silver"
+                                                            Text=" item(s)" />
+                                                    </StackPanel>
+                                                </Expander.Header>
+                                                <ItemsPresenter />
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Margin" Value="0" />
+                        <Setter Property="FontFamily" Value="Consolas" />
+                        <Setter Property="FontSize" Value="9pt" />
 
 
-                        </MultiDataTrigger>
-                        <DataTrigger Binding="{Binding type}" Value="Removed">
-                            <Setter Property="Foreground" Value="Green" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding type}" Value="Added">
-                            <Setter Property="Foreground" Value="Red" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding type}" Value="Changed">
-                            <Setter Property="Foreground" Value="#0000FF" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.View>
-                <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Width="40">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Rectangle
-                                    x:Name="myImage"
-                                    Width="16"
-                                    Height="16" />
-                                <DataTemplate.Triggers>
-                                    <DataTrigger Binding="{Binding isCompressed}" Value="True">
-                                        <Setter TargetName="myImage" Property="Fill">
-                                            <Setter.Value>
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=(ItemsControl.AlternationIndex)}" Value="0" />
+                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="False" />
 
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Background" Value="#0B000000" />
+                                </MultiDataTrigger.Setters>
+
+
+                            </MultiDataTrigger>
+                            <DataTrigger Binding="{Binding type}" Value="Removed">
+                                <Setter Property="Foreground" Value="Red" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding type}" Value="Added">
+                                <Setter Property="Foreground" Value="Green" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding type}" Value="Changed">
+                                <Setter Property="Foreground" Value="#0000FF" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView AllowsColumnReorder="False">
+                        <GridViewColumn Width="40">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Rectangle
+                                        x:Name="myImage"
+                                        Width="16"
+                                        Height="16" />
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding entryOld.isCompressed}" Value="True">
+                                            <Setter TargetName="myImage" Property="Fill">
+                                                <Setter.Value>
+
+                                                    <DrawingBrush>
+                                                        <DrawingBrush.Drawing>
+                                                            <DrawingGroup>
+                                                                <DrawingGroup.Children>
+                                                                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.5,1L9.61,1 10.61,3 13.496,3C14.323,3,14.996,3.673,14.996,4.5L14.996,12.5C14.996,13.327,14.323,14,13.496,14L1.5,14C0.673,14,0,13.327,0,12.5L0,2.5C0,1.673,0.673,1,1.5,1" />
+                                                                    <GeometryDrawing Brush="#FFDCB67A" Geometry="F1M2,3L8.374,3 8.874,4 2,4z M13.496,4L10,4 9.992,4 8.992,2 1.5,2C1.225,2,1,2.224,1,2.5L1,12.5C1,12.776,1.225,13,1.5,13L13.496,13C13.773,13,13.996,12.776,13.996,12.5L13.996,4.5C13.996,4.224,13.773,4,13.496,4" />
+                                                                    <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M4,12L3,12 3,13 4,13z M5,11L4,11 4,12 5,12z M5,9L4,9 4,10 5,10z M4,10L3,10 3,11 4,11z M4,8L3,8 3,9 4,9z M5,7L4,7 4,8 5,8z M5,4L3,4 3,6 5,6z M2,3L8.374,3 8.874,4 2,4z" />
+                                                                    <GeometryDrawing Brush="#FF424242" Geometry="F1M5,4L5,6 3,6 3,4 2,4 2,13 3,13 3,12 4,12 4,11 3,11 3,10 4,10 4,9 3,9 3,8 4,8 4,7 5,7 5,8 4,8 4,9 5,9 5,10 4,10 4,11 5,11 5,12 4,12 4,13 6,13 6,4z M5,4L3,4 3,3 5,3z" />
+                                                                </DrawingGroup.Children>
+                                                            </DrawingGroup>
+                                                        </DrawingBrush.Drawing>
+                                                    </DrawingBrush>
+
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding entryOld.isCompressed}" Value="False">
+                                            <Setter TargetName="myImage" Property="Fill" Value="Transparent" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+
+
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader Click="files_Click" Tag="entryOld.isCompressed">
+
+                                    <Viewbox
+                                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                        Width="16"
+                                        Height="16"
+                                        Margin="1,0">
+                                        <Rectangle Width="16" Height="16">
+                                            <Rectangle.Fill>
                                                 <DrawingBrush>
                                                     <DrawingBrush.Drawing>
                                                         <DrawingGroup>
@@ -304,220 +341,137 @@
                                                         </DrawingGroup>
                                                     </DrawingBrush.Drawing>
                                                 </DrawingBrush>
-
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding isCompressed}" Value="False">
-                                        <Setter TargetName="myImage" Property="Fill" Value="Transparent" />
-                                    </DataTrigger>
-                                </DataTemplate.Triggers>
-
-
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Click="files_Click" Tag="isCompressed">
-
-                                <Viewbox
-                                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                                    Width="16"
-                                    Height="16"
-                                    Margin="1,0">
-                                    <Rectangle Width="16" Height="16">
-                                        <Rectangle.Fill>
-                                            <DrawingBrush>
-                                                <DrawingBrush.Drawing>
-                                                    <DrawingGroup>
-                                                        <DrawingGroup.Children>
-                                                            <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
-                                                            <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.5,1L9.61,1 10.61,3 13.496,3C14.323,3,14.996,3.673,14.996,4.5L14.996,12.5C14.996,13.327,14.323,14,13.496,14L1.5,14C0.673,14,0,13.327,0,12.5L0,2.5C0,1.673,0.673,1,1.5,1" />
-                                                            <GeometryDrawing Brush="#FFDCB67A" Geometry="F1M2,3L8.374,3 8.874,4 2,4z M13.496,4L10,4 9.992,4 8.992,2 1.5,2C1.225,2,1,2.224,1,2.5L1,12.5C1,12.776,1.225,13,1.5,13L13.496,13C13.773,13,13.996,12.776,13.996,12.5L13.996,4.5C13.996,4.224,13.773,4,13.496,4" />
-                                                            <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M4,12L3,12 3,13 4,13z M5,11L4,11 4,12 5,12z M5,9L4,9 4,10 5,10z M4,10L3,10 3,11 4,11z M4,8L3,8 3,9 4,9z M5,7L4,7 4,8 5,8z M5,4L3,4 3,6 5,6z M2,3L8.374,3 8.874,4 2,4z" />
-                                                            <GeometryDrawing Brush="#FF424242" Geometry="F1M5,4L5,6 3,6 3,4 2,4 2,13 3,13 3,12 4,12 4,11 3,11 3,10 4,10 4,9 3,9 3,8 4,8 4,7 5,7 5,8 4,8 4,9 5,9 5,10 4,10 4,11 5,11 5,12 4,12 4,13 6,13 6,4z M5,4L3,4 3,3 5,3z" />
-                                                        </DrawingGroup.Children>
-                                                    </DrawingGroup>
-                                                </DrawingBrush.Drawing>
-                                            </DrawingBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                </Viewbox>
-                            </GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                    </GridViewColumn>
-                    <GridViewColumn Width="195">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader
-                                Click="files_Click"
-                                Content="File Name"
-                                Tag="FileNameWithRoot" />
-                        </GridViewColumn.Header>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock
-                                    Text="{Binding Path=FileNameWithRoot}"
-                                    TextTrimming="CharacterEllipsis"
-                                    ToolTip="{Binding Path=FileNameWithRoot}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Width="130">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader
-                                Click="files_Click"
-                                Content="File Size (bytes)"
-                                Tag="FileSize2" />
-                        </GridViewColumn.Header>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock
-                                    Text="{Binding Path=FileSize2, StringFormat=N0}"
-                                    TextAlignment="Right"
-                                    TextTrimming="CharacterEllipsis" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                    </Viewbox>
+                                </GridViewColumnHeader>
+                            </GridViewColumn.Header>
+                        </GridViewColumn>
+                        <GridViewColumn Width="195">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader
+                                    Click="files_Click"
+                                    Content="File Name"
+                                    Tag="entryOld.FileNameWithRoot" />
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock
+                                        Text="{Binding Path=entryOld.FileNameWithRoot}"
+                                        TextTrimming="CharacterEllipsis"
+                                        ToolTip="{Binding Path=entryOld.FileNameWithRoot}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="130">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader
+                                    Click="files_Click"
+                                    Content="File Size (bytes)"
+                                    Tag="entryOld.FileSize2" />
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock
+                                        Text="{Binding Path=entryOld.FileSize2, StringFormat=N0}"
+                                        TextAlignment="Right"
+                                        TextTrimming="CharacterEllipsis" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
 
 
-                    <GridViewColumn Width="80">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader
-                                Click="files_Click"
-                                Content="CRC32"
-                                Tag="CRC32" />
-                        </GridViewColumn.Header>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock
-                                    Text="{Binding Path=CRC32, StringFormat=X8}"
-                                    TextAlignment="Right"
-                                    TextTrimming="CharacterEllipsis" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                        <GridViewColumn Width="80">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader
+                                    Click="files_Click"
+                                    Content="CRC32"
+                                    Tag="entryOld.CRC32" />
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock
+                                        Text="{Binding Path=entryOld.CRC32, StringFormat=X8}"
+                                        TextAlignment="Right"
+                                        TextTrimming="CharacterEllipsis" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
 
-                    <GridViewColumn Width="160">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader
-                                Click="files_Click"
-                                Content="Last Modified date"
-                                Tag="lastModifiedDate" />
-                        </GridViewColumn.Header>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=lastModifiedDate, StringFormat='yyyy-MM-dd HH:mm:ss.ms', FallbackValue='Unknown'}" TextTrimming="CharacterEllipsis" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <GridSplitter HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            Style="{StaticResource VerticalGridSplitter}"  Grid.Column="1" Grid.Row="1" />
-        
-        <ListView
-            BorderThickness="0"
-            Name="BarView2"
-            Grid.Row="1"
-            Grid.Column="2"
-            AlternationCount="2"
-            FontSize="11"
-            ItemsSource="{Binding Bar2.CompareSourceCollection}"
-            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-            ScrollViewer.VerticalScrollBarVisibility="Visible"
-            SelectedIndex="{Binding ElementName=BarView1, Path=SelectedIndex}"
-            SelectionChanged="BarView1_SelectionChanged"
-            SelectionMode="Single"
-            VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-            VirtualizingPanel.ScrollUnit="Pixel">
-
-            <ListView.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.ContainerStyle>
-                        <Style TargetType="{x:Type GroupItem}">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate>
-                                        <Expander IsExpanded="True">
-                                            <Expander.Header>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock
-                                                        VerticalAlignment="Bottom"
-                                                        FontWeight="Bold"
-                                                        Foreground="Gray"
-                                                        Text="{Binding Name}" />
-                                                    <TextBlock
-                                                        Margin="8,0,0,0"
-                                                        VerticalAlignment="Bottom"
-                                                        Foreground="Green"
-                                                        Text="{Binding ItemCount}" />
-                                                    <TextBlock
-                                                        VerticalAlignment="Bottom"
-                                                        Foreground="Silver"
-                                                        Text=" item(s)" />
-                                                </StackPanel>
-                                            </Expander.Header>
-                                            <ItemsPresenter />
-                                        </Expander>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </GroupStyle.ContainerStyle>
-                </GroupStyle>
-            </ListView.GroupStyle>
-
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    <Setter Property="BorderThickness" Value="0" />
-                    <Setter Property="Margin" Value="0" />
-                    <Setter Property="FontFamily" Value="Consolas" />
-                    <Setter Property="FontSize" Value="9pt" />
+                        <GridViewColumn Width="160">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader
+                                    Click="files_Click"
+                                    Content="Last Modified date"
+                                    Tag="entryOld.lastModifiedDate" />
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=entryOld.lastModifiedDate, StringFormat='yyyy-MM-dd HH:mm:ss.ms'}" TextTrimming="CharacterEllipsis" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
 
 
-                    <Style.Triggers>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=(ItemsControl.AlternationIndex)}" Value="0" />
-                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />
-                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="False" />
 
-                            </MultiDataTrigger.Conditions>
-                            <MultiDataTrigger.Setters>
-                                <Setter Property="Background" Value="#0B000000" />
-                            </MultiDataTrigger.Setters>
+                        <GridViewColumn Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
 
 
-                        </MultiDataTrigger>
-                        <DataTrigger Binding="{Binding type}" Value="Removed">
-                            <Setter Property="Foreground" Value="Red" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding type}" Value="Added">
-                            <Setter Property="Foreground" Value="Green" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding type}" Value="Changed">
-                            <Setter Property="Foreground" Value="#0000FF" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.View>
-                <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Width="40">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Rectangle
-                                    x:Name="myImage"
-                                    Width="16"
-                                    Height="16" />
-                                <DataTemplate.Triggers>
-                                    <DataTrigger Binding="{Binding isCompressed}" Value="True">
-                                        <Setter TargetName="myImage" Property="Fill">
-                                            <Setter.Value>
 
+
+                        <GridViewColumn Width="40">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Rectangle
+                                        x:Name="myImage"
+                                        Width="16"
+                                        Height="16" />
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding entryNew.isCompressed}" Value="True">
+                                            <Setter TargetName="myImage" Property="Fill">
+                                                <Setter.Value>
+
+                                                    <DrawingBrush>
+                                                        <DrawingBrush.Drawing>
+                                                            <DrawingGroup>
+                                                                <DrawingGroup.Children>
+                                                                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.5,1L9.61,1 10.61,3 13.496,3C14.323,3,14.996,3.673,14.996,4.5L14.996,12.5C14.996,13.327,14.323,14,13.496,14L1.5,14C0.673,14,0,13.327,0,12.5L0,2.5C0,1.673,0.673,1,1.5,1" />
+                                                                    <GeometryDrawing Brush="#FFDCB67A" Geometry="F1M2,3L8.374,3 8.874,4 2,4z M13.496,4L10,4 9.992,4 8.992,2 1.5,2C1.225,2,1,2.224,1,2.5L1,12.5C1,12.776,1.225,13,1.5,13L13.496,13C13.773,13,13.996,12.776,13.996,12.5L13.996,4.5C13.996,4.224,13.773,4,13.496,4" />
+                                                                    <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M4,12L3,12 3,13 4,13z M5,11L4,11 4,12 5,12z M5,9L4,9 4,10 5,10z M4,10L3,10 3,11 4,11z M4,8L3,8 3,9 4,9z M5,7L4,7 4,8 5,8z M5,4L3,4 3,6 5,6z M2,3L8.374,3 8.874,4 2,4z" />
+                                                                    <GeometryDrawing Brush="#FF424242" Geometry="F1M5,4L5,6 3,6 3,4 2,4 2,13 3,13 3,12 4,12 4,11 3,11 3,10 4,10 4,9 3,9 3,8 4,8 4,7 5,7 5,8 4,8 4,9 5,9 5,10 4,10 4,11 5,11 5,12 4,12 4,13 6,13 6,4z M5,4L3,4 3,3 5,3z" />
+                                                                </DrawingGroup.Children>
+                                                            </DrawingGroup>
+                                                        </DrawingBrush.Drawing>
+                                                    </DrawingBrush>
+
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding entryNew.isCompressed}" Value="False">
+                                            <Setter TargetName="myImage" Property="Fill" Value="Transparent" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+
+
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader Click="files_Click" Tag="entryNew.isCompressed">
+
+                                    <Viewbox
+                                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                        Width="16"
+                                        Height="16"
+                                        Margin="1,0">
+                                        <Rectangle Width="16" Height="16">
+                                            <Rectangle.Fill>
                                                 <DrawingBrush>
                                                     <DrawingBrush.Drawing>
                                                         <DrawingGroup>
@@ -531,118 +485,82 @@
                                                         </DrawingGroup>
                                                     </DrawingBrush.Drawing>
                                                 </DrawingBrush>
-
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding isCompressed}" Value="False">
-                                        <Setter TargetName="myImage" Property="Fill" Value="Transparent" />
-                                    </DataTrigger>
-                                </DataTemplate.Triggers>
-
-
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader Click="files_Click" Tag="isCompressed">
-
-                                <Viewbox
-                                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                                    Width="16"
-                                    Height="16"
-                                    Margin="1,0">
-                                    <Rectangle Width="16" Height="16">
-                                        <Rectangle.Fill>
-                                            <DrawingBrush>
-                                                <DrawingBrush.Drawing>
-                                                    <DrawingGroup>
-                                                        <DrawingGroup.Children>
-                                                            <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
-                                                            <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.5,1L9.61,1 10.61,3 13.496,3C14.323,3,14.996,3.673,14.996,4.5L14.996,12.5C14.996,13.327,14.323,14,13.496,14L1.5,14C0.673,14,0,13.327,0,12.5L0,2.5C0,1.673,0.673,1,1.5,1" />
-                                                            <GeometryDrawing Brush="#FFDCB67A" Geometry="F1M2,3L8.374,3 8.874,4 2,4z M13.496,4L10,4 9.992,4 8.992,2 1.5,2C1.225,2,1,2.224,1,2.5L1,12.5C1,12.776,1.225,13,1.5,13L13.496,13C13.773,13,13.996,12.776,13.996,12.5L13.996,4.5C13.996,4.224,13.773,4,13.496,4" />
-                                                            <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M4,12L3,12 3,13 4,13z M5,11L4,11 4,12 5,12z M5,9L4,9 4,10 5,10z M4,10L3,10 3,11 4,11z M4,8L3,8 3,9 4,9z M5,7L4,7 4,8 5,8z M5,4L3,4 3,6 5,6z M2,3L8.374,3 8.874,4 2,4z" />
-                                                            <GeometryDrawing Brush="#FF424242" Geometry="F1M5,4L5,6 3,6 3,4 2,4 2,13 3,13 3,12 4,12 4,11 3,11 3,10 4,10 4,9 3,9 3,8 4,8 4,7 5,7 5,8 4,8 4,9 5,9 5,10 4,10 4,11 5,11 5,12 4,12 4,13 6,13 6,4z M5,4L3,4 3,3 5,3z" />
-                                                        </DrawingGroup.Children>
-                                                    </DrawingGroup>
-                                                </DrawingBrush.Drawing>
-                                            </DrawingBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                </Viewbox>
-                            </GridViewColumnHeader>
-                        </GridViewColumn.Header>
-                    </GridViewColumn>
-                    <GridViewColumn Width="195">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader
-                                Click="files_Click"
-                                Content="File Name"
-                                Tag="FileNameWithRoot" />
-                        </GridViewColumn.Header>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock
-                                    Text="{Binding Path=FileNameWithRoot}"
-                                    TextTrimming="CharacterEllipsis"
-                                    ToolTip="{Binding Path=FileNameWithRoot}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Width="130">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader
-                                Click="files_Click"
-                                Content="File Size (bytes)"
-                                Tag="FileSize2" />
-                        </GridViewColumn.Header>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock
-                                    Text="{Binding Path=FileSize2, StringFormat=N0}"
-                                    TextAlignment="Right"
-                                    TextTrimming="CharacterEllipsis" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                    </Viewbox>
+                                </GridViewColumnHeader>
+                            </GridViewColumn.Header>
+                        </GridViewColumn>
+                        <GridViewColumn Width="195">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader
+                                    Click="files_Click"
+                                    Content="File Name"
+                                    Tag="entryNew.FileNameWithRoot" />
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock
+                                        Text="{Binding Path=entryNew.FileNameWithRoot}"
+                                        TextTrimming="CharacterEllipsis"
+                                        ToolTip="{Binding Path=entryNew.FileNameWithRoot}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="130">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader
+                                    Click="files_Click"
+                                    Content="File Size (bytes)"
+                                    Tag="entryNew.FileSize2" />
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock
+                                        Text="{Binding Path=entryNew.FileSize2, StringFormat=N0}"
+                                        TextAlignment="Right"
+                                        TextTrimming="CharacterEllipsis" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
 
 
-                    <GridViewColumn Width="80">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader
-                                Click="files_Click"
-                                Content="CRC32"
-                                Tag="CRC32" />
-                        </GridViewColumn.Header>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock
-                                    Text="{Binding Path=CRC32, StringFormat=X8}"
-                                    TextAlignment="Right"
-                                    TextTrimming="CharacterEllipsis" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                        <GridViewColumn Width="80">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader
+                                    Click="files_Click"
+                                    Content="CRC32"
+                                    Tag="entryNew.CRC32" />
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock
+                                        Text="{Binding Path=entryNew.CRC32, StringFormat=X8}"
+                                        TextAlignment="Right"
+                                        TextTrimming="CharacterEllipsis" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
 
-                    <GridViewColumn Width="160">
-                        <GridViewColumn.Header>
-                            <GridViewColumnHeader
-                                Click="files_Click"
-                                Content="Last Modified date"
-                                Tag="lastModifiedDate" />
-                        </GridViewColumn.Header>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=lastModifiedDate, StringFormat='yyyy-MM-dd HH:mm:ss.ms', FallbackValue='Unknown'}" TextTrimming="CharacterEllipsis" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                        <GridViewColumn Width="160">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader
+                                    Click="files_Click"
+                                    Content="Last Modified date"
+                                    Tag="entryNew.lastModifiedDate" />
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=entryNew.lastModifiedDate, StringFormat='yyyy-MM-dd HH:mm:ss.ms'}" TextTrimming="CharacterEllipsis" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
 
-                </GridView>
-            </ListView.View>
-        </ListView>
-            </Grid>
-     
-        
+
         <GridSplitter
             x:Name="gsSplitter"
             Grid.Row="3"
@@ -672,13 +590,13 @@
             <TextBlock
                 Grid.Row="0"
                 FontSize="14"
-                Text="{Binding ElementName=BarView1, Path=SelectedItem.fileNameWithoutPath, StringFormat='File Name: {0}'}"
+                Text="{Binding ElementName=BarComparerView, Path=SelectedItem.entryOld.fileNameWithoutPath, StringFormat='File Name: {0}'}"
                 TextTrimming="CharacterEllipsis"
-                ToolTip="{Binding ElementName=BarView1, Path=SelectedItem.FileNameWithRoot}" />
+                ToolTip="{Binding ElementName=BarComparerView, Path=SelectedItem.entryOld.FileNameWithRoot}" />
             <TextBlock
                 Grid.Row="1"
                 FontSize="14"
-                Text="{Binding ElementName=BarView1, Path=SelectedItem.fileFormat, StringFormat='File Format: {0}'}" />
+                Text="{Binding ElementName=BarComparerView, Path=SelectedItem.entryOld.fileFormat, StringFormat='File Format: {0}'}" />
             <TextBlock
                 Grid.Row="2"
                 FontSize="14"
@@ -768,14 +686,14 @@
                 Grid.Row="0"
                 Grid.Column="2"
                 FontSize="14"
-                Text="{Binding ElementName=BarView2, Path=SelectedItem.fileNameWithoutPath, StringFormat='File Name: {0}'}"
+                Text="{Binding ElementName=BarComparerView, Path=SelectedItem.entryNew.fileNameWithoutPath, StringFormat='File Name: {0}'}"
                 TextTrimming="CharacterEllipsis"
-                ToolTip="{Binding ElementName=BarView2, Path=SelectedItem.FileNameWithRoot}" />
+                ToolTip="{Binding ElementName=BarComparerView, Path=SelectedItem.entryNew.FileNameWithRoot}" />
             <TextBlock
                 Grid.Row="1"
                 Grid.Column="2"
                 FontSize="14"
-                Text="{Binding ElementName=BarView2, Path=SelectedItem.fileFormat, StringFormat='File Format: {0}'}" />
+                Text="{Binding ElementName=BarComparerView, Path=SelectedItem.entryNew.fileFormat, StringFormat='File Format: {0}'}" />
             <TextBlock
                 Grid.Row="2"
                 Grid.Column="2"
@@ -784,34 +702,39 @@
 
             <avalonEdit:TextEditor
                 x:Name="XMLViewer1"
-                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                ScrollViewer.ScrollChanged="XMLViewer1_ScrollChanged"
                 Grid.Row="3"
                 FontFamily="Consolas"
                 FontSize="10pt"
                 IsReadOnly="True"
+                ScrollViewer.ScrollChanged="XMLViewer1_ScrollChanged"
+                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                ShowLineNumbers="True"
                 SyntaxHighlighting="Diff"
-                ShowLineNumbers="True"         
                 VirtualizingPanel.ScrollUnit="Pixel"
                 Visibility="Collapsed" />
 
-            <GridSplitter x:Name="Splitter"  HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            Style="{StaticResource VerticalGridSplitter}"  Grid.Column="1" Grid.Row="0" Grid.RowSpan="5" />
+            <GridSplitter
+                x:Name="Splitter"
+                Grid.Row="0"
+                Grid.RowSpan="5"
+                Grid.Column="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Style="{StaticResource VerticalGridSplitter}" />
             <avalonEdit:TextEditor
                 x:Name="XMLViewer2"
-                ScrollViewer.ScrollChanged="XMLViewer2_ScrollChanged"
                 Grid.Row="3"
                 Grid.Column="2"
-                SyntaxHighlighting="Diff"
                 FontFamily="Consolas"
                 FontSize="10pt"
                 IsReadOnly="True"
-                ShowLineNumbers="True"         
+                ScrollViewer.ScrollChanged="XMLViewer2_ScrollChanged"
+                ShowLineNumbers="True"
+                SyntaxHighlighting="Diff"
                 VirtualizingPanel.ScrollUnit="Pixel"
                 Visibility="Collapsed" />
 
         </Grid>
-      
+
     </Grid>
 </Window>

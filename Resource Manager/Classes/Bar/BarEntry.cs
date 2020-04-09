@@ -100,20 +100,6 @@ namespace Resource_Manager.Classes.Bar
         }
 
 
-        private string _type = "Unchanged";
-        public string type
-        {
-            get
-            {
-                return _type;
-            }
-            set
-            {
-                _type = value;
-                NotifyPropertyChanged();
-            }
-        }
-
         public string Extension
         {
             get

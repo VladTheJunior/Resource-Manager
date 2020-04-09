@@ -210,12 +210,12 @@ namespace Archive_Unpacker.Classes.BarViewModel
         {
 
             // Firstly, is the file parameter null?
-            if (file == null)
-                return;
+
             PreviewDdt = null;
             Preview = null;
             PreviewImage = null;
-
+            if (file == null)
+                return;
 
             if (file.Extension == ".WAV"/* || file.Extension == ".MP3"*/)
             {
@@ -249,6 +249,7 @@ namespace Archive_Unpacker.Classes.BarViewModel
                 await input.ReadAsync(data, 0, data.Length);
                 if (L33TZipUtils.IsL33TZipFile(data))
                     data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+
                 PreviewDdt = new DdtFile(data, true);
                 return;
             }
@@ -327,10 +328,6 @@ namespace Archive_Unpacker.Classes.BarViewModel
             barViewModel.entriesCollection = new CollectionViewSource();
             barViewModel.entriesCollection.Source = barViewModel.barFile.BarFileEntrys;
             barViewModel.entriesCollection.Filter += barViewModel.Filter;
-
-            barViewModel.CompareEntriesCollection = new CollectionViewSource();
-            barViewModel.CompareEntries = new ReadOnlyCollection<BarEntry>(new List<BarEntry>());
-            barViewModel.CompareEntriesCollection.Source = barViewModel.CompareEntries;
             return barViewModel;
         }
 
@@ -351,72 +348,9 @@ namespace Archive_Unpacker.Classes.BarViewModel
             barViewModel.entriesCollection.Source = barViewModel.barFile.BarFileEntrys;
             barViewModel.entriesCollection.Filter += barViewModel.Filter;
 
-
-            barViewModel.CompareEntriesCollection = new CollectionViewSource();
-            barViewModel.CompareEntries = new ReadOnlyCollection<BarEntry>(new List<BarEntry>());
-            barViewModel.CompareEntriesCollection.Source = barViewModel.CompareEntries;
             return barViewModel;
         }
 
-        public IReadOnlyCollection<BarEntry> CompareEntries{ get; set; }
-
-        private CollectionViewSource CompareEntriesCollection;
-
-        public ICollectionView CompareSourceCollection
-        {
-            get
-            {
-                return this.CompareEntriesCollection.View;
-            }
-        }
-
-        public void ResetComparer()
-        {
-            CompareEntries = new ReadOnlyCollection<BarEntry>(new List<BarEntry>());
-            CompareEntriesCollection.Source = CompareEntries;
-
-
-
-            NotifyPropertyChanged("CompareEntries");
-
-            NotifyPropertyChanged("CompareSourceCollection");
-        }
-
-        public void Compare (BarViewModel bar, bool reverse)
-        {
-            var barEntrys = new List<BarEntry>();
-            var Removed = bar.barFile.BarFileEntrys.Where(item => !barFile.BarFileEntrys.Any(item2 => item2.FileNameWithRoot == item.FileNameWithRoot)).ToList();
-            var Added = barFile.BarFileEntrys.Where(item => !bar.barFile.BarFileEntrys.Any(item2 => item2.FileNameWithRoot == item.FileNameWithRoot)).ToList();
-            Removed.ForEach(c => c.type = "Removed");
-            Added.ForEach(c => c.type = "Added");
-            if (!reverse)
-            {
-                barEntrys.AddRange(Removed);
-                barEntrys.AddRange(Added);
-            }
-            else
-            {               
-                barEntrys.AddRange(Added);
-                barEntrys.AddRange(Removed);               
-            }
-            var Changed = barFile.BarFileEntrys.Where(item => bar.barFile.BarFileEntrys.Any(item2 => item2.FileNameWithRoot == item.FileNameWithRoot && item2.CRC32 != item.CRC32)).ToList();
-            Changed.ForEach(c => c.type = "Changed");
-            var Same = barFile.BarFileEntrys.Where(item => bar.barFile.BarFileEntrys.Any(item2 => item2.FileNameWithRoot == item.FileNameWithRoot && item2.CRC32 == item.CRC32)).ToList();
-
-
-
-            barEntrys.AddRange(Changed);
-            barEntrys.AddRange(Same);
-
-            CompareEntries = new ReadOnlyCollection<BarEntry>(barEntrys);
-            CompareEntriesCollection.Source = CompareEntries;
-
-
-
-            NotifyPropertyChanged("CompareEntries");
-
-            NotifyPropertyChanged("CompareSourceCollection");
-        }
 
 
 
