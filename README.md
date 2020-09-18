@@ -1,14 +1,14 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![GitHub license](https://img.shields.io/github/license/XaKOps/Resource-Manager)](https://github.com/XaKOps/Resource-Manager/blob/master/LICENSE)
-[![HitCount](http://hits.dwyl.com/XaKOps/Resource-Manager.svg)](http://hits.dwyl.com/XaKOps/Resource-Manager)
+[![GitHub license](https://img.shields.io/github/license/VladTheJunior/Resource-Manager)](https://github.com/VladTheJunior/Resource-Manager/blob/master/LICENSE)
+[![HitCount](http://hits.dwyl.com/VladTheJunior/Resource-Manager.svg)](http://hits.dwyl.com/VladTheJunior/Resource-Manager)
 
 
 
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/XaKOps/Resource-Manager">
+  <a href="https://github.com/VladTheJunior/Resource-Manager">
     <img src="Images/Icon.png" alt="Logo" width="128" height="128">
   </a>
 
@@ -17,7 +17,7 @@
   <p align="center">
     Utility for viewing, creating and extracting files from Age of Empires III .BAR archive
     <br />
-     <a href="https://github.com/XaKOps/Resource-Manager">Download</a>
+     <a href="https://github.com/VladTheJunior/Resource-Manager">Download</a>
   </p>
 </p>
 
@@ -62,9 +62,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-XaKOps - Discord: XaKOps#1244 - xakops@gmail.com
+VladTheJunior - Discord: VladTheJunior#1244 - VladTheJunior@gmail.com
 
-Project Link: [https://github.com/XaKOps/Resource-Manager](https://github.com/XaKOps/Resource-Manager)
+Project Link: [https://github.com/VladTheJunior/Resource-Manager](https://github.com/VladTheJunior/Resource-Manager)
 
 
 
@@ -81,9 +81,9 @@ Project Link: [https://github.com/XaKOps/Resource-Manager](https://github.com/Xa
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[stars-shield]: https://img.shields.io/github/stars/XaKOps/Resource-Manager.svg?style=flat-square
-[stars-url]: https://github.com/XaKOps/Resource-Manager/stargazers
-[issues-shield]: https://img.shields.io/github/issues/XaKOps/Resource-Manager.svg?style=flat-square
-[issues-url]: https://github.com/XaKOps/Resource-Manager/issues
+[stars-shield]: https://img.shields.io/github/stars/VladTheJunior/Resource-Manager.svg?style=flat-square
+[stars-url]: https://github.com/VladTheJunior/Resource-Manager/stargazers
+[issues-shield]: https://img.shields.io/github/issues/VladTheJunior/Resource-Manager.svg?style=flat-square
+[issues-url]: https://github.com/VladTheJunior/Resource-Manager/issues
 [product-screenshot]: Images/1.png
 
