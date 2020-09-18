@@ -1,4 +1,5 @@
-﻿using Resource_Manager.Classes.Bar;
+﻿using Resource_Manager.Classes.Alz4;
+using Resource_Manager.Classes.Bar;
 using Resource_Manager.Classes.Ddt;
 using Resource_Manager.Classes.L33TZip;
 using Resource_Manager.Classes.Xmb;
@@ -189,9 +190,17 @@ namespace Archive_Unpacker.Classes.BarViewModel
                 await input.ReadAsync(data, 0, data.Length);
 
                 // 
-                if (file.Extension != ".XMB" && L33TZipUtils.IsL33TZipFile(data) && Decompress)
+                if (file.Extension != ".XMB" && (L33TZipUtils.IsL33TZipFile(data) || Alz4Utils.IsAlz4File(data)) && Decompress)
                 {
-                    data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+                    if (Alz4Utils.IsAlz4File(data))
+                    {
+                        data = await Alz4Utils.ExtractAlz4BytesAsync(data);
+                    }
+                    else
+                    {
+                        if (L33TZipUtils.IsL33TZipFile(data))
+                            data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+                    }
                 }
 
                 await File.WriteAllBytesAsync(Path.Combine(savePath, file.FileNameWithRoot), data);
@@ -247,8 +256,17 @@ namespace Archive_Unpacker.Classes.BarViewModel
                 input.Seek(file.Offset, SeekOrigin.Begin);
                 var data = new byte[file.FileSize2];
                 await input.ReadAsync(data, 0, data.Length);
-                if (L33TZipUtils.IsL33TZipFile(data))
-                    data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+
+
+                if (Alz4Utils.IsAlz4File(data))
+                {
+                    data = await Alz4Utils.ExtractAlz4BytesAsync(data);
+                }
+                else
+                {
+                    if (L33TZipUtils.IsL33TZipFile(data))
+                        data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+                }
 
                 PreviewDdt = new DdtFile(data, true);
                 return;
@@ -260,8 +278,15 @@ namespace Archive_Unpacker.Classes.BarViewModel
                 input.Seek(file.Offset, SeekOrigin.Begin);
                 var data = new byte[file.FileSize2];
                 await input.ReadAsync(data, 0, data.Length);
-                if (L33TZipUtils.IsL33TZipFile(data))
-                    data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+                if (Alz4Utils.IsAlz4File(data))
+                {
+                    data = await Alz4Utils.ExtractAlz4BytesAsync(data);
+                }
+                else
+                {
+                    if (L33TZipUtils.IsL33TZipFile(data))
+                        data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+                }
                 var bitmap = new BitmapImage();
                 using (var stream = new MemoryStream(data))
                 {
@@ -284,24 +309,42 @@ namespace Archive_Unpacker.Classes.BarViewModel
                 input.Seek(file.Offset, SeekOrigin.Begin);
                 var data = new byte[file.FileSize2];
                 await input.ReadAsync(data, 0, data.Length);
-                if (L33TZipUtils.IsL33TZipFile(data))
-                    data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+
+                if (Alz4Utils.IsAlz4File(data))
+                {
+                    data = await Alz4Utils.ExtractAlz4BytesAsync(data);
+                }
+                else
+                {
+                    if (L33TZipUtils.IsL33TZipFile(data))
+                        data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+                }
+
+                //File.WriteAllBytes(file.fileNameWithoutPath, data);
+
                 Preview = new Document();
                 Preview.SyntaxHighlighting = "XML";
                 Preview.Text = await XMBFile.XmbToXmlAsync(data);
-                
+
                 NotifyPropertyChanged("Preview");
                 return;
             }
-            if (file.Extension == ".XAML" || file.Extension == ".XML" || file.Extension == ".SHP" || file.Extension == ".LGT" || file.Extension == ".XS" || file.Extension == ".TXT" || file.Extension == ".CFG")
+            if (file.Extension == ".XAML" || file.Extension == ".XML" || file.Extension == ".SHP" || file.Extension == ".LGT" || file.Extension == ".XS" || file.Extension == ".TXT" || file.Extension == ".CFG" || file.Extension == ".PY")
             {
                 using FileStream input = File.OpenRead(barFilePath);
                 // Locate the file within the BAR file.
                 input.Seek(file.Offset, SeekOrigin.Begin);
                 var data = new byte[file.FileSize2];
                 await input.ReadAsync(data, 0, data.Length);
-                if (L33TZipUtils.IsL33TZipFile(data))
-                    data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+                if (Alz4Utils.IsAlz4File(data))
+                {
+                    data = await Alz4Utils.ExtractAlz4BytesAsync(data);
+                }
+                else
+                {
+                    if (L33TZipUtils.IsL33TZipFile(data))
+                        data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+                }
                 Preview = new Document();
                 Preview.Text = System.Text.Encoding.UTF8.GetString(data);
                 if (file.Extension == ".XS")

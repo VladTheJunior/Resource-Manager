@@ -6,8 +6,8 @@
     <RootNamespace>Resource_Manager</RootNamespace>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <Version>0.2.0</Version>
-    <Authors>XaKOps</Authors>
+    <Version>0.3.0</Version>
+    <Authors>VladTheJunior</Authors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
@@ -33,6 +33,7 @@
     <PackageReference Include="Crc32.NET" Version="1.2.0" />
     <PackageReference Include="DiffPlex.Wpf" Version="1.1.1" />
     <PackageReference Include="FontAwesome5" Version="2.0.5" />
+    <PackageReference Include="K4os.Compression.LZ4" Version="1.2.6" />
   </ItemGroup>
 
   <ItemGroup>

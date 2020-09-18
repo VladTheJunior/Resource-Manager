@@ -1,12 +1,12 @@
 ﻿using Archive_Unpacker.Classes.BarViewModel;
-using DiffPlex.DiffBuilder;
-using DiffPlex.DiffBuilder.Model;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Sample;
 using ICSharpCode.AvalonEdit.Search;
+using Resource_Manager.Classes.Alz4;
 using Resource_Manager.Classes.Bar;
 using Resource_Manager.Classes.Commands;
+using Resource_Manager.Classes.Ddt;
 using Resource_Manager.Classes.L33TZip;
 using Resource_Manager.Classes.Sort;
 using Resource_Manager.Classes.Xmb;
@@ -144,7 +144,7 @@ namespace Resource_Manager
                     return;
                 }
                 var entries = files.SelectedItems.Cast<BarEntry>().ToList();
-                SelectedSize = entries.Sum(x => x.FileSize2);
+                SelectedSize = entries.Sum(x => (long)x.FileSize2);
                 await file.readFile(entry);
 
                 if (file.Preview != null)
@@ -156,7 +156,7 @@ namespace Resource_Manager
                         foldingManager = null;
                     }
                     foldingManager = FoldingManager.Install(XMLViewer.TextArea);
-                    if (entry.Extension == ".XMB" || entry.Extension == ".XML" || entry.Extension == ".SHP" || entry.Extension == ".LGT" || entry.Extension == ".TXT" || entry.Extension == ".CFG" || entry.Extension == ".XAML")
+                    if (entry.Extension == ".XMB" || entry.Extension == ".XML" || entry.Extension == ".SHP" || entry.Extension == ".LGT" || entry.Extension == ".TXT" || entry.Extension == ".CFG" || entry.Extension == ".XAML" || entry.Extension == ".PY")
                     {
                         var foldingStrategy = new XmlFoldingStrategy();
                         foldingStrategy.UpdateFoldings(foldingManager, XMLViewer.Document);
@@ -194,7 +194,7 @@ namespace Resource_Manager
                     ImageViewer.Visibility = Visibility.Visible;
                 }
                 else
-                if (entry.Extension == ".XMB" || entry.Extension == ".XML" || entry.Extension == ".SHP" || entry.Extension == ".LGT" || entry.Extension == ".XS" || entry.Extension == ".TXT" || entry.Extension == ".CFG" || entry.Extension == ".XAML")
+                if (entry.Extension == ".XMB" || entry.Extension == ".XML" || entry.Extension == ".SHP" || entry.Extension == ".LGT" || entry.Extension == ".XS" || entry.Extension == ".TXT" || entry.Extension == ".CFG" || entry.Extension == ".XAML" || entry.Extension == ".PY")
                 {
                     ImageViewer.Visibility = Visibility.Collapsed;
                     XMLViewer.Visibility = Visibility.Visible;
@@ -282,7 +282,7 @@ namespace Resource_Manager
         private void MenuItem_Click_4(object sender, RoutedEventArgs e)
         {
 
-            string targetURL = "https://github.com/XaKOps/Resource-Manager";
+            string targetURL = "https://github.com/VladTheJunior/Resource-Manager";
             var psi = new ProcessStartInfo
             {
                 FileName = targetURL,
@@ -527,7 +527,7 @@ namespace Resource_Manager
             gsSplitter.Visibility = Visibility.Collapsed;
         }
 
-        private async void MenuItem_Click_2(object sender, RoutedEventArgs e)
+        private async void convertFiles(object sender, RoutedEventArgs e)
         {
             mainMenu.IsEnabled = false;
             SpinnerConvert.Visibility = Visibility.Visible;
@@ -535,38 +535,103 @@ namespace Resource_Manager
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
 
-            openFileDialog.Filter = "Age of Empires 3 convertible files (*.xmb, *.xml, *.ddt, *.tga)|*.xmb;*.xml;*.ddt;*.tga";
-            if (openFileDialog.ShowDialog() == true)
+            string operationType = (sender as MenuItem).Tag.ToString();
+            //await DdtFileUtils.Ddt2PngAsync(@"D:\Development\Resource Manager\Resource Manager\bin\Release\netcoreapp3.1\Art\ui\alerts\alert_treatyend_bump.ddt");
+
+            if (operationType == "topng")
             {
-                foreach (var file in openFileDialog.FileNames)
+                openFileDialog.Filter = "Age of Empires 3 ddt files (*.ddt)|*.ddt";
+                if (openFileDialog.ShowDialog() == true)
                 {
-                    try
+                    foreach (var file in openFileDialog.FileNames)
                     {
-                        var ext = Path.GetExtension(file).ToUpper();
-                        if (ext == ".XMB")
+                        try
+                        {
+                            await DdtFileUtils.Ddt2PngAsync(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Conversion error - " + Path.GetFileName(file), MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                }
+            }
+            if (operationType == "toxml")
+            {
+                openFileDialog.Filter = "Age of Empires 3 xmb files (*.xmb)|*.xmb";
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    foreach (var file in openFileDialog.FileNames)
+                    {
+                        try
                         {
                             var data = await File.ReadAllBytesAsync(file);
 
-                            if (L33TZipUtils.IsL33TZipFile(data))
-                                data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+
+                            if (Alz4Utils.IsAlz4File(data))
+                            {
+                                data = await Alz4Utils.ExtractAlz4BytesAsync(data);
+                            }
+                            else
+                            {
+                                if (L33TZipUtils.IsL33TZipFile(data))
+                                    data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+                            }
+
 
                             using MemoryStream stream = new MemoryStream(data);
                             XMBFile xmb = await XMBFile.LoadXMBFile(stream);
                             var newName = file.Replace(".xml.xmb", ".xml", StringComparison.OrdinalIgnoreCase).Replace(".xmb", ".xml", StringComparison.OrdinalIgnoreCase);
                             xmb.file.Save(newName);
                         }
-                        if (ext == ".XML")
+                        catch (Exception ex)
                         {
-                            await XMBFile.CreateXMBFile(file);
-
+                            MessageBox.Show(ex.Message, "Conversion error - " + Path.GetFileName(file), MessageBoxButton.OK, MessageBoxImage.Error);
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Conversion error - " + Path.GetFileName(file), MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
+            if (operationType == "toxmbde")
+            {
+                openFileDialog.Filter = "Age of Empires 3 xml files (*.xml)|*.xml";
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    foreach (var file in openFileDialog.FileNames)
+                    {
+                        try
+                        {
+                            await XMBFile.CreateXMBFileALZ4(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Conversion error - " + Path.GetFileName(file), MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                }
+            }
+            if (operationType == "toxmbcc")
+            {
+                openFileDialog.Filter = "Age of Empires 3 xml files (*.xml)|*.xml";
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    foreach (var file in openFileDialog.FileNames)
+                    {
+                        try
+                        {
+                            await XMBFile.CreateXMBFileL33T(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Conversion error - " + Path.GetFileName(file), MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                }
+            }
+
+
+
             tbConvert.Text = "Convert";
             SpinnerConvert.Visibility = Visibility.Collapsed;
             mainMenu.IsEnabled = true;

@@ -32,10 +32,10 @@
                 <Run Text="Age of Empires III - Resource Manager"/>
                 
                 <LineBreak/>
-                <Run Text="Copyright (c) 2020 XaKOps"  FontSize="12"/>
+                <Run Text="Copyright (c) 2020 VladTheJunior"  FontSize="12"/>
 
                 <LineBreak/>
-                <Run Text="version: 0.2.0"  FontSize="12"/>
+                <Run Text="version: 0.3.0"  FontSize="12"/>
             </TextBlock>
             <TextBlock  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" >
             <LineBreak/>

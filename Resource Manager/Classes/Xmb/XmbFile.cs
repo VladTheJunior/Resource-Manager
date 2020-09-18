@@ -1,4 +1,5 @@
-﻿using Resource_Manager.Classes.L33TZip;
+﻿using Resource_Manager.Classes.Alz4;
+using Resource_Manager.Classes.L33TZip;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -295,7 +296,7 @@ namespace Resource_Manager.Classes.Xmb
             }
         }
 
-        public static async Task CreateXMBFile(string filename)
+        public static async Task CreateXMBFileL33T(string filename)
         {
             using var output = new MemoryStream();
 
@@ -364,6 +365,75 @@ namespace Resource_Manager.Classes.Xmb
             await L33TZipUtils.CompressBytesAsL33TZipAsync(output.ToArray(), filename);
         }
 
+        public static async Task CreateXMBFileALZ4(string filename)
+        {
+            using var output = new MemoryStream();
+
+            var writer = new BinaryWriter(output, Encoding.Default, true);
+
+            writer.Write((byte)88);
+            writer.Write((byte)49);
+
+            writer.Write(0);
+
+            writer.Write((byte)88);
+            writer.Write((byte)82);
+            writer.Write(4);
+            writer.Write(8);
+
+
+            XmlDocument file = new XmlDocument();
+            file.Load(filename);
+            XmlNode rootElement = file.FirstChild;
+
+
+            // Get the list of element/attribute names, sorted by first appearance
+            List<XmlString> ElementNames = new List<XmlString>();
+            List<XmlString> AttributeNames = new List<XmlString>();
+            await Task.Run(() =>
+            {
+                ExtractStrings(file.DocumentElement, ref ElementNames, ref AttributeNames);
+
+            });
+
+            // Output element names
+            int NumElements = ElementNames.Count;
+            writer.Write(NumElements);
+            for (int i = 0; i < NumElements; ++i)
+            {
+                writer.Write(ElementNames[i].Content.Length);
+                writer.Write(Encoding.Unicode.GetBytes(ElementNames[i].Content));
+            }
+
+            int NumAttributes = AttributeNames.Count;
+            writer.Write(NumAttributes);
+            for (int i = 0; i < NumAttributes; ++i)
+            {
+                writer.Write(AttributeNames[i].Content.Length);
+                writer.Write(Encoding.Unicode.GetBytes(AttributeNames[i].Content));
+            }
+
+            // Output root node, plus all descendants
+            await Task.Run(() =>
+            {
+                WriteNode(ref writer, rootElement, ElementNames, AttributeNames);
+            });
+
+
+            // Fill in data-length field near the beginning
+            long DataEnd = writer.BaseStream.Position;
+            writer.BaseStream.Seek(2, SeekOrigin.Begin);
+            int Length = (int)(DataEnd - (2 + 4));
+            writer.Write(Length);
+            writer.BaseStream.Seek(DataEnd, SeekOrigin.Begin);
+            var name = Path.ChangeExtension(filename, "");
+            if (!Path.HasExtension(name))
+                filename = Path.ChangeExtension(filename, ".xml.xmb");
+            else
+                filename = Path.ChangeExtension(filename, ".xmb");
+            // need upgrade
+            await Alz4Utils.CompressBytesAsAlz4Async(output.ToArray(), filename);
+        }
         #endregion
     }
 }

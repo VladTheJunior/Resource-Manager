@@ -812,7 +812,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-            <MenuItem Click="MenuItem_Click_2">
+            <MenuItem >
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock x:Name="tbConvert" Text="Convert" />
@@ -828,6 +828,109 @@
                             Visibility="Collapsed" />
                     </StackPanel>
                 </MenuItem.Header>
+                <MenuItem
+                 Click="convertFiles"
+                    Header="XML To XMB (DE)"
+                    Tag="toxmbde">
+                    <MenuItem.Icon>
+                        <Viewbox Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+                            <Rectangle Width="16" Height="16">
+                                <Rectangle.Fill>
+                                    <DrawingBrush>
+                                        <DrawingBrush.Drawing>
+                                            <DrawingGroup>
+                                                <DrawingGroup.Children>
+                                                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.9998,-0.000199999999999534L1.9998,9.7948 -0.000199999999999978,11.7948 -0.000199999999999978,12.2048 1.9998,14.2058 1.9998,15.9998 15.0008,15.9998 15.0008,4.3788 10.6208,-0.000199999999999534z" />
+                                                    <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M13,14L13,13.205 12.205,14z M9,6L9,2 4,2 4,8 10.205,8 13,10.795 13,6z M12.793,5L10,5 10,2.207z" />
+                                                    <GeometryDrawing Brush="#FF424242" Geometry="F1M2.9997,0.999700000000001L2.9997,8.7957 3.7957,7.9997 3.9997,7.9997 3.9997,1.9997 8.9997,1.9997 8.9997,5.9997 12.9997,5.9997 12.9997,10.7957 14.0007,11.7957 14.0007,4.7937 10.2067,0.999700000000001z M9.9997,2.2067L12.7927,5.0007 9.9997,5.0007z M5.3357,14.8147L6.2637,15.1857 8.6647,9.1857 7.7357,8.8147z M9.2307,9.8537L11.3767,12.0007 9.2307,14.1467 9.9377,14.8537 12.7907,12.0007 9.9377,9.1467z M1.2097,12.0007L4.0627,14.8537 4.7697,14.1467 2.6237,12.0007 4.7697,9.8537 4.0627,9.1467z M12.9997,13.2057L12.9997,14.0007 12.2047,14.0007 11.2047,14.9997 14.0007,14.9997 14.0007,12.2047z" />
+                                                </DrawingGroup.Children>
+                                            </DrawingGroup>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Viewbox>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                 Click="convertFiles"
+                    Header="XML To XMB (CC)"
+                    Tag="toxmbcc">
+                    <MenuItem.Icon>
+                        <Viewbox Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+                            <Rectangle Width="16" Height="16">
+                                <Rectangle.Fill>
+                                    <DrawingBrush>
+                                        <DrawingBrush.Drawing>
+                                            <DrawingGroup>
+                                                <DrawingGroup.Children>
+                                                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.9998,-0.000199999999999534L1.9998,9.7948 -0.000199999999999978,11.7948 -0.000199999999999978,12.2048 1.9998,14.2058 1.9998,15.9998 15.0008,15.9998 15.0008,4.3788 10.6208,-0.000199999999999534z" />
+                                                    <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M13,14L13,13.205 12.205,14z M9,6L9,2 4,2 4,8 10.205,8 13,10.795 13,6z M12.793,5L10,5 10,2.207z" />
+                                                    <GeometryDrawing Brush="#FF424242" Geometry="F1M2.9997,0.999700000000001L2.9997,8.7957 3.7957,7.9997 3.9997,7.9997 3.9997,1.9997 8.9997,1.9997 8.9997,5.9997 12.9997,5.9997 12.9997,10.7957 14.0007,11.7957 14.0007,4.7937 10.2067,0.999700000000001z M9.9997,2.2067L12.7927,5.0007 9.9997,5.0007z M5.3357,14.8147L6.2637,15.1857 8.6647,9.1857 7.7357,8.8147z M9.2307,9.8537L11.3767,12.0007 9.2307,14.1467 9.9377,14.8537 12.7907,12.0007 9.9377,9.1467z M1.2097,12.0007L4.0627,14.8537 4.7697,14.1467 2.6237,12.0007 4.7697,9.8537 4.0627,9.1467z M12.9997,13.2057L12.9997,14.0007 12.2047,14.0007 11.2047,14.9997 14.0007,14.9997 14.0007,12.2047z" />
+                                                </DrawingGroup.Children>
+                                            </DrawingGroup>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Viewbox>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                 Click="convertFiles"
+                    Header="XMB To XML"
+                    Tag="toxml">
+                    <MenuItem.Icon>
+                        <Viewbox Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+                            <Rectangle Width="16" Height="16">
+                                <Rectangle.Fill>
+                                    <DrawingBrush>
+                                        <DrawingBrush.Drawing>
+                                            <DrawingGroup>
+                                                <DrawingGroup.Children>
+                                                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.9998,-0.000199999999999534L1.9998,9.7948 -0.000199999999999978,11.7948 -0.000199999999999978,12.2048 1.9998,14.2058 1.9998,15.9998 15.0008,15.9998 15.0008,4.3788 10.6208,-0.000199999999999534z" />
+                                                    <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M13,14L13,13.205 12.205,14z M9,6L9,2 4,2 4,8 10.205,8 13,10.795 13,6z M12.793,5L10,5 10,2.207z" />
+                                                    <GeometryDrawing Brush="#FF424242" Geometry="F1M2.9997,0.999700000000001L2.9997,8.7957 3.7957,7.9997 3.9997,7.9997 3.9997,1.9997 8.9997,1.9997 8.9997,5.9997 12.9997,5.9997 12.9997,10.7957 14.0007,11.7957 14.0007,4.7937 10.2067,0.999700000000001z M9.9997,2.2067L12.7927,5.0007 9.9997,5.0007z M5.3357,14.8147L6.2637,15.1857 8.6647,9.1857 7.7357,8.8147z M9.2307,9.8537L11.3767,12.0007 9.2307,14.1467 9.9377,14.8537 12.7907,12.0007 9.9377,9.1467z M1.2097,12.0007L4.0627,14.8537 4.7697,14.1467 2.6237,12.0007 4.7697,9.8537 4.0627,9.1467z M12.9997,13.2057L12.9997,14.0007 12.2047,14.0007 11.2047,14.9997 14.0007,14.9997 14.0007,12.2047z" />
+                                                </DrawingGroup.Children>
+                                            </DrawingGroup>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Viewbox>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                 Click="convertFiles"
+                    Header="DDT to PNG"
+                    Tag="topng">
+                    <MenuItem.Icon>
+                        <Viewbox Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+                            <Rectangle Width="16" Height="16">
+                                <Rectangle.Fill>
+                                    <DrawingBrush>
+                                        <DrawingBrush.Drawing>
+                                            <DrawingGroup>
+                                                <DrawingGroup.Children>
+                                                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M0,15L16,15 16,0 0,0z" />
+                                                    <GeometryDrawing Brush="#FF424242" Geometry="F1M1,1L1,10 2,9.073 2,2 14,2 14,11.098 15,12 15,1z" />
+                                                    <GeometryDrawing Brush="#FF424242" Geometry="F1M1,1L1,10 2,9.073 2,2 14,2 14,11.098 15,12 15,1z" />
+                                                    <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M10,4.5C10,5.328 10.672,6 11.5,6 12.328,6 13,5.328 13,4.5 13,3.672 12.328,3 11.5,3 10.672,3 10,3.672 10,4.5 M5,6.293L2,9.293 2,2 14,2 14,11.293 12,9.293 10,11.293z" />
+                                                    <GeometryDrawing Brush="#FF1AA1E2" Geometry="F1M1,10L5,6.293 10,11.293 12,9.293 15,12 15,14 1,14z" />
+                                                    <GeometryDrawing Brush="#FFC17C1A" Geometry="F1M11.5,3C10.672,3 10,3.672 10,4.5 10,5.328 10.672,6 11.5,6 12.328,6 13,5.328 13,4.5 13,3.672 12.328,3 11.5,3" />
+                                                </DrawingGroup.Children>
+                                            </DrawingGroup>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Viewbox>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Click="MenuItem_Click_5">
                 <MenuItem.Header>

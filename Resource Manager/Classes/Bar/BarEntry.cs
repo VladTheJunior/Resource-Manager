@@ -1,4 +1,5 @@
-﻿using Resource_Manager.Classes.L33TZip;
+﻿using Resource_Manager.Classes.Alz4;
+using Resource_Manager.Classes.L33TZip;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -64,9 +65,9 @@ namespace Resource_Manager.Classes.Bar
             if (version > 3)
             {
                 barEntry.FileSize2 = (int)fileInfo.Length;
-                barEntry.isCompressed = L33TZipUtils.IsL33TZipFile(fileInfo.FullName);
+                barEntry.isCompressed = Alz4Utils.IsAlz4File(fileInfo.FullName);
                 if (barEntry.isCompressed)
-                    barEntry.FileSize = (await L33TZipUtils.ExtractL33TZippedBytesAsync(fileInfo.FullName)).Length;
+                    barEntry.FileSize = (await Alz4Utils.ReadCompressedSizeAlz4Async(fileInfo.FullName));
                 else
                     barEntry.FileSize = barEntry.FileSize2;
                 barEntry.FileSize3 = barEntry.FileSize2;
