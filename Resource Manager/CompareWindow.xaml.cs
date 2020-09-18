@@ -312,7 +312,7 @@ namespace Resource_Manager
                         ImageViewer1.Visibility = Visibility.Visible;
                     }
                     else
-                    if (entryOld.Extension == ".XMB" || entryOld.Extension == ".XML" || entryOld.Extension == ".SHP" || entryOld.Extension == ".LGT" || entryOld.Extension == ".XS" || entryOld.Extension == ".TXT" || entryOld.Extension == ".CFG" || entryOld.Extension == ".XAML")
+                    if (entryOld.Extension == ".XMB" || entryOld.Extension == ".XML" || entryOld.Extension == ".SHP" || entryOld.Extension == ".LGT" || entryOld.Extension == ".XS" || entryOld.Extension == ".TXT" || entryOld.Extension == ".CFG" || entryOld.Extension == ".XAML" || entryNew.Extension == ".PY")
                     {
                         ImageViewer1.Visibility = Visibility.Collapsed;
                         XMLViewer1.Visibility = Visibility.Visible;
@@ -341,7 +341,7 @@ namespace Resource_Manager
                         ImageViewer2.Visibility = Visibility.Visible;
                     }
                     else
-                    if (entryNew.Extension == ".XMB" || entryNew.Extension == ".XML" || entryNew.Extension == ".SHP" || entryNew.Extension == ".LGT" || entryNew.Extension == ".XS" || entryNew.Extension == ".TXT" || entryNew.Extension == ".CFG" || entryNew.Extension == ".XAML")
+                    if (entryNew.Extension == ".XMB" || entryNew.Extension == ".XML" || entryNew.Extension == ".SHP" || entryNew.Extension == ".LGT" || entryNew.Extension == ".XS" || entryNew.Extension == ".TXT" || entryNew.Extension == ".CFG" || entryNew.Extension == ".XAML" || entryNew.Extension == ".PY")
                     {
                         ImageViewer2.Visibility = Visibility.Collapsed;
                         XMLViewer2.Visibility = Visibility.Visible;
