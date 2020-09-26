@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ResourceManager.Core.Interfaces.Data;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,5 +16,7 @@ namespace ResourceManager.Core.Interfaces
         bool IsCompressed { get; }
 
         uint CRC32 { get; }
+
+        IBinaryData LoadData();
     }
 }
