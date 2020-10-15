@@ -1,10 +1,3 @@
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![GitHub license](https://img.shields.io/github/license/VladTheJunior/Resource-Manager)](https://github.com/VladTheJunior/Resource-Manager/blob/master/LICENSE)
-[![HitCount](http://hits.dwyl.com/VladTheJunior/Resource-Manager.svg)](http://hits.dwyl.com/VladTheJunior/Resource-Manager)
-
-
-
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
@@ -15,7 +8,7 @@
   <h3 align="center">Resource Manager</h3>
 
   <p align="center">
-    Utility for viewing, creating and extracting files from Age of Empires III .BAR archive
+    Utility for viewing, comparing, creating and extracting files from Age of Empires III .BAR archive
     <br />
      <a href="https://github.com/VladTheJunior/Resource-Manager">Download</a>
   </p>
@@ -27,7 +20,6 @@
 ## Table of Contents
 
 * [About the Project](#about-the-project)
-* [Usage](#usage)
 * [License](#license)
 * [Contact](#contact)
 * [Acknowledgements](#acknowledgements)
@@ -38,18 +30,6 @@
 ## About The Project
 
 [![Product Name Screen Shot][product-screenshot]]()
-
-
-
-
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-
-
 
 
 <!-- LICENSE -->
@@ -73,17 +53,3 @@ Project Link: [https://github.com/VladTheJunior/Resource-Manager](https://github
 * [ProjectCeleste/ProjectCeleste.GameFiles.Tools](https://github.com/ProjectCeleste/ProjectCeleste.GameFiles.Tools)
 * [PaulZero/AoE3-File-Readers](https://github.com/PaulZero/AoE3-File-Readers)
 * [AoE3Ed by Ykkrosh](http://games.build-a.com/aoe3/files/)
-
-
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-
-[stars-shield]: https://img.shields.io/github/stars/VladTheJunior/Resource-Manager.svg?style=flat-square
-[stars-url]: https://github.com/VladTheJunior/Resource-Manager/stargazers
-[issues-shield]: https://img.shields.io/github/issues/VladTheJunior/Resource-Manager.svg?style=flat-square
-[issues-url]: https://github.com/VladTheJunior/Resource-Manager/issues
-[product-screenshot]: Images/1.png
-
