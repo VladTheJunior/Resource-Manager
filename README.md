@@ -59,14 +59,14 @@ The updated version includes all **(x)** functions that were in AoE3Ed Viewer, a
 
 
 **(x) Currently the application does not include the following features:**
-* Converting DDT <-> TGA (it is recommended to use [http://aoe3.heavengames.com/cgi-bin/forums/display.cgi?action=ct&f=14,39229,,10)](Photoshop Plugin by kangcliff).
+* Converting DDT <-> TGA (it is recommended to use [Photoshop Plugin by kangcliff](http://aoe3.heavengames.com/cgi-bin/forums/display.cgi?action=ct&f=14,39229,,10).
 * Preview and correct unpacking of sound files (files are encrypted, I will be grateful to the developers if they give more detailed information on this).
 
 ## Screenshots
 
-![alt text](Images/1.PNG)
-![alt text](Images/2.PNG)
-![alt text](Images/3.PNG)
+![](Images/1.PNG)
+![](Images/2.PNG)
+![](Images/3.PNG)
 
 
 <!-- LICENSE -->
