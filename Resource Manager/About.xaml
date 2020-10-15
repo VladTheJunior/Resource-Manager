@@ -29,7 +29,7 @@
 
             <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                 
-                <Run Text="Age of Empires III - Resource Manager"/>
+                <Run Text="Resource Manager"/>
                 
                 <LineBreak/>
                 <Run Text="Copyright (c) 2020 VladTheJunior"  FontSize="12"/>

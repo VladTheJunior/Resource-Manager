@@ -134,12 +134,12 @@ namespace Archive_Unpacker.Classes.BarViewModel
             get
             {
                 if (barFile.barFileHeader.Version == 2)
-                    return Path.GetFileName(barFilePath) + " (Complete Collection)";
+                    return Path.GetFileName(barFilePath) + " AoE3 (2007)";
                 else
                 if (barFile.barFileHeader.Version == 4)
-                    return Path.GetFileName(barFilePath) + " (Definitive Edition - 1st wave of beta testing)";
+                    return Path.GetFileName(barFilePath) + " AoE3: Definitive Edition - 1st wave of beta testing";
                 else
-                    return Path.GetFileName(barFilePath) + " (Definitive Edition)";
+                    return Path.GetFileName(barFilePath) + " AoE3: Definitive Edition";
             }
         }
 

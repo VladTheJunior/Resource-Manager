@@ -7,7 +7,7 @@
     xmlns:fa5="http://schemas.fontawesome.com/icons/"
     xmlns:local="clr-namespace:Resource_Manager"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="{Binding file.barFileName, StringFormat='{}Age of Empires III - Resource Manager - {0}', FallbackValue='Age of Empires III - Resource Manager'}"
+    Title="{Binding file.barFileName, StringFormat='{}Resource Manager - {0}', FallbackValue='Resource Manager'}"
     Width="1177"
     Height="450"
     FontFamily="{StaticResource Trajan Pro}"

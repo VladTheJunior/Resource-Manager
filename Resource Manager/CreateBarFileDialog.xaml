@@ -22,8 +22,8 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Select Game Version: " HorizontalAlignment="Left" VerticalAlignment="Center"/>
         <ComboBox x:Name="tbGameVersion" Grid.Row="0" Grid.Column="1" SelectedIndex="0">
-            <ComboBoxItem Content="Complete Collection"/>
-            <ComboBoxItem Content="Definitive Edition"/>
+            <ComboBoxItem Content="Age of Empires 3 (2007)"/>
+            <ComboBoxItem Content="Age of Empires 3: DE"/>
         </ComboBox>
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Select Bar Root Folder: " HorizontalAlignment="Left" VerticalAlignment="Center"/>
         <Button Margin="0,5" Grid.Row="1" Grid.Column="1" Content="Browse..." Click="Button_Click"/>
