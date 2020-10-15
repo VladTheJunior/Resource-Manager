@@ -10,7 +10,7 @@
   <p align="center">
     Utility for viewing, comparing, creating and extracting files from Age of Empires III .BAR archive
     <br />
-     <a href="https://github.com/VladTheJunior/Resource-Manager">Download</a>
+     <a href="https://drive.google.com/file/d/15-LyNy613JMMVV8xjRLFPG8Xqp88aHOh/view?usp=sharing">Download</a>
   </p>
 </p>
 
@@ -20,6 +20,7 @@
 ## Table of Contents
 
 * [About the Project](#about-the-project)
+* [Screenshots](#screenshots)
 * [License](#license)
 * [Contact](#contact)
 * [Acknowledgements](#acknowledgements)
@@ -29,7 +30,43 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]]()
+I would like to present to you a program for viewing, comparing, creating and extracting files from BAR archives of the Age of Empires 3: Definitive Edition (also supports AoE3 2007). This tool replaces the AoE3Ed Viewer developed by Ykkrosh, which does not work for the Definitive Edition.
+The updated version includes all **(x)** functions that were in AoE3Ed Viewer, as well as new features:
+
+**Preview:**
+* Syntax highlighting in previewing text files (xml, xs).
+* Search in preview in text files (CTRL + F).
+* Ability to scale images in preview.
+
+**Entries table:**
+* Grouping files by their format (optional).
+* Sort by name, size, creation date.
+* Search in the BAR archive.
+* Calculation of CRC (optional).
+* Create BAR archive from files and folders.
+* The size of the selected entries.
+
+**Conversion:**
+* Converting XML <-> XMB (both 2007 and DE).
+* Converting DDT -> PNG.
+
+**Extract:**
+* Extract all files.
+* Extract selected files.
+
+**Other:**
+* Comparison of BAR archives.
+
+
+**(x) Currently the application does not include the following features:**
+* Converting DDT <-> TGA (it is recommended to use [http://aoe3.heavengames.com/cgi-bin/forums/display.cgi?action=ct&f=14,39229,,10)](Photoshop Plugin by kangcliff).
+* Preview and correct unpacking of sound files (files are encrypted, I will be grateful to the developers if they give more detailed information on this).
+
+## Screenshots
+
+![alt text](Images/1.PNG)
+![alt text](Images/2.PNG)
+![alt text](Images/3.PNG)
 
 
 <!-- LICENSE -->
