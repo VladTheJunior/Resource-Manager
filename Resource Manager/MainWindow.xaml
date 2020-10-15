@@ -855,7 +855,7 @@
                 </MenuItem>
                 <MenuItem
                  Click="convertFiles"
-                    Header="XML To XMB (CC)"
+                    Header="XML To XMB (2007)"
                     Tag="toxmbcc">
                     <MenuItem.Icon>
                         <Viewbox Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
