@@ -8,10 +8,9 @@
   <h3 align="center">Resource Manager</h3>
 
   <p align="center">
-    Utility for viewing, comparing, creating and extracting files from Age of Empires III .BAR archive
-    <br />
-     <a href="https://drive.google.com/file/d/15-LyNy613JMMVV8xjRLFPG8Xqp88aHOh/view?usp=sharing">Download</a>
-  </p>
+    Utility for viewing, comparing, creating and extracting files from Age of Empires III .BAR archive  </p>
+     <h1 align="center"><a href="https://drive.google.com/file/d/15-LyNy613JMMVV8xjRLFPG8Xqp88aHOh/view?usp=sharing">Download</a></h1>
+
 </p>
 
 
