@@ -9,7 +9,7 @@
 
   <p align="center">
     Utility for viewing, comparing, creating and extracting files from Age of Empires III .BAR archive  </p>
-     <h1 align="center"><a href="https://drive.google.com/file/d/15-LyNy613JMMVV8xjRLFPG8Xqp88aHOh/view?usp=sharing">Download</a></h1>
+     <h1 align="center"><a href="https://drive.google.com/file/d/15-LyNy613JMMVV8xjRLFPG8Xqp88aHOh/view?usp=sharing">Download Portable (.zip archive)</a></h1>
 
 </p>
 
@@ -18,13 +18,18 @@
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
+* [How to Use](#how-to-use)
 * [About the Project](#about-the-project)
 * [Screenshots](#screenshots)
 * [License](#license)
 * [Contact](#contact)
 * [Acknowledgements](#acknowledgements)
 
+## How to Use
 
+1. Download application from the link above.
+2. Unpack .zip and run *Resource Manager.exe*.
+3. Application requires .NET Core. If you haven't installed it yet, you can download it from the direct link: [.NET Core Runtime](https://dotnet.microsoft.com/download/dotnet-core/thank-you/runtime-desktop-3.1.9-windows-x64-installer).
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
