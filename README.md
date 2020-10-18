@@ -1,4 +1,4 @@
-![ViewCount](https://views.whatilearened.today/views/github/VladTheJunior/Resource-Manager)
+![ViewCount](https://views.whatilearened.today/views/github/VladTheJunior/Resource-Manager.svg)
 [![GitHub stars](https://img.shields.io/github/stars/VladTheJunior/Resource-Manager)](https://github.com/VladTheJunior/Resource-Manager/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/VladTheJunior/Resource-Manager)](https://github.com/VladTheJunior/Resource-Manager/network)
 [![GitHub issues](https://img.shields.io/github/issues/VladTheJunior/Resource-Manager)](https://github.com/VladTheJunior/Resource-Manager/issues)
