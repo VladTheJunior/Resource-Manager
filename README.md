@@ -1,8 +1,13 @@
+[![HitCount](http://hits.dwyl.com/VladTheJunior/Resource-Manager.svg)](http://hits.dwyl.com/VladTheJunior/Resource-Manager)
+[![GitHub stars](https://img.shields.io/github/stars/VladTheJunior/Resource-Manager)](https://github.com/VladTheJunior/Resource-Manager/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/VladTheJunior/Resource-Manager)](https://github.com/VladTheJunior/Resource-Manager/network)
+[![GitHub issues](https://img.shields.io/github/issues/VladTheJunior/Resource-Manager)](https://github.com/VladTheJunior/Resource-Manager/issues)
+[![GitHub license](https://img.shields.io/github/license/VladTheJunior/Resource-Manager)](https://github.com/VladTheJunior/Resource-Manager/blob/master/LICENSE)
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
   <a href="https://github.com/VladTheJunior/Resource-Manager">
-    <img src="Images/Icon.png" alt="Logo" width="128" height="128">
+    <img src="Images/Icon.png" alt="Logo">
   </a>
 
   <h3 align="center">Resource Manager</h3>
@@ -12,8 +17,6 @@
      <h1 align="center"><a href="https://drive.google.com/file/d/15-LyNy613JMMVV8xjRLFPG8Xqp88aHOh/view?usp=sharing">Download Portable (.zip archive)</a></h1>
 
 </p>
-
-
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
