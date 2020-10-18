@@ -98,6 +98,7 @@
 
         <Grid
             x:Name="gPreview"
+                                    PreviewMouseMove="ImagePreview_MouseMove"
             Grid.Row="1"
             Grid.RowSpan="2"
             Grid.Column="2"
@@ -125,6 +126,7 @@
                 Text="{Binding file.PreviewDdt.DdtInfo, StringFormat='Image Format: {0}'}" />
             <Grid
                 x:Name="ImageViewer"
+
                 Grid.Row="3"
                 Visibility="Collapsed">
                 <ScrollViewer
@@ -139,6 +141,7 @@
                         VerticalAlignment="Top"
                         MouseWheel="ImageViewer_MouseWheel"
                         RenderOptions.BitmapScalingMode="HighQuality"
+
                         RenderTransformOrigin="0.5,0.5">
                         <Image.LayoutTransform>
                             <TransformGroup>
@@ -146,6 +149,12 @@
 
                             </TransformGroup>
                         </Image.LayoutTransform>
+
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <TranslateTransform></TranslateTransform>
+                            </TransformGroup>
+                        </Image.RenderTransform>
                     </Image>
 
 

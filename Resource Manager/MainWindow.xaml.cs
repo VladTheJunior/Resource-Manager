@@ -671,6 +671,38 @@ namespace Resource_Manager
         private void TextBlock_MouseDown_2(object sender, MouseButtonEventArgs e)
         {
         }
+
+        Point point = new Point();
+        bool validPoint = false;
+
+        private void ImagePreview_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                Point newPos = e.GetPosition(this);
+
+                if (validPoint)
+                {
+                    ImagePreview.RenderTransform = new TranslateTransform(newPos.X - point.X, newPos.Y - point.Y);
+                }
+
+                if (!validPoint)
+                {
+                    point = newPos;
+                    validPoint = true;
+                    
+                    if(ImagePreview.RenderTransform != null)
+                    {
+                        point.X -= ImagePreview.RenderTransform.Value.OffsetX;
+                        point.Y -= ImagePreview.RenderTransform.Value.OffsetY;
+                    }
+                }
+            }
+            else
+            {
+                validPoint = false;
+            }
+        }
     }
 
     #region Value Converters
