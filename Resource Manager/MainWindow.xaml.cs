@@ -403,7 +403,7 @@ namespace Resource_Manager
                     });
 
                 }
-                catch (InvalidAsynchronousStateException ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
