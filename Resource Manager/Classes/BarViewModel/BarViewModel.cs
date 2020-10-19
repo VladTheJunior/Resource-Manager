@@ -1,4 +1,5 @@
-﻿using Resource_Manager.Classes.Alz4;
+﻿using Resource_Manager;
+using Resource_Manager.Classes.Alz4;
 using Resource_Manager.Classes.Bar;
 using Resource_Manager.Classes.Ddt;
 using Resource_Manager.Classes.L33TZip;
@@ -158,7 +159,7 @@ namespace Archive_Unpacker.Classes.BarViewModel
 
 
 
-        public async Task saveFiles(List<BarEntry> files, string savePath, bool Decompress, CancellationToken token)
+        public async Task saveFiles(List<BarEntry> files, string savePath, bool Decompress, CancellationToken token, ExportDDT settings)
         {
             ResetProgress();
             if (files.Count == 0) return;
@@ -202,7 +203,7 @@ namespace Archive_Unpacker.Classes.BarViewModel
                             data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
                     }
                 }
-
+                
                 await File.WriteAllBytesAsync(Path.Combine(savePath, file.FileNameWithRoot), data);
                 CurrentProgress += (double)file.FileSize2 / filesSize;
             }
