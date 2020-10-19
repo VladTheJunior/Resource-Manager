@@ -361,6 +361,7 @@ namespace Resource_Manager
             if (entries.Count != 0)
             {
                 string RootPath;
+                /*
                 using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
                 {
                     if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -370,6 +371,16 @@ namespace Resource_Manager
                     else
                         return;
                 }
+                */
+
+                ExportDDT exportDDT = new ExportDDT();
+                exportDDT.ShowDialog();
+
+                if (exportDDT.Canceled)
+                    return;
+
+                RootPath = exportDDT.Path;
+
                 mainMenu.IsEnabled = false;
                 tbExtract.Text = "Extracting";
                 SpinnerExtract.Visibility = Visibility.Visible;
@@ -388,11 +399,11 @@ namespace Resource_Manager
 
                     await Task.Run(async () =>
                     {
-                        await file.saveFiles(entries, RootPath, decompress, Token);
+                        await file.saveFiles(entries, RootPath, decompress, Token, exportDDT);
                     });
 
                 }
-                catch (Exception ex)
+                catch (InvalidAsynchronousStateException ex)
                 {
                     MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
