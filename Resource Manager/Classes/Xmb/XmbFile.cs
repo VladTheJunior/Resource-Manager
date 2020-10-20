@@ -357,12 +357,8 @@ namespace Resource_Manager.Classes.Xmb
             int Length = (int)(DataEnd - (2 + 4));
             writer.Write(Length);
             writer.BaseStream.Seek(DataEnd, SeekOrigin.Begin);
-            var name = Path.ChangeExtension(filename, "");
-            if (!Path.HasExtension(name))
-                filename = Path.ChangeExtension(filename, ".xml.xmb");
-            else
-                filename = Path.ChangeExtension(filename, ".xmb");
-            await L33TZipUtils.CompressBytesAsL33TZipAsync(output.ToArray(), filename);
+
+            await L33TZipUtils.CompressBytesAsL33TZipAsync(output.ToArray(), filename + ".xmb");
         }
 
         public static async Task CreateXMBFileALZ4(string filename)
@@ -426,13 +422,7 @@ namespace Resource_Manager.Classes.Xmb
             int Length = (int)(DataEnd - (2 + 4));
             writer.Write(Length);
             writer.BaseStream.Seek(DataEnd, SeekOrigin.Begin);
-            var name = Path.ChangeExtension(filename, "");
-            if (!Path.HasExtension(name))
-                filename = Path.ChangeExtension(filename, ".xml.xmb");
-            else
-                filename = Path.ChangeExtension(filename, ".xmb");
-            // need upgrade
-            await Alz4Utils.CompressBytesAsAlz4Async(output.ToArray(), filename);
+            await Alz4Utils.CompressBytesAsAlz4Async(output.ToArray(), filename + ".xmb");
         }
         #endregion
     }

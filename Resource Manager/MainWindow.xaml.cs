@@ -365,23 +365,23 @@ namespace Resource_Manager
             if (entries.Count != 0)
             {
                 string RootPath;
-                using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
-                {
-                    if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    {
-                        RootPath = folderBrowserDialog.SelectedPath;
-                    }
-                    else
-                        return;
-                }
+
+
+                ExtractDialog ExtractDialog = new ExtractDialog();
+                if (ExtractDialog.ShowDialog() != true)
+                    return;
+
+                RootPath = ExtractDialog.Path;
+
+
                 mainMenu.IsEnabled = false;
                 tbExtract.Text = "Extracting";
                 SpinnerExtract.Visibility = Visibility.Visible;
                 bPause.IsEnabled = true;
                 bStop.IsEnabled = true;
                 bRun.IsEnabled = false;
-                bool decompress = false;
-                if (file.barFile.barFileHeader.Version > 3)
+                bool decompress = ExtractDialog.AutoDecompress;
+                if (file.barFile.barFileHeader.Version > 3 && !ExtractDialog.AutoDecompress)
                     decompress = MessageBox.Show("Do you want to decompress compressed files? (If you do not decompress them, you will not be able to open and edit these files.)", "Decompress files", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes;
 
                 file.extractingState = 0;
@@ -586,7 +586,9 @@ namespace Resource_Manager
 
                             using MemoryStream stream = new MemoryStream(data);
                             XMBFile xmb = await XMBFile.LoadXMBFile(stream);
-                            var newName = file.Replace(".xml.xmb", ".xml", StringComparison.OrdinalIgnoreCase).Replace(".xmb", ".xml", StringComparison.OrdinalIgnoreCase);
+
+                            var newName = Path.ChangeExtension(file, "");
+
                             xmb.file.Save(newName);
                         }
                         catch (Exception ex)
@@ -694,8 +696,8 @@ namespace Resource_Manager
                 {
                     point = newPos;
                     validPoint = true;
-                    
-                    if(ImagePreview.RenderTransform != null)
+
+                    if (ImagePreview.RenderTransform != null)
                     {
                         point.X -= ImagePreview.RenderTransform.Value.OffsetX;
                         point.Y -= ImagePreview.RenderTransform.Value.OffsetY;
