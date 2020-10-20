@@ -1,4 +1,5 @@
-﻿using Resource_Manager.Classes.Alz4;
+﻿using Pfim;
+using Resource_Manager.Classes.Alz4;
 using Resource_Manager.Classes.Bar;
 using Resource_Manager.Classes.Ddt;
 using Resource_Manager.Classes.L33TZip;
@@ -7,14 +8,18 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ImageFormat = Pfim.ImageFormat;
 
 namespace Archive_Unpacker.Classes.BarViewModel
 {
@@ -268,10 +273,12 @@ namespace Archive_Unpacker.Classes.BarViewModel
                         data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
                 }
 
+
+
                 PreviewDdt = new DdtFile(data, true);
                 return;
             }
-            if (file.Extension == ".BMP" || file.Extension == ".PNG" || file.Extension == ".CUR" || file.Extension == ".JPG")
+            if (file.Extension == ".BMP" || file.Extension == ".TGA" || file.Extension == ".PNG" || file.Extension == ".CUR" || file.Extension == ".JPG")
             {
                 using FileStream input = File.OpenRead(barFilePath);
                 // Locate the file within the BAR file.
@@ -288,14 +295,37 @@ namespace Archive_Unpacker.Classes.BarViewModel
                         data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
                 }
                 var bitmap = new BitmapImage();
+
                 using (var stream = new MemoryStream(data))
                 {
-
-                    bitmap.BeginInit();
-                    bitmap.StreamSource = stream;
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.EndInit();
-                    bitmap.Freeze();
+                    if (file.Extension == ".TGA")
+                    {
+                        IImage image = await Task.Run(() => Pfim.Pfim.FromStream(stream));
+                        var pinnedArray = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+                        var addr = pinnedArray.AddrOfPinnedObject();
+                        var bsource = BitmapSource.Create(image.Width, image.Height, 96.0, 96.0,
+                            PixelFormat(image), null, addr, image.DataLen, image.Stride);
+                        PngBitmapEncoder encoder = new PngBitmapEncoder();
+                        MemoryStream memoryStream = new MemoryStream();
+                       
+                        encoder.Frames.Add(BitmapFrame.Create(bsource));
+                        encoder.Save(memoryStream);
+                        memoryStream.Position = 0;
+                        bitmap.BeginInit();
+                        bitmap.StreamSource = memoryStream;
+                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmap.EndInit();
+                        bitmap.Freeze();
+                        memoryStream.Close();
+                    }
+                    else
+                    {
+                        bitmap.BeginInit();
+                        bitmap.StreamSource = stream;
+                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmap.EndInit();
+                        bitmap.Freeze();
+                    }
                 }
 
                 PreviewImage = bitmap;
@@ -358,6 +388,25 @@ namespace Archive_Unpacker.Classes.BarViewModel
             return;
         }
 
+        private static System.Windows.Media.PixelFormat PixelFormat(IImage image)
+        {
+            switch (image.Format)
+            {
+                case ImageFormat.Rgb24:
+                    return PixelFormats.Bgr24;
+                case ImageFormat.Rgba32:
+                    return PixelFormats.Bgr32;
+                case ImageFormat.Rgb8:
+                    return PixelFormats.Gray8;
+                case ImageFormat.R5g5b5a1:
+                case ImageFormat.R5g5b5:
+                    return PixelFormats.Bgr555;
+                case ImageFormat.R5g6b5:
+                    return PixelFormats.Bgr565;
+                default:
+                    throw new Exception($"Unable to convert {image.Format} to WPF PixelFormat");
+            }
+        }
         public async static Task<BarViewModel> Load(string filename, bool doCRC32)
         {
             BarViewModel barViewModel = new BarViewModel();

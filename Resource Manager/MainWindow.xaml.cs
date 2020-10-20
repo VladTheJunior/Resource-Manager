@@ -147,6 +147,10 @@ namespace Resource_Manager
                 SelectedSize = entries.Sum(x => (long)x.FileSize2);
                 await file.readFile(entry);
 
+                point = new Point();
+                validPoint = false;
+                ImagePreview.RenderTransform = new TranslateTransform();
+
                 if (file.Preview != null)
                 {
                     XMLViewer.Text = file.Preview.Text;
@@ -187,7 +191,7 @@ namespace Resource_Manager
                     ImageViewer.Visibility = Visibility.Visible;
                 }
                 else
-                if (entry.Extension == ".BMP" || entry.Extension == ".PNG" || entry.Extension == ".CUR" || entry.Extension == ".JPG")
+                if (entry.Extension == ".TGA" || entry.Extension == ".BMP" || entry.Extension == ".PNG" || entry.Extension == ".CUR" || entry.Extension == ".JPG")
                 {
                     ImagePreview.Source = file.PreviewImage;
                     XMLViewer.Visibility = Visibility.Collapsed;
