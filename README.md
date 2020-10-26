@@ -79,7 +79,7 @@ The updated version includes all **(x)** functions that were in AoE3Ed Viewer, a
 ### Version 0.4
 * Added decryption of sounds (sound files can be extracted without problem now).
 * Added new GUI for extraction dialog.
-* Fixed bug with .xmb.xml extension while extracted.
+* Fixed bug with .xmb.xml extension while converted.
 * Added entry details window (in context menu in entries table).
 
 ## Screenshots
