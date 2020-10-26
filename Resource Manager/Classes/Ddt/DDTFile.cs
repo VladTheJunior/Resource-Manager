@@ -28,10 +28,9 @@ namespace Resource_Manager.Classes.Ddt
 
     public enum DdtFileTypeUsage : byte
     {
-        Unk0 = 0,
-        Unk1 = 1,
-        Bump = 6,
-        Unk2 = 7,
+        AlphaTest = 1,
+        LowDetail = 2,
+        Bump = 4,
         Cube = 8
     }
 
@@ -51,7 +50,7 @@ namespace Resource_Manager.Classes.Ddt
                     BaseWidth = binaryReader.ReadInt32();
                     BaseHeight = binaryReader.ReadInt32();
                     var images = new List<DdtImage>();
-                    var numImagesPerLevel = Usage == DdtFileTypeUsage.Cube ? 6 : 1;
+                    var numImagesPerLevel = Usage.HasFlag(DdtFileTypeUsage.Cube) ? 6 : 1;
                     for (var index = 0; index < MipmapLevels * numImagesPerLevel; ++index)
                     {
                         binaryReader.BaseStream.Position = 16 + 8 * index;
@@ -159,7 +158,7 @@ namespace Resource_Manager.Classes.Ddt
                 case DdtFileTypeFormat.Dxt5:
                     {
 
-                        if (Usage == DdtFileTypeUsage.Bump)
+                        if (Usage.HasFlag(DdtFileTypeUsage.Bump))
                             data = DxtFileUtils.DecompressDxt5Bump(ddtImage.RawData, ddtImage.Width, ddtImage.Height);
                         else
                             data = DxtFileUtils.DecompressDxt5(ddtImage.RawData, ddtImage.Width, ddtImage.Height);

@@ -9,7 +9,7 @@
         UseLayoutRounding="True"
         WindowStartupLocation="CenterScreen"
         
-        Title="About"  ResizeMode="NoResize" FontFamily="{StaticResource Trajan Pro}" FontSize="14">
+        Title="About"  ResizeMode="NoResize" FontFamily="{StaticResource Trajan Pro}" FontSize="16">
     <Grid>
         <Grid Margin="20">
             <Grid.ColumnDefinitions>
@@ -29,13 +29,13 @@
 
             <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Left" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                 
-                <Run Text="Resource Manager"/>
+                <Run Text="Resource Manager" FontSize="22"/>
                 
                 <LineBreak/>
-                <Run Text="Copyright (c) 2020 VladTheJunior"  FontSize="12"/>
+                <Run Text="Copyright (c) 2020 VladTheJunior"  FontSize="14"/>
 
                 <LineBreak/>
-                <Run Text="version: 0.3.0"  FontSize="12"/>
+                <Run Text="version: 0.4.0"  FontSize="14"/>
             </TextBlock>
             <TextBlock  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" >
             <LineBreak/>
@@ -57,10 +57,38 @@
                 <Run Text="AoE3Ed by Ykkrosh" />
                 </Hyperlink>
                 <LineBreak />             
-                
+                             <Run Text="Special thanks to:" />
+<LineBreak/>   
+                                <Run FontWeight="Bold" Text= " − " />
+                <Hyperlink NavigateUri="https://kevsoft.io/" RequestNavigate="Hyperlink_RequestNavigate">
+                <Run Text="Kevsoft" />
+                </Hyperlink>
+                <Run Text="for great contribution to the development."/>
+<LineBreak/>   
+                                                <Run FontWeight="Bold" Text= " − " />
+                <Hyperlink NavigateUri="https://github.com/systematicskid" RequestNavigate="Hyperlink_RequestNavigate">
+                <Run Text="Sebastien" />
+                </Hyperlink>
+                <Run Text="for help in decrypting sounds."/>
+<LineBreak/>  
+                                <Run FontWeight="Bold" Text= " − " />
+                <Hyperlink NavigateUri="https://github.com/Budschie" RequestNavigate="Hyperlink_RequestNavigate">
+                <Run Text="Budschie" />
+                </Hyperlink>
+                <Run Text="for making changes to the usability of the GUI."/>                
+<LineBreak/>   
+                                <Run FontWeight="Bold" Text= " − " />
+          
+                <Run Text="AoE3 Modding Council" FontWeight="Bold" >
+                    <Run.TextDecorations>
+                        <TextDecoration/>
+                    </Run.TextDecorations>
+                </Run>
+         
+                <Run Text="for supporting and testing the application."/>
             </TextBlock>
 
-            <Button Margin="0,5" Content="OK" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Width="75" Padding="0,3,0,0" Click="Button_Click_1"/>
+            <Button Margin="0,5,0,0" Content="OK" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Width="75" Padding="0,3,0,0" Click="Button_Click_1"/>
         </Grid>
     </Grid>
 </Window>

@@ -194,7 +194,63 @@ Background="White"
             SelectionChanged="files_SelectionChanged"
             VirtualizingPanel.IsVirtualizingWhenGrouping="True"
             VirtualizingPanel.ScrollUnit="Pixel">
-
+            <ListView.Resources>
+                <ContextMenu FontFamily="{StaticResource Trajan Pro}"
+            FontSize="16" x:Key="ItemContextMenu">
+                    <MenuItem
+                    Click="extractMenuItem"
+                    Header="Extract Selected..."
+                    Tag="Selected">
+                        <MenuItem.Icon>
+                            <Viewbox
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            Width="16"
+                            Height="16">
+                                <Rectangle Width="16" Height="16">
+                                    <Rectangle.Fill>
+                                        <DrawingBrush>
+                                            <DrawingBrush.Drawing>
+                                                <DrawingGroup>
+                                                    <DrawingGroup.Children>
+                                                        <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                        <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M16,0L16,12 15.949,12C15.697,14.244 13.81,16 11.5,16 10.638,16 9.841,15.744 9.156,15.323L7.716,15.751C7.16,15.916 6.583,16 6.001,16 4.623,16 3.275,15.519 2.207,14.649 0.965999999999999,13.636 0.193,12.199 0.0310000000000006,10.604 -0.129999999999999,9.009 0.339,7.448 1.353,6.206 1.552,5.963 1.771,5.743 2,5.537L2,0z" />
+                                                        <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M4,4L6.003,4C5.803,4 5.602,4.01 5.397,4.03 4.913,4.079 4.447,4.191 4,4.348z M6.003,4L14,4 14,7.785C13.259,7.282 12.396,7 11.5,7 11.404,7 11.312,7.017 11.218,7.023L10.987,6.676C10.651,6.168 10.25,5.723 9.795,5.352 8.71,4.467 7.399,4 6.003,4 M14,3L4,3 4,2 14,2z M7.214,8.179C6.768,8.663 6.121,8.319 5.677,8.024 5.209,7.712 5.597,6.991 6.062,7.185 6.294,6.855 6.785,6.646 7.144,6.819 7.634,7.054 7.526,7.839 7.214,8.179 M5.077,12.138C4.703,12.167 4.277,11.943 4.21,11.589 4.118,11.108 4.767,10.725 5.193,10.747 5.801,10.778 5.897,11.434 5.918,11.919 5.94,12.431 5.186,12.579 5.077,12.138 M3.722,10.044C3.477,10.385 2.951,10.076 3.108,9.735 2.869,9.553 2.727,9.182 2.865,8.919 3.054,8.561 3.635,8.663 3.88,8.905 4.228,9.25 3.954,9.722 3.722,10.044 M8.676,6.723C7.914,6.1 6.98,5.769 6.009,5.769 5.865,5.769 5.721,5.776 5.575,5.791 4.451,5.904 3.438,6.449 2.723,7.324 2.009,8.2 1.678,9.301 1.792,10.426 1.905,11.55 2.45,12.562 3.325,13.277 4.277,14.054 5.509,14.373 6.705,14.171 6.241,13.243 6.349,12.1 7.023,11.269 7.108,9.638 8.059,8.246 9.43,7.528 9.217,7.231 8.966,6.959 8.676,6.723" />
+                                                        <GeometryDrawing Brush="#FF424242" Geometry="F1M7.2172,12.8095C7.0892,12.3925 7.0002,11.9585 7.0002,11.4995 7.0002,11.4215 7.0192,11.3475 7.0232,11.2695 6.3482,12.1005 6.2412,13.2435 6.7042,14.1715 5.5092,14.3735 4.2762,14.0535 3.3252,13.2775 2.4502,12.5625 1.9052,11.5495 1.7912,10.4255 1.6782,9.3015 2.0092,8.1995 2.7232,7.3245 3.4382,6.4495 4.4512,5.9045 5.5752,5.7905 5.7202,5.7755 5.8652,5.7685 6.0092,5.7685 6.9802,5.7685 7.9142,6.0995 8.6762,6.7225 8.9662,6.9595 9.2172,7.2315 9.4292,7.5285 9.6612,7.4075 9.9012,7.3085 10.1542,7.2285 9.8832,6.8195 9.5532,6.4445 9.1622,6.1265 8.1262,5.2815 6.8242,4.8935 5.4982,5.0245 4.1692,5.1595 2.9722,5.8035 2.1272,6.8375 1.2822,7.8725 0.8912,9.1745 1.0262,10.5025 1.1602,11.8315 1.8042,13.0295 2.8392,13.8735 3.7432,14.6115 4.8622,14.9995 6.0012,14.9995 6.4792,14.9995 6.9612,14.9315 7.4322,14.7915L7.9852,14.6275 7.6202,14.1795C7.2982,13.7845,7.1772,13.2925,7.2172,12.8095 M14.0002,1.9995L4.0002,1.9995 4.0002,2.9995 14.0002,2.9995z M14.0002,3.9995L4.0002,3.9995 4.0002,4.3485C3.6522,4.4715,3.3182,4.6245,3.0002,4.8085L3.0002,0.999499999999999 15.0002,0.999499999999999 15.0002,8.7185C14.7602,8.4025,14.5692,8.2235,14.5692,8.2235L14.5382,8.1955C14.3702,8.0415,14.1862,7.9115,14.0002,7.7845z M4.2102,11.5895C4.2772,11.9435 4.7032,12.1675 5.0772,12.1375 5.1862,12.5785 5.9402,12.4315 5.9182,11.9195 5.8962,11.4345 5.8012,10.7785 5.1932,10.7475 4.7672,10.7255 4.1182,11.1075 4.2102,11.5895 M2.8652,8.9185C2.7272,9.1815 2.8692,9.5535 3.1082,9.7345 2.9502,10.0755 3.4772,10.3845 3.7222,10.0445 3.9542,9.7215 4.2282,9.2505 3.8802,8.9045 3.6352,8.6625 3.0532,8.5605 2.8652,8.9185 M7.2132,8.1785C6.7682,8.6635 6.1212,8.3195 5.6772,8.0245 5.2082,7.7125 5.5972,6.9905 6.0622,7.1845 6.2942,6.8555 6.7842,6.6465 7.1442,6.8185 7.6342,7.0535 7.5262,7.8395 7.2132,8.1785" />
+                                                        <GeometryDrawing Brush="#FF329932" Geometry="F1M15,11.5C15,13.433 13.433,15 11.5,15 9.567,15 8,13.433 8,11.5 8,9.567 9.567,8 11.5,8 12.414,8 13.238,8.358 13.861,8.932L10.5,12.293 9.354,11.146 8.646,11.854 10.5,13.707 14.494,9.713C14.32,9.422,15,10.48,15,11.5" />
+                                                        <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1M8.6635,11.8664L9.3595,11.1544 10.4855,12.2644 13.8315,8.9344C13.8315,8.9344,14.3955,9.5474,14.4615,9.6964L10.4855,13.6724z" />
+                                                    </DrawingGroup.Children>
+                                                </DrawingGroup>
+                                            </DrawingBrush.Drawing>
+                                        </DrawingBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Viewbox>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Entry Details" Click="MenuItem_Click_2">
+                        <MenuItem.Icon>
+                            <Viewbox Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+                                <Rectangle Width="16" Height="16">
+                                    <Rectangle.Fill>
+                                        <DrawingBrush>
+                                            <DrawingBrush.Drawing>
+                                                <DrawingGroup>
+                                                    <DrawingGroup.Children>
+                                                        <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                                        <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M14,6C14,7.909 13.121,9.659 11.587,10.804 11.214,11.082 11,11.461 11,11.843L11,13 11,14.414 9.414,16 6.586,16 5,14.414 5,12C5,11.523 4.786,11.081 4.428,10.814 2.583,9.447 1.69,7.182 2.098,4.901 2.521,2.539 4.377,0.623 6.717,0.134 7.143,0.0449999999999999 7.574,0 8,0 11.309,0 14,2.691 14,6" />
+                                                        <GeometryDrawing Brush="#FF838383" Geometry="F1M6,13L10,13 10,12 6,12z M6,14L10,14 9,15 7,15z" />
+                                                        <GeometryDrawing Brush="#FFFFCC00" Geometry="F1M6.9219,1.1128C4.9789,1.5188 3.4319,3.1238 3.0829,5.0778 2.7219,7.0928 3.5709,8.9348 5.0239,10.0118 5.6489,10.4758 5.9999,11.2218 5.9999,11.9998L7.4999,11.9998 7.4999,8.4488C6.3599,8.2168 5.4999,7.2068 5.4999,5.9998 5.4999,4.6218 6.6219,3.4998 7.9999,3.4998 9.3789,3.4998 10.4999,4.6218 10.4999,5.9998 10.4999,7.2068 9.6399,8.2168 8.4999,8.4488L8.4999,11.9998 9.9999,11.9998 9.9999,11.8428C9.9999,11.1028 10.3959,10.4458 10.9889,10.0018 12.2089,9.0918 12.9999,7.6388 12.9999,5.9998 12.9999,2.8868 10.1539,0.4378 6.9219,1.1128 M7.9999,7.4998C7.1729,7.4998 6.4999,6.8268 6.4999,5.9998 6.4999,5.1728 7.1729,4.4998 7.9999,4.4998 8.8269,4.4998 9.4999,5.1728 9.4999,5.9998 9.4999,6.8268 8.8269,7.4998 7.9999,7.4998" />
+                                                    </DrawingGroup.Children>
+                                                </DrawingGroup>
+                                            </DrawingBrush.Drawing>
+                                        </DrawingBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Viewbox>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </ListView.Resources>
             <ListView.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.ContainerStyle>
@@ -238,9 +294,12 @@ Background="White"
                     <Setter Property="Margin" Value="0" />
                     <Setter Property="FontFamily" Value="Consolas" />
                     <Setter Property="FontSize" Value="10pt" />
-
-
+                    <Setter Property="ContextMenu" Value="{StaticResource ItemContextMenu}" />
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsEnabled, ElementName=mainMenu}" Value="False">
+                            <Setter Property="ContextMenu" Value="{x:Null}" />
+                            <!-- Here is the 'override' content -->
+                        </DataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=(ItemsControl.AlternationIndex)}" Value="0" />
@@ -268,7 +327,7 @@ Background="White"
                                     Width="18"
                                     Height="18" />
                                 <DataTemplate.Triggers>
-                                    <DataTrigger Binding="{Binding isCompressed}" Value="True">
+                                    <DataTrigger Binding="{Binding isCompressed}" Value="2">
                                         <Setter TargetName="myImage" Property="Fill">
                                             <Setter.Value>
 
@@ -289,7 +348,28 @@ Background="White"
                                             </Setter.Value>
                                         </Setter>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding isCompressed}" Value="False">
+                                    <DataTrigger Binding="{Binding isCompressed}" Value="1">
+                                        <Setter TargetName="myImage" Property="Fill">
+                                            <Setter.Value>
+
+                                                <DrawingBrush>
+                                                    <DrawingBrush.Drawing>
+                                                        <DrawingGroup>
+                                                            <DrawingGroup.Children>
+                                                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                                <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.5,1L9.61,1 10.61,3 13.496,3C14.323,3,14.996,3.673,14.996,4.5L14.996,12.5C14.996,13.327,14.323,14,13.496,14L1.5,14C0.673,14,0,13.327,0,12.5L0,2.5C0,1.673,0.673,1,1.5,1" />
+                                                                <GeometryDrawing Brush="#FFDCB67A" Geometry="F1M2,3L8.374,3 8.874,4 2,4z M13.496,4L10,4 9.992,4 8.992,2 1.5,2C1.225,2,1,2.224,1,2.5L1,12.5C1,12.776,1.225,13,1.5,13L13.496,13C13.773,13,13.996,12.776,13.996,12.5L13.996,4.5C13.996,4.224,13.773,4,13.496,4" />
+                                                                <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M4,12L3,12 3,13 4,13z M5,11L4,11 4,12 5,12z M5,9L4,9 4,10 5,10z M4,10L3,10 3,11 4,11z M4,8L3,8 3,9 4,9z M5,7L4,7 4,8 5,8z M5,4L3,4 3,6 5,6z M2,3L8.374,3 8.874,4 2,4z" />
+                                                                <GeometryDrawing Brush="#FF424242" Geometry="F1M5,4L5,6 3,6 3,4 2,4 2,13 3,13 3,12 4,12 4,11 3,11 3,10 4,10 4,9 3,9 3,8 4,8 4,7 5,7 5,8 4,8 4,9 5,9 5,10 4,10 4,11 5,11 5,12 4,12 4,13 6,13 6,4z M5,4L3,4 3,3 5,3z" />
+                                                            </DrawingGroup.Children>
+                                                        </DrawingGroup>
+                                                    </DrawingBrush.Drawing>
+                                                </DrawingBrush>
+
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding isCompressed}" Value="0">
                                         <Setter TargetName="myImage" Property="Fill" Value="Transparent" />
                                     </DataTrigger>
                                 </DataTemplate.Triggers>
@@ -342,6 +422,8 @@ Background="White"
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
+
+             
                     <GridViewColumn Width="160">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader
@@ -358,6 +440,7 @@ Background="White"
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
+           
 
 
                     <GridViewColumn Width="100">
@@ -381,7 +464,7 @@ Background="White"
                         <GridViewColumn.Header>
                             <GridViewColumnHeader
                                 Click="files_Click"
-                                Content="Last Modified date"
+                                Content="Last Modified Date"
                                 Tag="lastModifiedDate" />
                         </GridViewColumn.Header>
                         <GridViewColumn.CellTemplate>
@@ -440,7 +523,7 @@ Background="White"
             Grid.Row="3"
             Grid.ColumnSpan="3"
             FontFamily="{StaticResource Trajan Pro}"
-            FontSize="16">
+            FontSize="16" MouseDown="StatusBar_MouseDown">
             <TextBlock Padding="2,0">
                 <TextBlock.Text>
                     <MultiBinding StringFormat="Selected files: {0:N0} / {1:N0} ({2:N0} bytes)">

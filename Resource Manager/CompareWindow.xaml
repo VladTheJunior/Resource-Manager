@@ -289,7 +289,7 @@
                                         Width="16"
                                         Height="16" />
                                     <DataTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding entryOld.isCompressed}" Value="True">
+                                        <DataTrigger Binding="{Binding entryOld.isCompressed}" Value="2">
                                             <Setter TargetName="myImage" Property="Fill">
                                                 <Setter.Value>
 
@@ -310,7 +310,28 @@
                                                 </Setter.Value>
                                             </Setter>
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding entryOld.isCompressed}" Value="False">
+                                        <DataTrigger Binding="{Binding entryOld.isCompressed}" Value="1">
+                                            <Setter TargetName="myImage" Property="Fill">
+                                                <Setter.Value>
+
+                                                    <DrawingBrush>
+                                                        <DrawingBrush.Drawing>
+                                                            <DrawingGroup>
+                                                                <DrawingGroup.Children>
+                                                                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.5,1L9.61,1 10.61,3 13.496,3C14.323,3,14.996,3.673,14.996,4.5L14.996,12.5C14.996,13.327,14.323,14,13.496,14L1.5,14C0.673,14,0,13.327,0,12.5L0,2.5C0,1.673,0.673,1,1.5,1" />
+                                                                    <GeometryDrawing Brush="#FFDCB67A" Geometry="F1M2,3L8.374,3 8.874,4 2,4z M13.496,4L10,4 9.992,4 8.992,2 1.5,2C1.225,2,1,2.224,1,2.5L1,12.5C1,12.776,1.225,13,1.5,13L13.496,13C13.773,13,13.996,12.776,13.996,12.5L13.996,4.5C13.996,4.224,13.773,4,13.496,4" />
+                                                                    <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M4,12L3,12 3,13 4,13z M5,11L4,11 4,12 5,12z M5,9L4,9 4,10 5,10z M4,10L3,10 3,11 4,11z M4,8L3,8 3,9 4,9z M5,7L4,7 4,8 5,8z M5,4L3,4 3,6 5,6z M2,3L8.374,3 8.874,4 2,4z" />
+                                                                    <GeometryDrawing Brush="#FF424242" Geometry="F1M5,4L5,6 3,6 3,4 2,4 2,13 3,13 3,12 4,12 4,11 3,11 3,10 4,10 4,9 3,9 3,8 4,8 4,7 5,7 5,8 4,8 4,9 5,9 5,10 4,10 4,11 5,11 5,12 4,12 4,13 6,13 6,4z M5,4L3,4 3,3 5,3z" />
+                                                                </DrawingGroup.Children>
+                                                            </DrawingGroup>
+                                                        </DrawingBrush.Drawing>
+                                                    </DrawingBrush>
+
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding entryOld.isCompressed}" Value="0">
                                             <Setter TargetName="myImage" Property="Fill" Value="Transparent" />
                                         </DataTrigger>
                                     </DataTemplate.Triggers>
@@ -433,7 +454,7 @@
                                         Width="16"
                                         Height="16" />
                                     <DataTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding entryNew.isCompressed}" Value="True">
+                                        <DataTrigger Binding="{Binding entryNew.isCompressed}" Value="2">
                                             <Setter TargetName="myImage" Property="Fill">
                                                 <Setter.Value>
 
@@ -454,7 +475,28 @@
                                                 </Setter.Value>
                                             </Setter>
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding entryNew.isCompressed}" Value="False">
+                                        <DataTrigger Binding="{Binding entryNew.isCompressed}" Value="1">
+                                            <Setter TargetName="myImage" Property="Fill">
+                                                <Setter.Value>
+
+                                                    <DrawingBrush>
+                                                        <DrawingBrush.Drawing>
+                                                            <DrawingGroup>
+                                                                <DrawingGroup.Children>
+                                                                    <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M0,0L16,0 16,16 0,16z" />
+                                                                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M1.5,1L9.61,1 10.61,3 13.496,3C14.323,3,14.996,3.673,14.996,4.5L14.996,12.5C14.996,13.327,14.323,14,13.496,14L1.5,14C0.673,14,0,13.327,0,12.5L0,2.5C0,1.673,0.673,1,1.5,1" />
+                                                                    <GeometryDrawing Brush="#FFDCB67A" Geometry="F1M2,3L8.374,3 8.874,4 2,4z M13.496,4L10,4 9.992,4 8.992,2 1.5,2C1.225,2,1,2.224,1,2.5L1,12.5C1,12.776,1.225,13,1.5,13L13.496,13C13.773,13,13.996,12.776,13.996,12.5L13.996,4.5C13.996,4.224,13.773,4,13.496,4" />
+                                                                    <GeometryDrawing Brush="#FFEFEFF0" Geometry="F1M4,12L3,12 3,13 4,13z M5,11L4,11 4,12 5,12z M5,9L4,9 4,10 5,10z M4,10L3,10 3,11 4,11z M4,8L3,8 3,9 4,9z M5,7L4,7 4,8 5,8z M5,4L3,4 3,6 5,6z M2,3L8.374,3 8.874,4 2,4z" />
+                                                                    <GeometryDrawing Brush="#FF424242" Geometry="F1M5,4L5,6 3,6 3,4 2,4 2,13 3,13 3,12 4,12 4,11 3,11 3,10 4,10 4,9 3,9 3,8 4,8 4,7 5,7 5,8 4,8 4,9 5,9 5,10 4,10 4,11 5,11 5,12 4,12 4,13 6,13 6,4z M5,4L3,4 3,3 5,3z" />
+                                                                </DrawingGroup.Children>
+                                                            </DrawingGroup>
+                                                        </DrawingBrush.Drawing>
+                                                    </DrawingBrush>
+
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding entryNew.isCompressed}" Value="0">
                                             <Setter TargetName="myImage" Property="Fill" Value="Transparent" />
                                         </DataTrigger>
                                     </DataTemplate.Triggers>

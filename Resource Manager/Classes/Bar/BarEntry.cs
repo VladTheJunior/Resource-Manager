@@ -1,12 +1,10 @@
 ﻿using Resource_Manager.Classes.Alz4;
-using Resource_Manager.Classes.L33TZip;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media;
 
 namespace Resource_Manager.Classes.Bar
 {
@@ -43,7 +41,7 @@ namespace Resource_Manager.Classes.Bar
             barEntry.FileName = Encoding.Unicode.GetString(binaryReader.ReadBytes((int)length * 2));
             barEntry.FileNameWithRoot = Path.Combine(rootPath, barEntry.FileName);
             if (version > 3)
-                barEntry.isCompressed = Convert.ToBoolean(binaryReader.ReadUInt32());
+                barEntry.isCompressed = binaryReader.ReadUInt32();
 
             // MessageBox.Show(barEntry.FileName);
             return barEntry;
@@ -65,11 +63,14 @@ namespace Resource_Manager.Classes.Bar
             if (version > 3)
             {
                 barEntry.FileSize2 = (int)fileInfo.Length;
-                barEntry.isCompressed = Alz4Utils.IsAlz4File(fileInfo.FullName);
-                if (barEntry.isCompressed)
-                    barEntry.FileSize = (await Alz4Utils.ReadCompressedSizeAlz4Async(fileInfo.FullName));
-                else
-                    barEntry.FileSize = barEntry.FileSize2;
+                barEntry.isCompressed = 0;
+                barEntry.FileSize = barEntry.FileSize2;
+                if (Alz4Utils.IsAlz4File(fileInfo.FullName))
+                {
+                    barEntry.isCompressed = 1;
+                    barEntry.FileSize = await Alz4Utils.ReadCompressedSizeAlz4Async(fileInfo.FullName);
+                }
+
                 barEntry.FileSize3 = barEntry.FileSize2;
             }
             else
@@ -85,7 +86,7 @@ namespace Resource_Manager.Classes.Bar
             return barEntry;
         }
 
-        public uint crc32 { get; set; }
+        private uint crc32 { get; set; }
 
         public uint CRC32
         {
@@ -113,7 +114,7 @@ namespace Resource_Manager.Classes.Bar
 
         public string FileNameWithRoot { get; set; }
 
-        public bool isCompressed { get; set; }
+        public uint isCompressed { get; set; }
 
         public long Offset { get; set; }
 
@@ -139,7 +140,7 @@ namespace Resource_Manager.Classes.Bar
         {
             get
             {
-                return (isCompressed ? "Compressed " : "") + Path.GetExtension(FileName).ToUpper();
+                return (isCompressed != 0 ? "Compressed " : "") + Path.GetExtension(FileName).ToUpper();
             }
         }
 
@@ -175,7 +176,7 @@ namespace Resource_Manager.Classes.Bar
                     bw.Write(FileName.Length);
                     bw.Write(Encoding.Unicode.GetBytes(FileName));
                     if (version > 3)
-                        bw.Write(Convert.ToInt32(isCompressed));
+                        bw.Write(isCompressed);
                     return ms.ToArray();
                 }
             }

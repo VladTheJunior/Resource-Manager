@@ -3,19 +3,17 @@ using Resource_Manager.Classes.Alz4;
 using Resource_Manager.Classes.Bar;
 using Resource_Manager.Classes.Ddt;
 using Resource_Manager.Classes.L33TZip;
+using Resource_Manager.Classes.sound;
 using Resource_Manager.Classes.Xmb;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -139,12 +137,12 @@ namespace Archive_Unpacker.Classes.BarViewModel
             get
             {
                 if (barFile.barFileHeader.Version == 2)
-                    return Path.GetFileName(barFilePath) + " AoE3 (2007)";
+                    return Path.GetFileName(barFilePath) + " - AoE3 (2007)";
                 else
                 if (barFile.barFileHeader.Version == 4)
-                    return Path.GetFileName(barFilePath) + " AoE3: Definitive Edition - 1st wave of beta testing";
+                    return Path.GetFileName(barFilePath) + " - AoE3: Definitive Edition - 1st wave of beta testing";
                 else
-                    return Path.GetFileName(barFilePath) + " AoE3: Definitive Edition";
+                    return Path.GetFileName(barFilePath) + " - AoE3: Definitive Edition";
             }
         }
 
@@ -163,7 +161,7 @@ namespace Archive_Unpacker.Classes.BarViewModel
 
 
 
-        public async Task saveFiles(List<BarEntry> files, string savePath, bool Decompress, CancellationToken token)
+        public async Task saveFiles(List<BarEntry> files, string savePath, bool Decompress, CancellationToken token, bool convertDDT, bool convertXMB)
         {
             ResetProgress();
             if (files.Count == 0) return;
@@ -194,7 +192,7 @@ namespace Archive_Unpacker.Classes.BarViewModel
                 var data = new byte[file.FileSize2];
                 await input.ReadAsync(data, 0, data.Length);
 
-                // 
+                 
                 if (file.Extension != ".XMB" && (L33TZipUtils.IsL33TZipFile(data) || Alz4Utils.IsAlz4File(data)) && Decompress)
                 {
                     if (Alz4Utils.IsAlz4File(data))
@@ -208,7 +206,44 @@ namespace Archive_Unpacker.Classes.BarViewModel
                     }
                 }
 
+                if (file.Extension == ".WAV" || file.Extension == ".MP3")
+                {
+                    if (file.isCompressed == 2)
+                    {
+                        data = await soundUtils.DecryptSound(data);
+                    }
+                }
+
                 await File.WriteAllBytesAsync(Path.Combine(savePath, file.FileNameWithRoot), data);
+
+
+
+                if (file.Extension == ".XMB" && convertXMB)
+                {
+                    if (Alz4Utils.IsAlz4File(data))
+                    {
+                        data = await Alz4Utils.ExtractAlz4BytesAsync(data);
+                    }
+                    else
+                    {
+                        if (L33TZipUtils.IsL33TZipFile(data))
+                            data = await L33TZipUtils.ExtractL33TZippedBytesAsync(data);
+                    }
+
+                    using MemoryStream stream = new MemoryStream(data);
+                    XMBFile xmb = await XMBFile.LoadXMBFile(stream);
+
+                    var newName = Path.ChangeExtension(Path.Combine(savePath, file.FileNameWithRoot), "");
+
+                    xmb.file.Save(newName);
+                }
+
+                if (file.Extension == ".DDT" && convertDDT)
+                {
+                    await DdtFileUtils.DdtBytes2PngAsync(data, Path.Combine(savePath, file.FileNameWithRoot));
+                }
+
+
                 CurrentProgress += (double)file.FileSize2 / filesSize;
             }
             ResetProgress();
@@ -231,27 +266,20 @@ namespace Archive_Unpacker.Classes.BarViewModel
             if (file == null)
                 return;
 
-            if (file.Extension == ".WAV"/* || file.Extension == ".MP3"*/)
+            if (file.Extension == ".WAV" || file.Extension == ".MP3")
             {
                 using FileStream input = File.OpenRead(barFilePath);
                 // Locate the file within the BAR file.
                 input.Seek(file.Offset, SeekOrigin.Begin);
                 var data = new byte[file.FileSize2];
                 await input.ReadAsync(data, 0, data.Length);
-                //File.WriteAllBytes(file.fileNameWithoutPath, data);
-                audio = new MemoryStream(data);
-                if (file.isCompressed)
+
+                if (file.isCompressed == 2)
                 {
-                    //   AudioFileReader audioFileReader = new AudioFileReader();
-                    //  DirectSoundOut directSoundOut = new DirectSoundOut();
-
-                    // audioFileReader.
-                    audio = new MemoryStream(data);
-
+                    audio = new MemoryStream(await soundUtils.DecryptSound(data));
                 }
                 else
                     audio = new MemoryStream(data);
-
                 return;
             }
             if (file.Extension == ".DDT")
@@ -307,7 +335,7 @@ namespace Archive_Unpacker.Classes.BarViewModel
                             PixelFormat(image), null, addr, image.DataLen, image.Stride);
                         PngBitmapEncoder encoder = new PngBitmapEncoder();
                         MemoryStream memoryStream = new MemoryStream();
-                       
+
                         encoder.Frames.Add(BitmapFrame.Create(bsource));
                         encoder.Save(memoryStream);
                         memoryStream.Position = 0;

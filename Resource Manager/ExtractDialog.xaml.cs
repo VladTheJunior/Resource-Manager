@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Forms;
 
+
 namespace Resource_Manager
 {
     /// <summary>
@@ -20,6 +21,35 @@ namespace Resource_Manager
         public string Path { get; set; } = "";
 
         private bool autoDecompress = true;
+        private bool autoXMBConversion = false;
+        private bool autoDDTConversion = false;
+
+        public bool AutoXMBConversion
+        {
+            get
+            {
+                return autoXMBConversion;
+            }
+            set
+            {
+                autoXMBConversion = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public bool AutoDDTConversion
+        {
+            get
+            {
+                return autoDDTConversion;
+            }
+            set
+            {
+                autoDDTConversion = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public bool AutoDecompress
         {
             get
@@ -33,9 +63,10 @@ namespace Resource_Manager
             }
         }
 
-        public ExtractDialog()
-        {
+        public ExtractDialog(string DefaultRootPath)
+        {         
             InitializeComponent();
+            ExportPath.Text = System.IO.Path.GetDirectoryName(DefaultRootPath);
             DataContext = this;
         }
 

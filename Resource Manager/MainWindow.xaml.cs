@@ -3,6 +3,7 @@ using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Sample;
 using ICSharpCode.AvalonEdit.Search;
+using NAudio.Wave;
 using Resource_Manager.Classes.Alz4;
 using Resource_Manager.Classes.Bar;
 using Resource_Manager.Classes.Commands;
@@ -18,7 +19,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Media;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +27,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using MessageBox = System.Windows.MessageBox;
@@ -128,6 +127,12 @@ namespace Resource_Manager
 
 
         FoldingManager foldingManager;
+        private WaveOutEvent outputDevice;
+        private Mp3FileReader mp3File;
+        private WaveFileReader waveFile;
+
+
+
 
         private async void files_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -146,7 +151,21 @@ namespace Resource_Manager
                 var entries = files.SelectedItems.Cast<BarEntry>().ToList();
                 SelectedSize = entries.Sum(x => (long)x.FileSize2);
                 await file.readFile(entry);
-
+                if (outputDevice != null)
+                {
+                outputDevice.Dispose();
+                outputDevice = null;
+                }
+                if (mp3File != null)
+                {
+                    mp3File.Dispose();
+                    mp3File = null;
+                }
+                if (waveFile != null)
+                {
+                    waveFile.Dispose();
+                    waveFile = null;
+                }
                 point = new Point();
                 validPoint = false;
                 ImagePreview.RenderTransform = new TranslateTransform();
@@ -173,12 +192,35 @@ namespace Resource_Manager
                     }
                 }
 
-                if (entry.Extension == ".WAV")
+                if (entry.Extension == ".WAV" )
                 {
-                    using (SoundPlayer player = new SoundPlayer())
+                    
+                   using (outputDevice = new WaveOutEvent())
+                    using (waveFile = new WaveFileReader(file.audio))
                     {
-                        player.Stream = file.audio;
-                        player.Play();
+                        outputDevice.Init(waveFile);
+                        outputDevice.Play();
+                        while (outputDevice.PlaybackState == PlaybackState.Playing)
+                        {
+                            await Task.Delay(500);
+                        }
+                    }
+                    ImageViewer.Visibility = Visibility.Collapsed;
+                    XMLViewer.Visibility = Visibility.Collapsed;
+                }
+                if (entry.Extension == ".MP3")
+                {
+                    //var w = new WaveFormat(new BinaryReader(file.audio));
+                    //MessageBox.Show(w.Encoding.ToString());
+                    using (outputDevice = new WaveOutEvent())
+                    using (mp3File = new Mp3FileReader(file.audio))
+                    {
+                        outputDevice.Init(mp3File);
+                        outputDevice.Play();
+                        while (outputDevice.PlaybackState == PlaybackState.Playing)
+                        {
+                            await Task.Delay(500);
+                        }
                     }
                     ImageViewer.Visibility = Visibility.Collapsed;
                     XMLViewer.Visibility = Visibility.Collapsed;
@@ -367,7 +409,7 @@ namespace Resource_Manager
                 string RootPath;
 
 
-                ExtractDialog ExtractDialog = new ExtractDialog();
+                ExtractDialog ExtractDialog = new ExtractDialog(file.barFilePath);
                 if (ExtractDialog.ShowDialog() != true)
                     return;
 
@@ -381,8 +423,6 @@ namespace Resource_Manager
                 bStop.IsEnabled = true;
                 bRun.IsEnabled = false;
                 bool decompress = ExtractDialog.AutoDecompress;
-                if (file.barFile.barFileHeader.Version > 3 && !ExtractDialog.AutoDecompress)
-                    decompress = MessageBox.Show("Do you want to decompress compressed files? (If you do not decompress them, you will not be able to open and edit these files.)", "Decompress files", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes;
 
                 file.extractingState = 0;
                 CancelTokenSource = new CancellationTokenSource();
@@ -392,7 +432,7 @@ namespace Resource_Manager
 
                     await Task.Run(async () =>
                     {
-                        await file.saveFiles(entries, RootPath, decompress, Token);
+                        await file.saveFiles(entries, RootPath, decompress, Token, ExtractDialog.AutoDDTConversion, ExtractDialog.AutoXMBConversion);
                     });
 
                 }
@@ -467,8 +507,9 @@ namespace Resource_Manager
             NotifyPropertyChanged("ZoomValue");
         }
 
-        private async void TextBlock_MouseDown_1(object sender, MouseButtonEventArgs e)
+        private void TextBlock_MouseDown_1(object sender, MouseButtonEventArgs e)
         {
+           
             //await DdtFileUtils.Ddt2PngAsync(@"D:\Development\Resource Manager\Resource Manager\bin\Release\netcoreapp3.1\Art\ui\alerts\alert_treatyend_bump.ddt");
         }
 
@@ -709,9 +750,44 @@ namespace Resource_Manager
                 validPoint = false;
             }
         }
+
+        private void StatusBar_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+           
+        }
+
+        private void MenuItem_Click_2(object sender, RoutedEventArgs e)
+        {
+            EntryDetailsDialog window = new EntryDetailsDialog(files.SelectedItem as BarEntry, file.barFilePath);
+            window.ShowDialog();
+        }
     }
 
     #region Value Converters
+
+
+    public class VisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value != null && value is bool)
+            {
+                if ((bool)value == true)
+                {
+                    return Visibility.Collapsed;
+                }
+                else
+                { return Visibility.Visible; }
+            }
+
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
 
     public class MathConverter : IValueConverter
     {

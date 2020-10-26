@@ -8,9 +8,10 @@
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
         UseLayoutRounding="True"
-        Title="Create Bar File"  ResizeMode="NoResize" FontFamily="{StaticResource Trajan Pro}" FontSize="14">
+        Title="Create Bar File"  ResizeMode="NoResize" FontFamily="{StaticResource Trajan Pro}" FontSize="16">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
@@ -18,16 +19,18 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            
 
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Select Game Version: " HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <ComboBox x:Name="tbGameVersion" Grid.Row="0" Grid.Column="1" SelectedIndex="0">
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Game Version: " HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <ComboBox Margin="5,0,0,0" HorizontalContentAlignment="Center" x:Name="tbGameVersion" Grid.ColumnSpan="2"  Grid.Row="0" Grid.Column="1" SelectedIndex="0" HorizontalAlignment="Stretch">
             <ComboBoxItem Content="Age of Empires 3 (2007)"/>
             <ComboBoxItem Content="Age of Empires 3: DE"/>
         </ComboBox>
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Select Bar Root Folder: " HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <Button Margin="0,5" Grid.Row="1" Grid.Column="1" Content="Browse..." Click="Button_Click"/>
-        <Button Margin="0,5" Content="OK" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Width="75" Padding="0,3,0,0" Click="Button_Click_1"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Bar Root Folder: " HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBox VerticalContentAlignment="Center" FontSize="14" x:Name="tbRootPath" IsReadOnly="True" Margin="5,5" Grid.Row="1" Width="250" Grid.Column="1"/>
+        <Button Margin="5,5,0,5" Grid.Row="1" HorizontalAlignment="Center" Width="100" Grid.Column="2" Content="Browse..." Click="Button_Click"/>
+        <Button Margin="0,5" Content="Create" Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Center" Width="100" Padding="0,3,0,0" Click="Button_Click_1"/>
     </Grid>
 
 </Window>

@@ -31,6 +31,7 @@ namespace Resource_Manager
                 if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     RootPath = folderBrowserDialog.SelectedPath;
+                    tbRootPath.Text = RootPath;
                 }
             }
         }
