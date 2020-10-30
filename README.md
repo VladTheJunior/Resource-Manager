@@ -15,6 +15,8 @@
 
 *Utility for viewing, comparing, creating and extracting files from Age of Empires III .BAR archive*
 
+**Note by Kevsoft:** VladTheJunior will be inactive for a longer period of time and thus decided to transfer ownership to me, Kevsoft/KevinW1998. I will keep an eye out for issues and pull requests. 
+
 **Developer:** VladTheJunior<br />
 **Current version:** 0.4<br />
 [Download Portable (.zip archive)](https://drive.google.com/file/d/1_HkpRWSgCh7w3fuyP2Qay-2cHJE8lhdK/view?usp=sharing)<br />
@@ -100,6 +102,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Contact
 
 VladTheJunior - Discord: VladTheJunior#1244 - VladTheJunior@gmail.com
+
+Kevsoft/KevinW1998 - Discord: Kevsoft#1873
 
 Project Link: [https://github.com/VladTheJunior/Resource-Manager](https://github.com/VladTheJunior/Resource-Manager)
 
