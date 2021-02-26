@@ -49,6 +49,10 @@ namespace Resource_Manager.Classes.Bar
             {
                 barFileEntrys.Add(BarEntry.Load(reader, barFile.barFileHeader.Version, barFile.RootPath));
             }
+
+            // TODO: Look for new date fields in BAR version 6
+
+
             if (doCRC32)
             {
                 foreach (var barEntry in barFileEntrys)

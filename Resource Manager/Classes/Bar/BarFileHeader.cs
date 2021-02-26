@@ -38,7 +38,7 @@ namespace Resource_Manager.Classes.Bar
 
             Version = binaryReader.ReadUInt32();
 
-            if (Version !=2 && Version != 4 && Version != 5)
+            if (Version !=2 && Version != 4 && Version != 5 && Version != 6)
                 throw new Exception("Version " + Version.ToString() + " of the BAR file is not supported. Please contact the developer");
             Unk1 = binaryReader.ReadUInt32();
 

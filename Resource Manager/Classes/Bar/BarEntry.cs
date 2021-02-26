@@ -30,14 +30,15 @@ namespace Resource_Manager.Classes.Bar
             barEntry.FileSize = binaryReader.ReadInt32();
             barEntry.FileSize2 = binaryReader.ReadInt32();
 
-            if (version == 5)
+            if (version >= 5)
             {
                 barEntry.FileSize3 = binaryReader.ReadInt32();
             }
 
-            barEntry.LastWriteTime = new BarEntryLastWriteTime(binaryReader);
-            var length = binaryReader.ReadUInt32();
+            barEntry.LastWriteTime = version < 6 ?
+                new BarEntryLastWriteTime(binaryReader) : new BarEntryLastWriteTime(DateTime.MinValue);
 
+            var length = binaryReader.ReadUInt32();
             barEntry.FileName = Encoding.Unicode.GetString(binaryReader.ReadBytes((int)length * 2));
             barEntry.FileNameWithRoot = Path.Combine(rootPath, barEntry.FileName);
             if (version > 3)
