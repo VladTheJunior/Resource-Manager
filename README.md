@@ -17,10 +17,10 @@
 
 **Note by Kevsoft:** VladTheJunior will be inactive for a longer period of time and thus decided to transfer ownership to me, Kevsoft/KevinW1998. I will keep an eye out for issues and pull requests. 
 
-**Developer:** VladTheJunior<br />
-**Current version:** 0.4<br />
-[Download Portable (.zip archive)](https://drive.google.com/file/d/1_HkpRWSgCh7w3fuyP2Qay-2cHJE8lhdK/view?usp=sharing)<br />
-[Download Standalone (.exe)](https://drive.google.com/file/d/19y7AeWME68FFv5sJeCsORIF5-mLHqCNX/view?usp=sharing)<br />
+**Developer:** VladTheJunior and Kevsoft<br />
+**Current version:** 0.4.1<br />
+[Download Portable (.zip archive)](https://github.com/KevinW1998/Resource-Manager/releases/latest/download/Resource-Manager.zip)<br />
+[Download Standalone (.exe) (Outdated)](https://drive.google.com/file/d/19y7AeWME68FFv5sJeCsORIF5-mLHqCNX/view?usp=sharing)<br />
 
 ## Table of Contents
 
